@@ -77,12 +77,14 @@ Requirements:
 4. Include exactly 5 major financial news items from the latest market day.
 5. Each news item must have title, source, time, url, and summary.
 6. All user-facing text fields must be in Simplified Chinese.
-7. **NEWS ACCURACY & ACCESSIBILITY**: 
+7. **NEWS ACCURACY & ACCESSIBILITY (CRITICAL)**: 
    - Each "url" MUST be the exact, direct, and publicly accessible link to the SPECIFIC article.
    - **STRICTLY PROHIBITED**: Do NOT use homepages (e.g., finance.sina.com.cn), search result pages, or login-required/paywalled content.
    - **VERIFICATION**: You MUST verify that the URL actually points to the specific article described by the title.
-   - **SOURCES**: Prioritize Sina Finance, East Money, and Xueqiu for A-shares; Reuters, Bloomberg, and Yahoo Finance for US-shares.
+   - **SOURCES**: Prioritize authoritative and highly accessible sources: Sina Finance (新浪财经), East Money (东方财富), Xueqiu (雪球), and Phoenix Finance (凤凰财经).
+   - **AVOID**: Avoid sources that frequently have broken links or paywalls like Economic Observer (经济观察网 - eeo.com.cn) unless you are certain the link is public.
    - If a specific article URL is not available, do NOT include that news item.
+   - **LATEST DATA**: Use Google Search to ensure all news and data are from the most recent trading session or the current day.
    - **TEST CASE**: A valid URL should look like 'https://finance.sina.com.cn/stock/s/2024-03-22/doc-imnvvxyz1234567.shtml' not 'https://finance.sina.com.cn/'.
 8. Use real source URLs, never placeholder/example URLs.
 9. Continuity: Based on previous analysis, identify if trends are continuing or reversing.
@@ -153,12 +155,14 @@ Requirements:
    - "price", "change", and "changePercent" MUST be numbers (not strings). 
    - "changePercent" should be the percentage value (e.g., 5.2 for 5.2%), not a decimal (e.g., 0.052).
 5. Include 3 to 5 recent and relevant news items for this exact company.
-6. **NEWS ACCURACY & ACCESSIBILITY**: 
+6. **NEWS ACCURACY & ACCESSIBILITY (CRITICAL)**: 
    - Each "url" MUST be the exact, direct, and publicly accessible link to the SPECIFIC article.
    - **STRICTLY PROHIBITED**: Do NOT use homepages (e.g., finance.sina.com.cn), search result pages, or login-required/paywalled content.
    - **VERIFICATION**: You MUST verify that the URL actually points to the specific article described by the title.
-   - **SOURCES**: Prioritize Sina Finance, East Money, and Xueqiu for A-shares; Reuters, Bloomberg, and Yahoo Finance for US-shares.
+   - **SOURCES**: Prioritize authoritative and highly accessible sources: Sina Finance (新浪财经), East Money (东方财富), Xueqiu (雪球), and Phoenix Finance (凤凰财经).
+   - **AVOID**: Avoid sources that frequently have broken links or paywalls like Economic Observer (经济观察网 - eeo.com.cn) unless you are certain the link is public.
    - If a specific article URL is not available, do NOT include that news item.
+   - **LATEST DATA**: Use Google Search to ensure all news and data are from the most recent trading session or the current day.
    - **TEST CASE**: A valid URL should look like 'https://finance.sina.com.cn/stock/s/2024-03-22/doc-imnvvxyz1234567.shtml' not 'https://finance.sina.com.cn/'.
 7. Provide summary, technicalAnalysis, fundamentalAnalysis, sentiment, score, recommendation, keyRisks, keyOpportunities.
 8. sentiment must be one of: Bullish, Bearish, Neutral.
@@ -303,17 +307,43 @@ export async function getChatReport(stockName: string, chatHistory: { role: 'use
 export async function getDailyReport(marketOverview: MarketOverview): Promise<string> {
   const ai = new GoogleGenAI({ apiKey: getApiKey() });
   const prompt = `
-    基于以下市场概况，生成一份简洁、专业的每日股市分析报告。
-    报告应包含：
-    1. 市场核心观点总结（1-2句）。
-    2. 3个值得关注的板块或概念，并简要说明理由。
-    3. 3只今日推荐关注的个股（包含股票代码和推荐理由）。
+    Current date and time: ${new Date().toISOString()}
     
-    市场概况：
+    You are a professional China-focused markets analyst.
+    Use Google Search grounding to gather the latest available public information about the market situation from the previous day or the weekend.
+    
+    Market Overview Data (for context):
     ${JSON.stringify(marketOverview)}
     
-    请使用 Markdown 格式，语气专业且客观。
-    回答语言：简体中文。
+    Requirements:
+    1. Summarize the A-share market tone (previous day or weekend news).
+    2. Include key indices performance (SSE, SZSE, ChiNext, CSI 300, HSI).
+    3. List 3-5 major financial news items.
+    4. **NEWS ACCURACY & ACCESSIBILITY (CRITICAL)**: 
+       - Each news item MUST include a direct, publicly accessible URL to the SPECIFIC article.
+       - **STRICTLY PROHIBITED**: Do NOT use homepages (e.g., finance.sina.com.cn), search result pages, or login-required/paywalled content.
+       - **SOURCES**: Prioritize authoritative and highly accessible sources: Sina Finance (新浪财经), East Money (东方财富), Xueqiu (雪球), and Phoenix Finance (凤凰财经).
+       - **AVOID**: Avoid sources that frequently have broken links or paywalls like Economic Observer (经济观察网 - eeo.com.cn) unless you are certain the link is public.
+       - **LATEST DATA**: Use Google Search to ensure all news and data are from the most recent trading session or the current day.
+    5. Provide a prediction for today's market opening and trend.
+    6. Recommend 3 stocks or sectors to watch today with brief reasons.
+    7. Format the output in Markdown, suitable for a Feishu message.
+    8. Language: Simplified Chinese.
+    
+    Structure:
+    # 每日早间市场内参 (${new Date().toLocaleDateString('zh-CN')})
+    
+    ## 1. 大盘回顾与总结
+    ...
+    
+    ## 2. 核心财经要闻
+    ...
+    
+    ## 3. 今日预测与操作建议
+    ...
+    
+    ## 4. 今日关注个股/板块
+    ...
   `.trim();
 
   const response = await ai.models.generateContent({

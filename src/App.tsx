@@ -73,18 +73,32 @@ export default function App() {
 
   // Manual Daily Report Trigger
   const handleTriggerDailyReport = async () => {
+    if (!marketOverview) {
+      alert('请先等待市场概况加载完成。');
+      return;
+    }
+
     setIsTriggeringReport(true);
     try {
-      const response = await fetch('/api/admin/trigger-daily-report', { method: 'POST' });
+      // Generate report in frontend
+      const report = await getDailyReport(marketOverview);
+      
+      // Send to Feishu via backend
+      const response = await fetch('/api/feishu/send-report', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ content: report })
+      });
+
       if (response.ok) {
-        alert('每日报告已触发并发送至飞书！');
+        alert('每日报告已成功生成并发送至飞书！');
       } else {
         const data = await response.json();
-        alert(`报告触发失败: ${data.error || '未知错误'}`);
+        alert(`报告发送失败: ${data.error || '未知错误'}`);
       }
     } catch (err) {
       console.error('Manual report trigger failed:', err);
-      alert('网络错误，请稍后重试。');
+      alert(`报告触发失败: ${err instanceof Error ? err.message : '未知错误'}`);
     } finally {
       setIsTriggeringReport(false);
     }
@@ -711,7 +725,7 @@ export default function App() {
                     <div className="flex flex-col items-center justify-center rounded-3xl border border-zinc-800/50 bg-zinc-900/30 p-6 text-center">
                       <h3 className="mb-3 text-xs font-bold uppercase tracking-widest text-zinc-500">市场情绪</h3>
                       <div className="text-2xl font-black text-emerald-500">
-                        {marketOverview.marketSummary.includes('牛') || marketOverview.marketSummary.includes('涨') ? '看多' : marketOverview.marketSummary.includes('熊') || marketOverview.marketSummary.includes('跌') ? '看空' : '中性'}
+                        {(marketOverview.marketSummary?.includes('牛') || marketOverview.marketSummary?.includes('涨')) ? '看多' : (marketOverview.marketSummary?.includes('熊') || marketOverview.marketSummary?.includes('跌')) ? '看空' : '中性'}
                       </div>
                       <p className="mt-2 text-[10px] text-zinc-600">AI 综合研判</p>
                     </div>

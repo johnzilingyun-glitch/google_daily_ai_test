@@ -3,7 +3,6 @@ import { createServer as createViteServer } from 'vite';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import dotenv from 'dotenv';
-import cron from 'node-cron';
 import { GoogleGenAI } from '@google/genai';
 import fs from 'fs';
 
@@ -142,103 +141,6 @@ async function startServer() {
       appUrl: process.env.APP_URL,
       nodeEnv: process.env.NODE_ENV
     });
-  });
-
-  // Manual Trigger for Daily Report
-  app.post('/api/admin/trigger-daily-report', async (req, res) => {
-    try {
-      const result = await generateAndSendDailyReport();
-      res.json({ success: true, result });
-    } catch (error) {
-      console.error('Manual Report Trigger Error:', error);
-      res.status(500).json({ error: String(error) });
-    }
-  });
-
-  async function generateAndSendDailyReport() {
-    const apiKey = process.env.GEMINI_API_KEY;
-    const webhookUrl = process.env.FEISHU_WEBHOOK_URL;
-
-    if (!apiKey || !webhookUrl) {
-      const error = 'GEMINI_API_KEY or FEISHU_WEBHOOK_URL not configured';
-      console.error(error);
-      return { error };
-    }
-
-    console.log('Generating daily market report for Feishu...');
-    const ai = new GoogleGenAI({ apiKey });
-    const prompt = `
-      Current date and time: ${new Date().toISOString()}
-      
-      You are a professional China-focused markets analyst.
-      Use Google Search grounding to gather the latest available public information about the market situation from the previous day or the weekend.
-      
-      Requirements:
-      1. Summarize the A-share market tone (previous day or weekend news).
-      2. Include key indices performance (SSE, SZSE, ChiNext, CSI 300, HSI).
-      3. List 3-5 major financial news items.
-      4. Provide a prediction for today's market opening and trend.
-      5. Recommend 3 stocks or sectors to watch today with brief reasons.
-      6. Format the output in Markdown, suitable for a Feishu message.
-      7. Language: Simplified Chinese.
-      
-      Structure:
-      # 每日早间市场内参 (${new Date().toLocaleDateString('zh-CN')})
-      
-      ## 1. 大盘回顾与总结
-      ...
-      
-      ## 2. 核心财经要闻
-      ...
-      
-      ## 3. 今日预测与操作建议
-      ...
-      
-      ## 4. 今日关注个股/板块
-      ...
-    `.trim();
-
-    try {
-      const response = await ai.models.generateContent({
-        model: 'gemini-3-flash-preview',
-        contents: prompt,
-        config: {
-          tools: [{ googleSearch: {} }],
-        },
-      });
-
-      const reportContent = response.text;
-      if (!reportContent) throw new Error('Gemini returned empty report');
-
-      console.log('Sending report to Feishu...');
-      const feishuResponse = await fetch(webhookUrl, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          msg_type: 'text',
-          content: { text: reportContent },
-        }),
-      });
-
-      const feishuData: any = await feishuResponse.json();
-      if (feishuData.code !== 0) {
-        throw new Error(`Feishu error: ${feishuData.msg}`);
-      }
-
-      console.log('Daily report sent successfully.');
-      return { success: true, time: new Date().toISOString() };
-    } catch (err) {
-      console.error('Failed to generate/send daily report:', err);
-      throw err;
-    }
-  }
-
-  // Schedule: 9:00 AM Monday to Friday
-  cron.schedule('0 9 * * 1-5', () => {
-    console.log('Running scheduled daily market report task...');
-    void generateAndSendDailyReport();
-  }, {
-    timezone: "Asia/Shanghai"
   });
 
   // Vite middleware for development
