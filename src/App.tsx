@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { 
-  Github, 
   ExternalLink, 
   CheckCircle2, 
   AlertCircle, 
@@ -52,11 +51,6 @@ const chatPrompts = [
 
 export default function App() {
   console.log('App is rendering');
-  // GitHub State
-  const [token, setToken] = useState<string | null>(null);
-  const [githubUser, setGithubUser] = useState<any>(null);
-  const [repoStatus, setRepoStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
-  const [githubError, setGithubError] = useState<string | null>(null);
 
   // Market Analysis State
   const [symbol, setSymbol] = useState('');
@@ -69,89 +63,32 @@ export default function App() {
   const [dailyReport, setDailyReport] = useState<string | null>(null);
   const [isGeneratingReport, setIsGeneratingReport] = useState(false);
   const [isSendingReport, setIsSendingReport] = useState(false);
-  const [isCommittingToGithub, setIsCommittingToGithub] = useState(false);
   const [reportStatus, setReportStatus] = useState<'idle' | 'success' | 'error'>('idle');
-  const [githubStatus, setGithubStatus] = useState<'idle' | 'success' | 'error'>('idle');
   const [analysisError, setAnalysisError] = useState<string | null>(null);
   const [chatError, setChatError] = useState<string | null>(null);
   const [chatMessage, setChatMessage] = useState('');
   const [isChatting, setIsChatting] = useState(false);
   const [chatHistory, setChatHistory] = useState<{ role: 'user' | 'ai'; content: string }[]>([]);
-  const [isTriggering, setIsTriggering] = useState(false);
-  const [syncLog, setSyncLog] = useState<any>(null);
+  const [isTriggeringReport, setIsTriggeringReport] = useState(false);
 
-  const REPO_URL = 'https://github.com/johnzilingyun-glitch/daily_ai_test.git';
-  const REPO_PATH = 'johnzilingyun-glitch/daily_ai_test';
-
-  // Fetch Sync Log
-  const fetchSyncLog = useCallback(async () => {
+  // Manual Daily Report Trigger
+  const handleTriggerDailyReport = async () => {
+    setIsTriggeringReport(true);
     try {
-      const response = await fetch('/api/admin/sync-log');
+      const response = await fetch('/api/admin/trigger-daily-report', { method: 'POST' });
       if (response.ok) {
+        alert('每日报告已触发并发送至飞书！');
+      } else {
         const data = await response.json();
-        setSyncLog(data);
+        alert(`报告触发失败: ${data.error || '未知错误'}`);
       }
     } catch (err) {
-      console.error('Failed to fetch sync log:', err);
-    }
-  }, []);
-
-  // Manual Sync Trigger
-  const handleManualSync = async () => {
-    setIsTriggering(true);
-    try {
-      const response = await fetch('/api/admin/sync-now', { method: 'POST' });
-      if (response.ok) {
-        await fetchSyncLog();
-      }
-    } catch (err) {
-      console.error('Manual sync failed:', err);
+      console.error('Manual report trigger failed:', err);
+      alert('网络错误，请稍后重试。');
     } finally {
-      setIsTriggering(false);
+      setIsTriggeringReport(false);
     }
   };
-
-  // GitHub OAuth listener
-  useEffect(() => {
-    const handleMessage = (event: MessageEvent) => {
-      const origin = event.origin;
-      if (!origin.endsWith('.run.app') && !origin.includes('localhost')) return;
-
-      if (event.data?.type === 'GITHUB_AUTH_SUCCESS') {
-        setToken(event.data.token);
-        fetchGitHubUser(event.data.token);
-      }
-    };
-
-    window.addEventListener('message', handleMessage);
-
-    // Fetch default token if available
-    const fetchDefaultToken = async () => {
-      try {
-        const response = await fetch('/api/auth/github/token');
-        if (response.ok) {
-          const { token } = await response.json();
-          if (token) {
-            setToken(token);
-            fetchGitHubUser(token);
-          }
-        }
-      } catch (err) {
-        console.error('Failed to fetch default GitHub token:', err);
-      }
-    };
-
-    void fetchDefaultToken();
-    void fetchSyncLog();
-
-    // Poll sync log every 30 seconds
-    const interval = setInterval(fetchSyncLog, 30000);
-
-    return () => {
-      window.removeEventListener('message', handleMessage);
-      clearInterval(interval);
-    };
-  }, [fetchSyncLog]);
 
   // Fetch Market Overview
   useEffect(() => {
@@ -160,6 +97,13 @@ export default function App() {
         const data = await getMarketOverview();
         setMarketOverview(data);
         setOverviewError(null);
+        
+        // Save to history
+        void fetch('/api/admin/save-analysis', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ type: 'market', data })
+        });
       } catch (err) {
         console.error('Failed to fetch market overview:', err);
         const message = err instanceof Error ? err.message : 'Failed to load market overview.';
@@ -171,60 +115,6 @@ export default function App() {
 
     void fetchOverview();
   }, []);
-
-  const fetchGitHubUser = async (accessToken: string) => {
-    try {
-      const response = await fetch('https://api.github.com/user', {
-        headers: { Authorization: `token ${accessToken}` },
-      });
-      
-      if (!response.ok) {
-        if (response.status === 401) {
-          setToken(null);
-          setGithubError('Invalid or expired GitHub token');
-        }
-        throw new Error('Failed to fetch GitHub user');
-      }
-
-      const data = await response.json();
-      setGithubUser(data);
-      associateRepository(accessToken);
-    } catch (err) {
-      console.error('GitHub User Error:', err);
-      setGithubError('Failed to fetch GitHub user');
-    }
-  };
-
-  const associateRepository = async (accessToken: string) => {
-    setRepoStatus('loading');
-    try {
-      const response = await fetch(`https://api.github.com/repos/${REPO_PATH}`, {
-        headers: { Authorization: `token ${accessToken}` },
-      });
-      
-      if (response.ok) {
-        setRepoStatus('success');
-      } else {
-        setRepoStatus('error');
-        setGithubError('Repository not found or access denied');
-      }
-    } catch (err) {
-      setRepoStatus('error');
-      setGithubError('Failed to associate repository');
-    }
-  };
-
-  const handleConnectGithub = async () => {
-    try {
-      const response = await fetch('/api/auth/github/url');
-      if (!response.ok) throw new Error('Failed to get auth URL');
-      const { url } = await response.json();
-
-      window.open(url, 'github_oauth', 'width=600,height=700');
-    } catch (err) {
-      setGithubError('Could not initiate GitHub login');
-    }
-  };
 
   const handleSendDailyReport = async () => {
     if (!marketOverview) return;
@@ -260,60 +150,6 @@ export default function App() {
     }
   };
 
-  const handleCommitDailyReportToGithub = async () => {
-    if (!marketOverview || !token) return;
-    
-    setIsGeneratingReport(true);
-    setGithubStatus('idle');
-    try {
-      const report = await getDailyReport(marketOverview);
-      setDailyReport(report);
-      setIsGeneratingReport(false);
-      
-      setIsCommittingToGithub(true);
-      const date = new Date().toISOString().split('T')[0];
-      const path = `reports/daily/market_report_${date}.md`;
-      const message = `Add daily market report for ${date}`;
-      
-      // Check if file exists to get SHA
-      const getFileResponse = await fetch(`https://api.github.com/repos/${REPO_PATH}/contents/${path}`, {
-        headers: { Authorization: `token ${token}` },
-      });
-      
-      let sha: string | undefined;
-      if (getFileResponse.ok) {
-        const fileData = await getFileResponse.json();
-        sha = fileData.sha;
-      }
-
-      const response = await fetch(`https://api.github.com/repos/${REPO_PATH}/contents/${path}`, {
-        method: 'PUT',
-        headers: {
-          'Authorization': `token ${token}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          message,
-          content: btoa(unescape(encodeURIComponent(report))),
-          sha,
-        }),
-      });
-      
-      if (!response.ok) {
-        throw new Error('Failed to commit to GitHub');
-      }
-      
-      setGithubStatus('success');
-      setTimeout(() => setGithubStatus('idle'), 3000);
-    } catch (error) {
-      console.error('GitHub Commit Error:', error);
-      setGithubStatus('error');
-      setIsGeneratingReport(false);
-    } finally {
-      setIsCommittingToGithub(false);
-    }
-  };
-
   const handleSendStockReport = async () => {
     if (!analysis) return;
     
@@ -329,7 +165,11 @@ export default function App() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ content: report }),
+        body: JSON.stringify({ 
+          content: report,
+          type: 'stock',
+          data: analysis
+        }),
       });
       
       if (!response.ok) {
@@ -362,7 +202,11 @@ export default function App() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ content: report }),
+        body: JSON.stringify({ 
+          content: report,
+          type: 'chat',
+          data: { stock: analysis.stockInfo.name, history: chatHistory }
+        }),
       });
       
       if (!response.ok) {
@@ -380,60 +224,6 @@ export default function App() {
     }
   };
 
-  const handleCommitStockReportToGithub = async () => {
-    if (!analysis || !token) return;
-    
-    setIsGeneratingReport(true);
-    setGithubStatus('idle');
-    try {
-      const report = await getStockReport(analysis);
-      setIsGeneratingReport(false);
-      
-      setIsCommittingToGithub(true);
-      const date = new Date().toISOString().split('T')[0];
-      const symbol = analysis.stockInfo.symbol;
-      const path = `reports/stocks/${symbol}_${date}.md`;
-      const message = `Add stock report for ${symbol} on ${date}`;
-      
-      // Check if file exists to get SHA
-      const getFileResponse = await fetch(`https://api.github.com/repos/${REPO_PATH}/contents/${path}`, {
-        headers: { Authorization: `token ${token}` },
-      });
-      
-      let sha: string | undefined;
-      if (getFileResponse.ok) {
-        const fileData = await getFileResponse.json();
-        sha = fileData.sha;
-      }
-
-      const response = await fetch(`https://api.github.com/repos/${REPO_PATH}/contents/${path}`, {
-        method: 'PUT',
-        headers: {
-          'Authorization': `token ${token}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          message,
-          content: btoa(unescape(encodeURIComponent(report))),
-          sha,
-        }),
-      });
-      
-      if (!response.ok) {
-        throw new Error('Failed to commit to GitHub');
-      }
-      
-      setGithubStatus('success');
-      setTimeout(() => setGithubStatus('idle'), 3000);
-    } catch (error) {
-      console.error('GitHub Commit Error:', error);
-      setGithubStatus('error');
-      setIsGeneratingReport(false);
-    } finally {
-      setIsCommittingToGithub(false);
-    }
-  };
-
   const handleSearch = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!symbol) return;
@@ -446,6 +236,13 @@ export default function App() {
     try {
       const result = await analyzeStock(symbol, market);
       setAnalysis(result);
+
+      // Save to history
+      void fetch('/api/admin/save-analysis', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ type: 'stock', data: result })
+      });
     } catch (err) {
       console.error(err);
       setAnalysis(null);
@@ -508,52 +305,19 @@ export default function App() {
             </p>
           </div>
 
-          <div className="flex flex-col gap-4 sm:flex-row items-center">
-            {/* GitHub Connection Status */}
-            {!token ? (
+            <div className="flex flex-col gap-4 sm:flex-row items-center">
+              {/* Daily Report Trigger */}
               <button
-                onClick={handleConnectGithub}
-                className="flex items-center gap-2 px-4 py-2 bg-zinc-900 border border-white/10 rounded-xl hover:bg-zinc-800 transition-all text-sm font-medium"
+                onClick={handleTriggerDailyReport}
+                disabled={isTriggeringReport}
+                className="flex items-center gap-2 px-4 py-2 bg-emerald-900/20 border border-emerald-500/20 rounded-xl hover:bg-emerald-900/40 transition-all text-sm font-medium text-emerald-400 disabled:opacity-50"
               >
-                <Github size={18} />
-                Connect GitHub
+                {isTriggeringReport ? <Loader2 size={18} className="animate-spin" /> : <Bell size={18} />}
+                触发每日报告
               </button>
-            ) : (
-              <div className="flex items-center gap-3 px-4 py-2 bg-zinc-900/50 border border-emerald-500/20 rounded-xl">
-                <img 
-                  src={githubUser?.avatar_url} 
-                  alt={githubUser?.login} 
-                  className="w-6 h-6 rounded-full border border-white/10"
-                  referrerPolicy="no-referrer"
-                />
-                <span className="text-xs font-medium text-emerald-500">
-                  {repoStatus === 'success' ? 'Repo Associated' : 'GitHub Connected'}
-                </span>
-              </div>
-            )}
 
-            {/* Search Form */}
-            <form onSubmit={handleSearch} className="flex flex-col gap-3 sm:flex-row w-full sm:w-auto">
-              {syncLog && (
-                <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-zinc-900 border border-zinc-800 text-[10px] text-zinc-500">
-                  <div className={cn(
-                    "w-1.5 h-1.5 rounded-full",
-                    syncLog.status === 'success' ? "bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]" : 
-                    syncLog.status === 'running' ? "bg-amber-500 animate-pulse" : "bg-rose-500"
-                  )} />
-                  <span className="uppercase tracking-wider font-medium">
-                    {syncLog.status === 'success' ? 'Repo Synced' : 
-                     syncLog.status === 'running' ? 'Syncing...' : 'Sync Error'}
-                  </span>
-                  <button 
-                    onClick={(e) => { e.preventDefault(); handleManualSync(); }}
-                    disabled={isTriggering}
-                    className="ml-1 p-1 hover:text-white transition-colors disabled:opacity-50"
-                  >
-                    <Zap size={10} className={isTriggering ? "animate-pulse" : ""} />
-                  </button>
-                </div>
-              )}
+              {/* Search Form */}
+              <form onSubmit={handleSearch} className="flex flex-col gap-3 sm:flex-row w-full sm:w-auto">
               <div className="relative group">
                 <select
                   value={market}
@@ -651,37 +415,6 @@ export default function App() {
                     )}
                   </button>
 
-                  {token && (
-                    <button
-                      onClick={handleCommitStockReportToGithub}
-                      disabled={isGeneratingReport || isCommittingToGithub}
-                      className={cn(
-                        "flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all",
-                        githubStatus === 'success' 
-                          ? "bg-emerald-500/20 text-emerald-400 border border-emerald-500/50"
-                          : githubStatus === 'error'
-                          ? "bg-rose-500/20 text-rose-400 border border-rose-500/50"
-                          : "bg-zinc-900 border border-white/10 hover:bg-zinc-800 text-zinc-300"
-                      )}
-                    >
-                      {isCommittingToGithub ? (
-                        <>
-                          <Loader2 className="animate-spin" size={16} />
-                          提交中...
-                        </>
-                      ) : githubStatus === 'success' ? (
-                        <>
-                          <CheckCircle2 size={16} />
-                          已提交
-                        </>
-                      ) : (
-                        <>
-                          <Github size={16} />
-                          提交至 GitHub
-                        </>
-                      )}
-                    </button>
-                  )}
                 </div>
               </div>
 
@@ -951,37 +684,6 @@ export default function App() {
                       )}
                     </button>
 
-                    {token && (
-                      <button
-                        onClick={handleCommitDailyReportToGithub}
-                        disabled={overviewLoading || isGeneratingReport || isCommittingToGithub || !marketOverview}
-                        className={cn(
-                          "flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all",
-                          githubStatus === 'success' 
-                            ? "bg-emerald-500/20 text-emerald-400 border border-emerald-500/50"
-                            : githubStatus === 'error'
-                            ? "bg-rose-500/20 text-rose-400 border border-rose-500/50"
-                            : "bg-zinc-900 border border-white/10 hover:bg-zinc-800 text-zinc-300"
-                        )}
-                      >
-                        {isCommittingToGithub ? (
-                          <>
-                            <Loader2 className="animate-spin" size={16} />
-                            提交中...
-                          </>
-                        ) : githubStatus === 'success' ? (
-                          <>
-                            <CheckCircle2 size={16} />
-                            已提交
-                          </>
-                        ) : (
-                          <>
-                            <Github size={16} />
-                            提交至 GitHub
-                          </>
-                        )}
-                      </button>
-                    )}
                   </div>
                 </div>
 

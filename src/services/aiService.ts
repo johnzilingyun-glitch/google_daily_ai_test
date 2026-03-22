@@ -43,13 +43,31 @@ function parseJsonResponse<T>(raw: string): T {
   }
 }
 
+async function getHistoryContext(): Promise<any[]> {
+  try {
+    const response = await fetch('/api/admin/history-context');
+    if (response.ok) {
+      return await response.json();
+    }
+  } catch (err) {
+    console.error('Failed to fetch history context:', err);
+  }
+  return [];
+}
+
 export async function getMarketOverview(): Promise<MarketOverview> {
   const ai = new GoogleGenAI({ apiKey: getApiKey() });
+  const history = await getHistoryContext();
+  
   const prompt = `
 Current date and time: ${new Date().toISOString()}
 
 You are a professional China-focused markets analyst.
 Use Google Search grounding to gather the latest available public information.
+
+Previous analysis context (for reference and continuity):
+${JSON.stringify(history.slice(0, 3))}
+
 Return JSON only, with no markdown fences and no explanation outside the JSON object.
 
 Requirements:
@@ -65,7 +83,9 @@ Requirements:
    - **VERIFICATION**: You MUST verify that the URL actually points to the specific article described by the title.
    - **SOURCES**: Prioritize Sina Finance, East Money, and Xueqiu for A-shares; Reuters, Bloomberg, and Yahoo Finance for US-shares.
    - If a specific article URL is not available, do NOT include that news item.
+   - **TEST CASE**: A valid URL should look like 'https://finance.sina.com.cn/stock/s/2024-03-22/doc-imnvvxyz1234567.shtml' not 'https://finance.sina.com.cn/'.
 8. Use real source URLs, never placeholder/example URLs.
+9. Continuity: Based on previous analysis, identify if trends are continuing or reversing.
 
 JSON schema:
 {
@@ -107,11 +127,17 @@ JSON schema:
 
 export async function analyzeStock(symbol: string, market: Market): Promise<StockAnalysis> {
   const ai = new GoogleGenAI({ apiKey: getApiKey() });
+  const history = await getHistoryContext();
+  
   const prompt = `
 Current date and time: ${new Date().toISOString()}
 
 You are a professional equity analyst.
 Analyze stock "${symbol}" in the ${market} market using the latest available public information and Google Search grounding.
+
+Previous analysis context (for reference and continuity):
+${JSON.stringify(history.filter(h => h.stockInfo?.symbol === symbol).slice(0, 3))}
+
 Return JSON only, with no markdown fences and no explanation outside the JSON object.
 
 Requirements:
@@ -133,10 +159,12 @@ Requirements:
    - **VERIFICATION**: You MUST verify that the URL actually points to the specific article described by the title.
    - **SOURCES**: Prioritize Sina Finance, East Money, and Xueqiu for A-shares; Reuters, Bloomberg, and Yahoo Finance for US-shares.
    - If a specific article URL is not available, do NOT include that news item.
+   - **TEST CASE**: A valid URL should look like 'https://finance.sina.com.cn/stock/s/2024-03-22/doc-imnvvxyz1234567.shtml' not 'https://finance.sina.com.cn/'.
 7. Provide summary, technicalAnalysis, fundamentalAnalysis, sentiment, score, recommendation, keyRisks, keyOpportunities.
 8. sentiment must be one of: Bullish, Bearish, Neutral.
 9. recommendation must be one of: Strong Buy, Buy, Hold, Sell, Strong Sell.
 10. All long-form text fields must be in Simplified Chinese.
+11. Continuity: Based on previous analysis of this stock, identify if trends are continuing or reversing.
 
 JSON schema:
 {

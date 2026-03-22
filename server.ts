@@ -3,6 +3,9 @@ import { createServer as createViteServer } from 'vite';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import dotenv from 'dotenv';
+import cron from 'node-cron';
+import { GoogleGenAI } from '@google/genai';
+import fs from 'fs';
 
 dotenv.config();
 
@@ -23,36 +26,72 @@ async function startServer() {
     res.json({ status: 'ok' });
   });
 
-  // GitHub OAuth URL endpoint
-  app.get('/api/auth/github/url', (req, res) => {
-    const clientId = process.env.GITHUB_CLIENT_ID;
-    // Ensure APP_URL doesn't have a trailing slash for consistency
-    const baseUrl = process.env.APP_URL?.replace(/\/$/, '');
-    const redirectUri = `${baseUrl}/auth/github/callback`;
-    
-    if (!clientId) {
-      return res.status(500).json({ error: 'GITHUB_CLIENT_ID is not configured' });
+  // History and Optimization Log
+  const HISTORY_DIR = path.join(process.cwd(), 'data', 'history');
+  const LOG_FILE = path.join(process.cwd(), 'data', 'optimization_log.json');
+
+  // Ensure directories exist
+  if (!fs.existsSync(path.join(process.cwd(), 'data'))) {
+    fs.mkdirSync(path.join(process.cwd(), 'data'));
+  }
+  if (!fs.existsSync(HISTORY_DIR)) {
+    fs.mkdirSync(HISTORY_DIR);
+  }
+  if (!fs.existsSync(LOG_FILE)) {
+    fs.writeFileSync(LOG_FILE, JSON.stringify([], null, 2));
+  }
+
+  function addLogEntry(field: string, oldValue: any, newValue: any, description: string) {
+    try {
+      const logs = JSON.parse(fs.readFileSync(LOG_FILE, 'utf-8'));
+      logs.push({
+        timestamp: new Date().toISOString(),
+        field,
+        oldValue,
+        newValue,
+        description
+      });
+      fs.writeFileSync(LOG_FILE, JSON.stringify(logs, null, 2));
+    } catch (err) {
+      console.error('Failed to add log entry:', err);
     }
+  }
 
-    const params = new URLSearchParams({
-      client_id: clientId,
-      redirect_uri: redirectUri,
-      scope: 'repo read:user user:email',
-      response_type: 'code',
-    });
+  function saveAnalysis(type: 'market' | 'stock', data: any) {
+    try {
+      const filename = `${type}_${new Date().toISOString().replace(/[:.]/g, '-')}.json`;
+      fs.writeFileSync(path.join(HISTORY_DIR, filename), JSON.stringify(data, null, 2));
+    } catch (err) {
+      console.error('Failed to save analysis:', err);
+    }
+  }
 
-    const authUrl = `https://github.com/login/oauth/authorize?${params.toString()}`;
-    res.json({ url: authUrl });
+  app.get('/api/admin/optimization-logs', (req, res) => {
+    try {
+      const logs = JSON.parse(fs.readFileSync(LOG_FILE, 'utf-8'));
+      res.json(logs);
+    } catch (err) {
+      res.status(500).json({ error: 'Failed to read logs' });
+    }
   });
 
-  // Default GitHub Token endpoint
-  app.get('/api/auth/github/token', (req, res) => {
-    const token = process.env.GITHUB_TOKEN;
-    if (token) {
-      res.json({ token });
-    } else {
-      res.status(404).json({ error: 'Default GITHUB_TOKEN not configured' });
+  app.get('/api/admin/history-context', (req, res) => {
+    try {
+      const files = fs.readdirSync(HISTORY_DIR).sort().reverse().slice(0, 10);
+      const history = files.map(f => JSON.parse(fs.readFileSync(path.join(HISTORY_DIR, f), 'utf-8')));
+      res.json(history);
+    } catch (err) {
+      res.status(500).json({ error: 'Failed to read history' });
     }
+  });
+
+  app.post('/api/admin/save-analysis', (req, res) => {
+    const { type, data } = req.body;
+    if (!type || !data) {
+      return res.status(400).json({ error: 'Type and data are required' });
+    }
+    saveAnalysis(type, data);
+    res.json({ success: true });
   });
 
   // Feishu Webhook endpoint
@@ -95,164 +134,111 @@ async function startServer() {
     }
   });
 
-  // GitHub OAuth Callback
-  app.get('/auth/github/callback', async (req, res) => {
-    const { code } = req.query;
-
-    if (!code) {
-      return res.send('No code provided');
-    }
-
-    try {
-      // Exchange code for token
-      const tokenResponse = await fetch('https://github.com/login/oauth/access_token', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-        },
-        body: JSON.stringify({
-          client_id: process.env.GITHUB_CLIENT_ID,
-          client_secret: process.env.GITHUB_CLIENT_SECRET,
-          code,
-        }),
-      });
-
-      const tokenData = await tokenResponse.json();
-
-      if (tokenData.error) {
-        throw new Error(tokenData.error_description || tokenData.error);
-      }
-
-      // In a real app, you'd store this token in a secure session/cookie
-      // For this demo, we'll just send it back to the client via postMessage
-      res.send(`
-        <html>
-          <body>
-            <script>
-              if (window.opener) {
-                window.opener.postMessage({ 
-                  type: 'GITHUB_AUTH_SUCCESS',
-                  token: '${tokenData.access_token}'
-                }, '*');
-                window.close();
-              } else {
-                window.location.href = '/';
-              }
-            </script>
-            <p>Authentication successful. This window should close automatically.</p>
-          </body>
-        </html>
-      `);
-    } catch (error) {
-      console.error('GitHub OAuth Error:', error);
-      res.status(500).send('Authentication failed');
-    }
-  });
-
-  let lastSyncResult: any = { status: 'never', time: null };
-
-  // Sync Log Endpoint for debugging
-  app.get('/api/admin/sync-log', (req, res) => {
-    res.json(lastSyncResult);
-  });
-
   // Env Check Endpoint for debugging
   app.get('/api/admin/env-check', (req, res) => {
     res.json({
       keys: Object.keys(process.env),
-      githubTokenDefined: !!process.env.GITHUB_TOKEN,
       feishuWebhookDefined: !!process.env.FEISHU_WEBHOOK_URL,
       appUrl: process.env.APP_URL,
-      nodeEnv: process.env.NODE_ENV,
-      lastSync: lastSyncResult
+      nodeEnv: process.env.NODE_ENV
     });
   });
 
-  // Manual Sync Endpoint for debugging
-  app.post('/api/admin/sync-now', async (req, res) => {
+  // Manual Trigger for Daily Report
+  app.post('/api/admin/trigger-daily-report', async (req, res) => {
     try {
-      const token = process.env.GITHUB_TOKEN;
-      const repoPath = 'johnzilingyun-glitch/daily_ai_test';
-      
-      if (!token) {
-        return res.status(500).json({ error: 'GITHUB_TOKEN not found' });
-      }
-
-      console.log('Manual sync triggered...');
-      const results: any[] = [];
-      const filesToSync = [
-        'src/App.tsx',
-        'src/services/aiService.ts',
-        'server.ts',
-        'package.json',
-        'vite.config.ts',
-        '.env.example',
-        'index.html',
-        'src/main.tsx',
-        'src/index.css',
-        'src/types.ts',
-        'src/constants.ts',
-        'src/constants.tsx',
-        'metadata.json'
-      ];
-
-      const fs = await import('fs/promises');
-      for (const filePath of filesToSync) {
-        try {
-          const fullPath = path.join(process.cwd(), filePath);
-          let content = '';
-          try {
-            content = await fs.readFile(fullPath, 'utf-8');
-          } catch (e) {
-            results.push({ file: filePath, status: 'skipped', reason: 'File not found' });
-            continue;
-          }
-          
-          const getFileResponse = await fetch(`https://api.github.com/repos/${repoPath}/contents/${filePath}`, {
-            headers: { 
-              'Authorization': `Bearer ${token}`,
-              'User-Agent': 'AI-Studio-Build',
-              'Accept': 'application/vnd.github.v3+json'
-            },
-          });
-          
-          let sha: string | undefined;
-          if (getFileResponse.ok) {
-            const fileData: any = await getFileResponse.json();
-            sha = fileData.sha;
-          }
-
-          const putResponse = await fetch(`https://api.github.com/repos/${repoPath}/contents/${filePath}`, {
-            method: 'PUT',
-            headers: {
-              'Authorization': `Bearer ${token}`,
-              'Content-Type': 'application/json',
-              'User-Agent': 'AI-Studio-Build',
-              'Accept': 'application/vnd.github.v3+json'
-            },
-            body: JSON.stringify({
-              message: `Auto-sync ${filePath} from AI Studio Build`,
-              content: Buffer.from(content).toString('base64'),
-              sha,
-            }),
-          });
-
-          if (putResponse.ok) {
-            results.push({ file: filePath, status: 'success' });
-          } else {
-            const error = await putResponse.json();
-            results.push({ file: filePath, status: 'error', error });
-          }
-        } catch (err) {
-          results.push({ file: filePath, status: 'error', error: String(err) });
-        }
-      }
-      res.json({ success: true, results });
-    } catch (globalError) {
-      console.error('Global Sync Error:', globalError);
-      res.status(500).json({ error: String(globalError) });
+      const result = await generateAndSendDailyReport();
+      res.json({ success: true, result });
+    } catch (error) {
+      console.error('Manual Report Trigger Error:', error);
+      res.status(500).json({ error: String(error) });
     }
+  });
+
+  async function generateAndSendDailyReport() {
+    const apiKey = process.env.GEMINI_API_KEY;
+    const webhookUrl = process.env.FEISHU_WEBHOOK_URL;
+
+    if (!apiKey || !webhookUrl) {
+      const error = 'GEMINI_API_KEY or FEISHU_WEBHOOK_URL not configured';
+      console.error(error);
+      return { error };
+    }
+
+    console.log('Generating daily market report for Feishu...');
+    const ai = new GoogleGenAI({ apiKey });
+    const prompt = `
+      Current date and time: ${new Date().toISOString()}
+      
+      You are a professional China-focused markets analyst.
+      Use Google Search grounding to gather the latest available public information about the market situation from the previous day or the weekend.
+      
+      Requirements:
+      1. Summarize the A-share market tone (previous day or weekend news).
+      2. Include key indices performance (SSE, SZSE, ChiNext, CSI 300, HSI).
+      3. List 3-5 major financial news items.
+      4. Provide a prediction for today's market opening and trend.
+      5. Recommend 3 stocks or sectors to watch today with brief reasons.
+      6. Format the output in Markdown, suitable for a Feishu message.
+      7. Language: Simplified Chinese.
+      
+      Structure:
+      # 每日早间市场内参 (${new Date().toLocaleDateString('zh-CN')})
+      
+      ## 1. 大盘回顾与总结
+      ...
+      
+      ## 2. 核心财经要闻
+      ...
+      
+      ## 3. 今日预测与操作建议
+      ...
+      
+      ## 4. 今日关注个股/板块
+      ...
+    `.trim();
+
+    try {
+      const response = await ai.models.generateContent({
+        model: 'gemini-3-flash-preview',
+        contents: prompt,
+        config: {
+          tools: [{ googleSearch: {} }],
+        },
+      });
+
+      const reportContent = response.text;
+      if (!reportContent) throw new Error('Gemini returned empty report');
+
+      console.log('Sending report to Feishu...');
+      const feishuResponse = await fetch(webhookUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          msg_type: 'text',
+          content: { text: reportContent },
+        }),
+      });
+
+      const feishuData: any = await feishuResponse.json();
+      if (feishuData.code !== 0) {
+        throw new Error(`Feishu error: ${feishuData.msg}`);
+      }
+
+      console.log('Daily report sent successfully.');
+      return { success: true, time: new Date().toISOString() };
+    } catch (err) {
+      console.error('Failed to generate/send daily report:', err);
+      throw err;
+    }
+  }
+
+  // Schedule: 9:00 AM Monday to Friday
+  cron.schedule('0 9 * * 1-5', () => {
+    console.log('Running scheduled daily market report task...');
+    void generateAndSendDailyReport();
+  }, {
+    timezone: "Asia/Shanghai"
   });
 
   // Vite middleware for development
@@ -273,123 +259,7 @@ async function startServer() {
   app.listen(PORT, '0.0.0.0', () => {
     console.log(`Server running on http://localhost:${PORT}`);
     
-    // Automatic Background Sync to GitHub on startup
-    const syncToGithub = async () => {
-      const token = process.env.GITHUB_TOKEN;
-      const repoPath = 'johnzilingyun-glitch/daily_ai_test';
-      
-      if (!token) {
-        console.warn('GITHUB_TOKEN not found in environment, skipping background sync.');
-        lastSyncResult = { status: 'error', error: 'GITHUB_TOKEN not found', time: new Date().toISOString() };
-        return;
-      }
-
-      console.log(`Starting background sync to GitHub repo: ${repoPath}...`);
-      lastSyncResult = { status: 'running', time: new Date().toISOString() };
-      
-      const filesToSync = [
-        'src/App.tsx',
-        'src/services/aiService.ts',
-        'server.ts',
-        'package.json',
-        'vite.config.ts',
-        '.env.example',
-        'index.html',
-        'src/main.tsx',
-        'src/index.css',
-        'src/types.ts',
-        'src/constants.ts',
-        'src/constants.tsx',
-        'metadata.json'
-      ];
-
-      const fs = await import('fs/promises');
-      let successCount = 0;
-      let failCount = 0;
-      const details: any[] = [];
-
-      for (const filePath of filesToSync) {
-        try {
-          const fullPath = path.join(process.cwd(), filePath);
-          let content = '';
-          try {
-            content = await fs.readFile(fullPath, 'utf-8');
-          } catch (e) {
-            console.log(`Skipping ${filePath}: file not found locally.`);
-            details.push({ file: filePath, status: 'skipped', reason: 'File not found' });
-            continue;
-          }
-          
-          // 1. Get current file SHA if it exists
-          const getFileResponse = await fetch(`https://api.github.com/repos/${repoPath}/contents/${filePath}`, {
-            headers: { 
-              'Authorization': `Bearer ${token}`,
-              'User-Agent': 'AI-Studio-Build',
-              'Accept': 'application/vnd.github.v3+json'
-            },
-          });
-          
-          let sha: string | undefined;
-          if (getFileResponse.ok) {
-            const fileData: any = await getFileResponse.json();
-            sha = fileData.sha;
-            
-            // Optimization: Check if content is actually different
-            const remoteContent = Buffer.from(fileData.content, 'base64').toString('utf-8');
-            if (remoteContent === content) {
-              console.log(`File ${filePath} is already up to date.`);
-              successCount++;
-              details.push({ file: filePath, status: 'up-to-date' });
-              continue;
-            }
-          }
-
-          // 2. Push content to GitHub
-          const putResponse = await fetch(`https://api.github.com/repos/${repoPath}/contents/${filePath}`, {
-            method: 'PUT',
-            headers: {
-              'Authorization': `Bearer ${token}`,
-              'Content-Type': 'application/json',
-              'User-Agent': 'AI-Studio-Build',
-              'Accept': 'application/vnd.github.v3+json'
-            },
-            body: JSON.stringify({
-              message: `Auto-sync ${filePath} from AI Studio Build`,
-              content: Buffer.from(content).toString('base64'),
-              sha,
-            }),
-          });
-
-          if (putResponse.ok) {
-            console.log(`Successfully synced ${filePath}`);
-            successCount++;
-            details.push({ file: filePath, status: 'synced' });
-          } else {
-            const error = await putResponse.json();
-            console.error(`Failed to sync ${filePath}:`, JSON.stringify(error));
-            failCount++;
-            details.push({ file: filePath, status: 'error', error });
-          }
-        } catch (err) {
-          console.error(`Error syncing ${filePath}:`, err);
-          failCount++;
-          details.push({ file: filePath, status: 'error', error: String(err) });
-        }
-      }
-      console.log(`Background sync completed. Success: ${successCount}, Failed: ${failCount}`);
-      lastSyncResult = { 
-        status: failCount === 0 ? 'success' : 'partial_success', 
-        successCount, 
-        failCount, 
-        details,
-        time: new Date().toISOString() 
-      };
-    };
-
-    // Run sync after a short delay to ensure server is fully ready
-    setTimeout(() => {
-      void syncToGithub();
-    }, 5000);
+    addLogEntry('server', 'startup', 'active', 'Server started and background tasks initialized');
   });
 }
 
