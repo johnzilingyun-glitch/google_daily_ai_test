@@ -1,5 +1,5 @@
 import { GoogleGenAI } from "@google/genai";
-import { Market, MarketOverview, StockAnalysis } from "../types";
+import { Market, MarketOverview, StockAnalysis, AgentMessage, AgentRole } from "../types";
 
 const GEMINI_MODEL = "gemini-3-flash-preview";
 
@@ -14,7 +14,7 @@ function getApiKey(): string {
   return apiKey;
 }
 
-function extractJsonBlock(raw: string): string {
+export function extractJsonBlock(raw: string): string {
   const trimmed = raw.trim();
   if (trimmed.startsWith("{") || trimmed.startsWith("[")) {
     return trimmed;
@@ -31,7 +31,7 @@ function extractJsonBlock(raw: string): string {
   throw new Error("Gemini returned a non-JSON response.");
 }
 
-function parseJsonResponse<T>(raw: string): T {
+export function parseJsonResponse<T>(raw: string): T {
   try {
     return JSON.parse(extractJsonBlock(raw)) as T;
   } catch (error) {
@@ -55,6 +55,30 @@ async function getHistoryContext(): Promise<any[]> {
   return [];
 }
 
+async function saveAnalysisToHistory(type: 'market' | 'stock', data: any) {
+  try {
+    await fetch('/api/admin/save-analysis', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ type, data })
+    });
+  } catch (err) {
+    console.error('Failed to save analysis to history:', err);
+  }
+}
+
+async function logOptimization(field: string, oldValue: any, newValue: any, description: string) {
+  try {
+    await fetch('/api/admin/log', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ field, oldValue, newValue, description })
+    });
+  } catch (err) {
+    console.error('Failed to log optimization:', err);
+  }
+}
+
 export async function getMarketOverview(): Promise<MarketOverview> {
   const ai = new GoogleGenAI({ apiKey: getApiKey() });
   const history = await getHistoryContext();
@@ -74,10 +98,13 @@ Requirements:
 1. Prioritize today's A-share market tone in the summary.
 2. Include exactly 5 indices: SSE Composite, Shenzhen Component, ChiNext Index, CSI 300, and Hang Seng Index.
 3. For each index provide: name, symbol, price, change, changePercent.
-4. Include exactly 5 major financial news items from the latest market day.
-5. Each news item must have title, source, time, url, and summary.
-6. All user-facing text fields must be in Simplified Chinese.
-7. **NEWS ACCURACY & ACCESSIBILITY (CRITICAL)**: 
+4. **SECTOR ANALYSIS (NEW)**: Analyze current hot sectors (板块) and provide a conclusion for each.
+5. **COMMODITY ANALYSIS (NEW)**: Analyze major commodity trends (e.g., Gold, Oil, Copper) and provide expected analysis.
+6. **RECOMMENDATIONS**: Provide recommended stocks or sectors based on the above analysis.
+7. Include exactly 5 major financial news items from the latest market day.
+8. Each news item must have title, source, time, url, and summary.
+9. All user-facing text fields must be in Simplified Chinese.
+10. **NEWS ACCURACY & ACCESSIBILITY (CRITICAL)**: 
    - Each "url" MUST be the exact, direct, and publicly accessible link to the SPECIFIC article.
    - **STRICTLY PROHIBITED**: Do NOT use homepages (e.g., finance.sina.com.cn), search result pages, or login-required/paywalled content.
    - **VERIFICATION**: You MUST verify that the URL actually points to the specific article described by the title.
@@ -109,6 +136,27 @@ JSON schema:
       "summary": "string"
     }
   ],
+  "sectorAnalysis": [
+    {
+      "name": "string",
+      "trend": "string",
+      "conclusion": "string"
+    }
+  ],
+  "commodityAnalysis": [
+    {
+      "name": "string",
+      "trend": "string",
+      "expectation": "string"
+    }
+  ],
+  "recommendations": [
+    {
+      "type": "Stock | Sector",
+      "name": "string",
+      "reason": "string"
+    }
+  ],
   "marketSummary": "string"
 }
 `.trim();
@@ -124,7 +172,13 @@ JSON schema:
 
   const text = response.text;
   if (!text) throw new Error("Gemini did not return any text.");
-  return parseJsonResponse<MarketOverview>(text);
+  const result = parseJsonResponse<MarketOverview>(text);
+  
+  // Auto-save to history
+  void saveAnalysisToHistory('market', result);
+  void logOptimization('market_overview', 'fetch', result.marketSummary.slice(0, 50), 'Fetched latest market overview');
+  
+  return result;
 }
 
 export async function analyzeStock(symbol: string, market: Market): Promise<StockAnalysis> {
@@ -145,17 +199,20 @@ Return JSON only, with no markdown fences and no explanation outside the JSON ob
 Requirements:
 1. Identify the actual company that matches this symbol in the specified market.
 2. Provide stockInfo with symbol, name, price, change, changePercent, market, currency, lastUpdated.
-3. **CRITICAL DATA ACCURACY**: 
+3. **FUNDAMENTAL DATA (NEW)**: Provide specific fundamental data (e.g., PE, PB, ROE, EPS, Revenue Growth).
+4. **VALUATION LEVEL (NEW)**: Provide current "water level" (水位) - valuation percentile compared to historical data.
+5. **HISTORICAL CONTEXT (NEW)**: Include historical price ranges and major historical events affecting the stock.
+6. **CRITICAL DATA ACCURACY**: 
    - You MUST search for the most recent trading data for this stock. 
    - If the market is currently open, provide the latest real-time price. 
    - If the market is closed, provide the closing price of the most recent trading session.
    - The "change" and "changePercent" MUST be calculated relative to the PREVIOUS trading day's closing price. 
    - Double-check these values against multiple reliable financial news sources (e.g., Sina Finance, East Money, Xueqiu for A-shares).
-4. **DATA TYPES**: 
+7. **DATA TYPES**: 
    - "price", "change", and "changePercent" MUST be numbers (not strings). 
    - "changePercent" should be the percentage value (e.g., 5.2 for 5.2%), not a decimal (e.g., 0.052).
-5. Include 3 to 5 recent and relevant news items for this exact company.
-6. **NEWS ACCURACY & ACCESSIBILITY (CRITICAL)**: 
+8. Include 3 to 5 recent and relevant news items for this exact company.
+9. **NEWS ACCURACY & ACCESSIBILITY (CRITICAL)**: 
    - Each "url" MUST be the exact, direct, and publicly accessible link to the SPECIFIC article.
    - **STRICTLY PROHIBITED**: Do NOT use homepages (e.g., finance.sina.com.cn), search result pages, or login-required/paywalled content.
    - **VERIFICATION**: You MUST verify that the URL actually points to the specific article described by the title.
@@ -164,11 +221,16 @@ Requirements:
    - If a specific article URL is not available, do NOT include that news item.
    - **LATEST DATA**: Use Google Search to ensure all news and data are from the most recent trading session or the current day.
    - **TEST CASE**: A valid URL should look like 'https://finance.sina.com.cn/stock/s/2024-03-22/doc-imnvvxyz1234567.shtml' not 'https://finance.sina.com.cn/'.
-7. Provide summary, technicalAnalysis, fundamentalAnalysis, sentiment, score, recommendation, keyRisks, keyOpportunities.
-8. sentiment must be one of: Bullish, Bearish, Neutral.
-9. recommendation must be one of: Strong Buy, Buy, Hold, Sell, Strong Sell.
-10. All long-form text fields must be in Simplified Chinese.
-11. Continuity: Based on previous analysis of this stock, identify if trends are continuing or reversing.
+10. Provide summary, technicalAnalysis, fundamentalAnalysis, sentiment, score, recommendation, keyRisks, keyOpportunities, and a detailed tradingPlan.
+11. **MARGIN OF SAFETY (NEW)**: Incorporate "Margin of Safety" (安全边际) theory into the fundamental analysis and trading plan.
+12. **TRADING PLAN LOGIC (NEW)**: 
+    - If the recommendation is NOT "Buy" or "Strong Buy", the tradingPlan should state "Not Recommended" (不推荐) for entryPrice, targetPrice, and stopLoss. 
+    - Do NOT provide specific price levels if not recommended.
+13. tradingPlan must include: entryPrice, targetPrice, stopLoss, and strategy (all as strings).
+14. sentiment must be one of: Bullish, Bearish, Neutral.
+15. recommendation must be one of: Strong Buy, Buy, Hold, Sell, Strong Sell.
+16. All long-form text fields must be in Simplified Chinese.
+17. Continuity: Based on previous analysis of this stock, identify if trends are continuing or reversing.
 
 JSON schema:
 {
@@ -181,6 +243,23 @@ JSON schema:
     "market": "A-Share | HK-Share | US-Share",
     "currency": "string",
     "lastUpdated": "string"
+  },
+  "fundamentals": {
+    "pe": "string",
+    "pb": "string",
+    "roe": "string",
+    "eps": "string",
+    "revenueGrowth": "string",
+    "valuationPercentile": "string"
+  },
+  "historicalData": {
+    "yearHigh": "string",
+    "yearLow": "string",
+    "majorEvents": ["string"]
+  },
+  "valuationAnalysis": {
+    "comparison": "string",
+    "marginOfSafetySummary": "string"
   },
   "news": [
     {
@@ -198,7 +277,13 @@ JSON schema:
   "score": 0,
   "recommendation": "Strong Buy | Buy | Hold | Sell | Strong Sell",
   "keyRisks": ["string"],
-  "keyOpportunities": ["string"]
+  "keyOpportunities": ["string"],
+  "tradingPlan": {
+    "entryPrice": "string",
+    "targetPrice": "string",
+    "stopLoss": "string",
+    "strategy": "string"
+  }
 }
 `.trim();
 
@@ -213,7 +298,17 @@ JSON schema:
 
   const text = response.text;
   if (!text) throw new Error("Gemini did not return any text.");
-  return parseJsonResponse<StockAnalysis>(text);
+  const result = parseJsonResponse<StockAnalysis>(text);
+  
+  if (!result.stockInfo) {
+    throw new Error("AI 分析结果中缺少股票基本信息 (stockInfo)。请重试。");
+  }
+  
+  // Auto-save to history
+  void saveAnalysisToHistory('stock', result);
+  void logOptimization('stock_analysis', symbol, result.recommendation, `Analyzed stock ${symbol}`);
+  
+  return result;
 }
 
 export async function sendChatMessage(
@@ -304,6 +399,118 @@ export async function getChatReport(stockName: string, chatHistory: { role: 'use
   return text;
 }
 
+export async function runAgentDiscussion(
+  analysis: StockAnalysis,
+  onMessage: (msg: AgentMessage) => void
+): Promise<string> {
+  if (!analysis || !analysis.stockInfo) {
+    throw new Error("Invalid analysis data: missing stockInfo.");
+  }
+
+  const ai = new GoogleGenAI({ apiKey: getApiKey() });
+  const roles: AgentRole[] = [
+    "Technical Analyst",
+    "Fundamental Analyst",
+    "Sentiment Analyst",
+    "Risk Manager",
+    "Moderator"
+  ];
+
+  let discussionHistory = `
+    Initial Analysis:
+    ${JSON.stringify(analysis)}
+  `;
+
+  for (const role of roles) {
+    const prompt = `
+      You are a ${role} in a multi-agent stock analysis team.
+      The team is discussing the stock: ${analysis.stockInfo?.name || 'Unknown'} (${analysis.stockInfo?.symbol || 'Unknown'}).
+      
+      Current Discussion History:
+      ${discussionHistory}
+      
+      Your Task:
+      - Provide your professional opinion based on your role.
+      - **FORMATTING (CRITICAL)**: Use Markdown for your response. Use bold text for key terms, bullet points for lists, and clear headings if needed. Avoid large blocks of text.
+      - **DATA-DRIVEN**: Use specific fundamental data (PE, PB, ROE, etc.) and technical indicators.
+      - **MARGIN OF SAFETY**: Incorporate "Margin of Safety" (安全边际) theory into your evaluation.
+      - **VALUATION LEVEL**: Discuss the current "water level" (水位) and historical context.
+      - React to previous points made by other analysts if relevant.
+      - Be critical, objective, and data-driven.
+      - Keep your response concise (max 300 words).
+      - Language: Simplified Chinese.
+      
+      If you are the "Moderator", your task is to summarize the entire discussion and provide a final "Final Conclusion" with a clear recommendation.
+      **MODERATOR SPECIAL INSTRUCTION**: 
+      - If the consensus is not positive, explicitly state "Not Recommended" (不推荐) in the trading plan section.
+      - Ensure the conclusion reflects the "Margin of Safety" principles discussed.
+    `.trim();
+
+    const response = await ai.models.generateContent({
+      model: GEMINI_MODEL,
+      contents: prompt,
+    });
+
+    const content = response.text || "No response.";
+    const msg: AgentMessage = {
+      role,
+      content,
+      timestamp: new Date().toISOString()
+    };
+    
+    onMessage(msg);
+    discussionHistory += `\n\n[${role}]: ${content}`;
+  }
+
+  // Log the discussion completion
+  void logOptimization('agent_discussion', analysis.stockInfo.symbol, 'completed', `Multi-agent discussion completed for ${analysis.stockInfo.symbol}`);
+
+  return discussionHistory;
+}
+
+export async function getDiscussionReport(analysis: StockAnalysis, discussion: AgentMessage[]): Promise<string> {
+  const ai = new GoogleGenAI({ apiKey: getApiKey() });
+  const prompt = `
+    基于以下个股分析数据和 AI 专家组联席会议的研讨记录，生成一份完整的个股深度研究报告。
+    
+    报告应包含：
+    1. 🚀 **股票基本信息**：名称、代码、当前价格、涨跌幅。
+    2. 📊 **核心财务指标**：PE, PB, ROE, EPS 等关键数据及当前估值水位。
+    3. 🧠 **AI 专家组研讨摘要**：
+       - 技术面、基本面（结合安全边际）、情绪面、风险管理各方的核心观点。
+       - 研讨中的主要分歧或共识点。
+    4. 🎯 **首席策略师最终结论**：明确的操作建议（买入/持有/卖出）。
+    5. 🛡️ **安全边际评估**：基于安全边际理论的深度评价。
+    6. 📈 **交易计划**：
+       - 如果推荐：建议买入价、目标价、止损价。
+       - 如果不推荐：明确标注“不推荐”，不提供具体价格。
+    7. ⚠️ **核心机会与风险提示**。
+    
+    分析数据：
+    ${JSON.stringify(analysis)}
+    
+    研讨记录：
+    ${discussion.map(m => `[${m.role}]: ${m.content}`).join('\n\n')}
+    
+    请使用 Markdown 格式，语气专业、客观且深度。
+    使用丰富的 Emoji 增加可读性。
+    针对飞书界面进行优化：使用清晰的分级标题，重要的数字加粗显示。
+    回答语言：简体中文。
+  `.trim();
+
+  const response = await ai.models.generateContent({
+    model: GEMINI_MODEL,
+    contents: prompt,
+    config: {
+      tools: [{ googleSearch: {} }],
+    },
+  });
+
+  const text = response.text;
+  if (!text) throw new Error("Gemini did not return any text.");
+  return text;
+}
+
 export async function getDailyReport(marketOverview: MarketOverview): Promise<string> {
   const ai = new GoogleGenAI({ apiKey: getApiKey() });
   const prompt = `
@@ -328,22 +535,28 @@ export async function getDailyReport(marketOverview: MarketOverview): Promise<st
     5. Provide a prediction for today's market opening and trend.
     6. Recommend 3 stocks or sectors to watch today with brief reasons.
     7. Format the output in Markdown, suitable for a Feishu message.
-    8. Language: Simplified Chinese.
+    8. Use rich Emojis and clear section dividers (---) to make it look like a professional newsletter.
+    9. Language: Simplified Chinese.
     
     Structure:
-    # 每日早间市场内参 (${new Date().toLocaleDateString('zh-CN')})
+    # 📅 每日早间市场内参 (${new Date().toLocaleDateString('zh-CN')})
     
-    ## 1. 大盘回顾与总结
+    ---
+    
+    ## 🏦 1. 大盘回顾与总结
     ...
     
-    ## 2. 核心财经要闻
+    ## 📰 2. 核心财经要闻
     ...
     
-    ## 3. 今日预测与操作建议
+    ## 🔮 3. 今日预测与操作建议
     ...
     
-    ## 4. 今日关注个股/板块
+    ## 🌟 4. 今日关注个股/板块
     ...
+    
+    ---
+    *本报告由 TradingAgents AI 专家组自动生成，仅供参考。*
   `.trim();
 
   const response = await ai.models.generateContent({

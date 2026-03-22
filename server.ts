@@ -93,6 +93,15 @@ async function startServer() {
     res.json({ success: true });
   });
 
+  app.post('/api/admin/log', (req, res) => {
+    const { field, oldValue, newValue, description } = req.body;
+    if (!field || !description) {
+      return res.status(400).json({ error: 'Field and description are required' });
+    }
+    addLogEntry(field, oldValue, newValue, description);
+    res.json({ success: true });
+  });
+
   // Feishu Webhook endpoint
   app.post('/api/feishu/send-report', async (req, res) => {
     const { content } = req.body;
