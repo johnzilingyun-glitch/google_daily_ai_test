@@ -78,9 +78,38 @@ export default function App() {
   const [isChatting, setIsChatting] = useState(false);
   const [chatHistory, setChatHistory] = useState<{ role: 'user' | 'ai'; content: string }[]>([]);
   const [isTriggering, setIsTriggering] = useState(false);
+  const [syncLog, setSyncLog] = useState<any>(null);
 
   const REPO_URL = 'https://github.com/johnzilingyun-glitch/daily_ai_test.git';
   const REPO_PATH = 'johnzilingyun-glitch/daily_ai_test';
+
+  // Fetch Sync Log
+  const fetchSyncLog = useCallback(async () => {
+    try {
+      const response = await fetch('/api/admin/sync-log');
+      if (response.ok) {
+        const data = await response.json();
+        setSyncLog(data);
+      }
+    } catch (err) {
+      console.error('Failed to fetch sync log:', err);
+    }
+  }, []);
+
+  // Manual Sync Trigger
+  const handleManualSync = async () => {
+    setIsTriggering(true);
+    try {
+      const response = await fetch('/api/admin/sync-now', { method: 'POST' });
+      if (response.ok) {
+        await fetchSyncLog();
+      }
+    } catch (err) {
+      console.error('Manual sync failed:', err);
+    } finally {
+      setIsTriggering(false);
+    }
+  };
 
   // GitHub OAuth listener
   useEffect(() => {
@@ -113,9 +142,16 @@ export default function App() {
     };
 
     void fetchDefaultToken();
+    void fetchSyncLog();
 
-    return () => window.removeEventListener('message', handleMessage);
-  }, []);
+    // Poll sync log every 30 seconds
+    const interval = setInterval(fetchSyncLog, 30000);
+
+    return () => {
+      window.removeEventListener('message', handleMessage);
+      clearInterval(interval);
+    };
+  }, [fetchSyncLog]);
 
   // Fetch Market Overview
   useEffect(() => {
@@ -498,6 +534,26 @@ export default function App() {
 
             {/* Search Form */}
             <form onSubmit={handleSearch} className="flex flex-col gap-3 sm:flex-row w-full sm:w-auto">
+              {syncLog && (
+                <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-zinc-900 border border-zinc-800 text-[10px] text-zinc-500">
+                  <div className={cn(
+                    "w-1.5 h-1.5 rounded-full",
+                    syncLog.status === 'success' ? "bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]" : 
+                    syncLog.status === 'running' ? "bg-amber-500 animate-pulse" : "bg-rose-500"
+                  )} />
+                  <span className="uppercase tracking-wider font-medium">
+                    {syncLog.status === 'success' ? 'Repo Synced' : 
+                     syncLog.status === 'running' ? 'Syncing...' : 'Sync Error'}
+                  </span>
+                  <button 
+                    onClick={(e) => { e.preventDefault(); handleManualSync(); }}
+                    disabled={isTriggering}
+                    className="ml-1 p-1 hover:text-white transition-colors disabled:opacity-50"
+                  >
+                    <Zap size={10} className={isTriggering ? "animate-pulse" : ""} />
+                  </button>
+                </div>
+              )}
               <div className="relative group">
                 <select
                   value={market}
