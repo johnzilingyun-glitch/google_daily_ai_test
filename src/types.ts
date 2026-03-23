@@ -95,6 +95,7 @@ export interface StockAnalysis {
     targetPrice: string;
     stopLoss: string;
     strategy: string;
+    strategyRisks: string;
   };
 }
 
@@ -111,6 +112,7 @@ export type AgentRole =
   | "Moderator";
 
 export interface AgentMessage {
+  id?: string;
   role: AgentRole;
   content: string;
   timestamp: string;

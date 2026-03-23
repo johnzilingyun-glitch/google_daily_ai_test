@@ -33,7 +33,19 @@ export function extractJsonBlock(raw: string): string {
 
 export function parseJsonResponse<T>(raw: string): T {
   try {
-    return JSON.parse(extractJsonBlock(raw)) as T;
+    const parsed = JSON.parse(extractJsonBlock(raw));
+    // If the AI wrapped the result in a property like "analysis" or "data"
+    if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {
+      if (parsed.analysis) return parsed.analysis as T;
+      if (parsed.data) return parsed.data as T;
+      if (parsed.stockInfo && parsed.stockInfo.symbol) return parsed as T;
+      // If it's a single property object where the property name is the symbol or something else
+      const keys = Object.keys(parsed);
+      if (keys.length === 1 && parsed[keys[0]] && typeof parsed[keys[0]] === 'object' && parsed[keys[0]].stockInfo) {
+        return parsed[keys[0]] as T;
+      }
+    }
+    return parsed as T;
   } catch (error) {
     throw new Error(
       error instanceof Error
@@ -195,9 +207,15 @@ Previous analysis context (for reference and continuity):
 ${JSON.stringify(history.filter(h => h.stockInfo?.symbol === symbol).slice(0, 3))}
 
 Return JSON only, with no markdown fences and no explanation outside the JSON object.
+**IMPORTANT**: The JSON MUST have "stockInfo" at the root level. Do NOT wrap the entire response in another object like "analysis" or "data".
 
 Requirements:
-1. Identify the actual company that matches this symbol in the specified market.
+1. **STRICT MARKET ADHERENCE (CRITICAL)**: 
+   - You MUST identify the company that matches this symbol SPECIFICALLY in the ${market} market. 
+   - **A-SHARE PINYIN SUPPORT**: For the A-Share market, the search term "${symbol}" might be a 6-digit code (e.g., 600989) OR a pinyin abbreviation (e.g., "BFNY" for 宝丰能源). You MUST resolve these abbreviations to the correct A-share stock.
+   - If the symbol exists in multiple markets (e.g., "AAPL" in US vs "AAPL" as a placeholder elsewhere), you MUST prioritize the ${market} version.
+   - The "market" field in the returned JSON MUST be exactly "${market}".
+   - If the symbol is NOT found in the ${market} market, return an error in the "summary" field and provide empty data for other fields, but DO NOT return a stock from a different market.
 2. Provide stockInfo with symbol, name, price, change, changePercent, market, currency, lastUpdated.
 3. **FUNDAMENTAL DATA (NEW)**: Provide specific fundamental data (e.g., PE, PB, ROE, EPS, Revenue Growth).
 4. **VALUATION LEVEL (NEW)**: Provide current "water level" (水位) - valuation percentile compared to historical data.
@@ -226,7 +244,8 @@ Requirements:
 12. **TRADING PLAN LOGIC (NEW)**: 
     - If the recommendation is NOT "Buy" or "Strong Buy", the tradingPlan should state "Not Recommended" (不推荐) for entryPrice, targetPrice, and stopLoss. 
     - Do NOT provide specific price levels if not recommended.
-13. tradingPlan must include: entryPrice, targetPrice, stopLoss, and strategy (all as strings).
+    - **STRATEGY RISKS (NEW)**: Clearly state the specific risks associated with the recommended entry/target/stop-loss levels (e.g., "if stop-loss is too tight, it may be triggered by normal volatility"). This is separate from general keyRisks.
+13. tradingPlan must include: entryPrice, targetPrice, stopLoss, strategy, and strategyRisks (all as strings).
 14. sentiment must be one of: Bullish, Bearish, Neutral.
 15. recommendation must be one of: Strong Buy, Buy, Hold, Sell, Strong Sell.
 16. All long-form text fields must be in Simplified Chinese.
@@ -240,7 +259,7 @@ JSON schema:
     "price": 0,
     "change": 0,
     "changePercent": 0,
-    "market": "A-Share | HK-Share | US-Share",
+    "market": "${market}",
     "currency": "string",
     "lastUpdated": "string"
   },
@@ -282,7 +301,8 @@ JSON schema:
     "entryPrice": "string",
     "targetPrice": "string",
     "stopLoss": "string",
-    "strategy": "string"
+    "strategy": "string",
+    "strategyRisks": "string"
   }
 }
 `.trim();
@@ -302,6 +322,11 @@ JSON schema:
   
   if (!result.stockInfo) {
     throw new Error("AI 分析结果中缺少股票基本信息 (stockInfo)。请重试。");
+  }
+
+  // Force market to requested market if it's missing or slightly different
+  if (result.stockInfo.market !== market) {
+    result.stockInfo.market = market;
   }
   
   // Auto-save to history
@@ -408,12 +433,16 @@ export async function runAgentDiscussion(
   }
 
   const ai = new GoogleGenAI({ apiKey: getApiKey() });
-  const roles: AgentRole[] = [
-    "Technical Analyst",
-    "Fundamental Analyst",
-    "Sentiment Analyst",
-    "Risk Manager",
-    "Moderator"
+  
+  // Define the multi-round discussion flow
+  const discussionFlow: { role: AgentRole; task: string }[] = [
+    { role: "Technical Analyst", task: "Provide initial technical analysis based on charts and indicators." },
+    { role: "Fundamental Analyst", task: "Provide initial fundamental analysis based on financial data and valuation." },
+    { role: "Sentiment Analyst", task: "Provide initial sentiment analysis based on news and market mood." },
+    { role: "Risk Manager", task: "Critique the previous analyses. Identify potential pitfalls, hidden risks, and why the bull/bear case might be wrong." },
+    { role: "Technical Analyst", task: "Respond to the Risk Manager's critique. Refine your technical outlook based on the risks identified." },
+    { role: "Fundamental Analyst", task: "Respond to the Risk Manager's critique. Refine your fundamental outlook and 'Margin of Safety' calculation." },
+    { role: "Moderator", task: "Summarize the entire multi-round discussion. Provide a final, rational judgment and a clear conclusion with a definitive recommendation." }
   ];
 
   let discussionHistory = `
@@ -421,29 +450,28 @@ export async function runAgentDiscussion(
     ${JSON.stringify(analysis)}
   `;
 
-  for (const role of roles) {
+  for (const step of discussionFlow) {
     const prompt = `
-      You are a ${role} in a multi-agent stock analysis team.
-      The team is discussing the stock: ${analysis.stockInfo?.name || 'Unknown'} (${analysis.stockInfo?.symbol || 'Unknown'}).
+      You are a ${step.role} in a multi-agent stock analysis team.
+      The team is conducting a DEEP, MULTI-ROUND discussion on the stock: ${analysis.stockInfo?.name || 'Unknown'} (${analysis.stockInfo?.symbol || 'Unknown'}).
       
       Current Discussion History:
       ${discussionHistory}
       
-      Your Task:
-      - Provide your professional opinion based on your role.
-      - **FORMATTING (CRITICAL)**: Use Markdown for your response. Use bold text for key terms, bullet points for lists, and clear headings if needed. Avoid large blocks of text.
-      - **DATA-DRIVEN**: Use specific fundamental data (PE, PB, ROE, etc.) and technical indicators.
-      - **MARGIN OF SAFETY**: Incorporate "Margin of Safety" (安全边际) theory into your evaluation.
-      - **VALUATION LEVEL**: Discuss the current "water level" (水位) and historical context.
-      - React to previous points made by other analysts if relevant.
-      - Be critical, objective, and data-driven.
-      - Keep your response concise (max 300 words).
+      Your Specific Task in this round:
+      - ${step.task}
+      - **RATIONAL JUDGMENT (CRITICAL)**: Be objective. Do not just follow the trend. If you see a reason to be cautious, state it clearly.
+      - **FORMATTING**: Use Markdown. Use bold text for key terms, bullet points for lists.
+      - **DATA-DRIVEN**: Use specific data points (PE, PB, ROE, RSI, MACD, etc.).
+      - **MARGIN OF SAFETY**: Always consider the "Margin of Safety" (安全边际).
+      - React specifically to points made by other analysts in previous rounds.
+      - Keep your response concise but insightful (max 300 words).
       - Language: Simplified Chinese.
       
-      If you are the "Moderator", your task is to summarize the entire discussion and provide a final "Final Conclusion" with a clear recommendation.
-      **MODERATOR SPECIAL INSTRUCTION**: 
-      - If the consensus is not positive, explicitly state "Not Recommended" (不推荐) in the trading plan section.
-      - Ensure the conclusion reflects the "Margin of Safety" principles discussed.
+      If you are the "Moderator":
+      - Synthesize all conflicting views.
+      - Provide a final "Final Conclusion" (最终结论).
+      - If the consensus is not positive or risks are too high, explicitly state "Not Recommended" (不推荐) in the trading plan section.
     `.trim();
 
     const response = await ai.models.generateContent({
@@ -453,13 +481,14 @@ export async function runAgentDiscussion(
 
     const content = response.text || "No response.";
     const msg: AgentMessage = {
-      role,
+      id: `${step.role}-${Date.now()}-${Math.random().toString(36).slice(2, 9)}`,
+      role: step.role,
       content,
       timestamp: new Date().toISOString()
     };
     
     onMessage(msg);
-    discussionHistory += `\n\n[${role}]: ${content}`;
+    discussionHistory += `\n\n[${step.role}]: ${content}`;
   }
 
   // Log the discussion completion

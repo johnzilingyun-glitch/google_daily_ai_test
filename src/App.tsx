@@ -33,6 +33,8 @@ import { twMerge } from 'tailwind-merge';
 import { Market, MarketOverview, StockAnalysis, AgentMessage } from './types';
 import { analyzeStock, getMarketOverview, sendChatMessage, getDailyReport, getStockReport, getChatReport, runAgentDiscussion, getDiscussionReport } from './services/aiService';
 import { DiscussionPanel } from './components/DiscussionPanel';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 
 function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -396,9 +398,12 @@ export default function App() {
     if (!symbol) return;
 
     setLoading(true);
+    setAnalysis(null);
     setAnalysisError(null);
     setChatError(null);
     setChatHistory([]);
+    setDiscussionMessages([]);
+    setShowDiscussion(false);
 
     try {
       const result = await analyzeStock(symbol, market);
@@ -649,12 +654,14 @@ export default function App() {
                         </div>
                       ) : (
                         <div className="space-y-6">
-                          {discussionMessages.filter(m => m.role === "Moderator").map((m, i) => (
-                            <div key={i} className="relative">
+                          {discussionMessages.filter(m => m.role === "Moderator").map((m) => (
+                            <div key={m.id || m.timestamp} className="relative">
                               <div className="absolute -left-2 top-0 bottom-0 w-1 bg-emerald-500/50 rounded-full" />
-                              <p className="text-base leading-relaxed text-emerald-50 italic font-medium pl-4">
-                                {m.content}
-                              </p>
+                              <div className="prose prose-invert prose-sm max-w-none pl-4">
+                                <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                                  {m.content}
+                                </ReactMarkdown>
+                              </div>
                             </div>
                           ))}
                           {discussionMessages.length > 0 && isDiscussing && (
@@ -889,6 +896,17 @@ export default function App() {
                         <p className="text-[10px] font-bold uppercase tracking-widest text-zinc-500 mb-2">操作策略</p>
                         <p className="text-sm leading-relaxed text-zinc-300 italic">{analysis.tradingPlan.strategy}</p>
                       </div>
+                      {analysis.tradingPlan.strategyRisks && (
+                        <div className="p-4 rounded-2xl bg-rose-500/10 border border-rose-500/20">
+                          <p className="text-[10px] font-bold uppercase tracking-widest text-rose-400 mb-2 flex items-center gap-2">
+                            <ShieldAlert size={12} />
+                            交易策略风险提示
+                          </p>
+                          <p className="text-xs text-rose-200/80 leading-relaxed italic">
+                            {analysis.tradingPlan.strategyRisks}
+                          </p>
+                        </div>
+                      )}
                     </div>
                   )}
 
