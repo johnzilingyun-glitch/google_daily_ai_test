@@ -654,8 +654,8 @@ export default function App() {
                         </div>
                       ) : (
                         <div className="space-y-6">
-                          {discussionMessages.filter(m => m.role === "Moderator").map((m) => (
-                            <div key={m.id || m.timestamp} className="relative">
+                          {discussionMessages.filter(m => m.role === "Moderator").map((m, i) => (
+                            <div key={m.id || `mod-${i}`} className="relative">
                               <div className="absolute -left-2 top-0 bottom-0 w-1 bg-emerald-500/50 rounded-full" />
                               <div className="prose prose-invert prose-sm max-w-none pl-4">
                                 <ReactMarkdown remarkPlugins={[remarkGfm]}>
@@ -1124,7 +1124,31 @@ export default function App() {
                   </div>
                 </div>
 
-                {overviewError && <ErrorNotice title="市场概览加载失败" message={overviewError} />}
+                {overviewError && (
+                  <div className="flex flex-col gap-4">
+                    <ErrorNotice title="市场概览加载失败" message={overviewError} />
+                    <button 
+                      onClick={() => {
+                        setOverviewLoading(true);
+                        setOverviewError(null);
+                        // The useEffect will handle the fetch if we trigger a state change or just call it directly
+                        getMarketOverview()
+                          .then(data => {
+                            setMarketOverview(data);
+                            setOverviewError(null);
+                          })
+                          .catch(err => {
+                            setOverviewError(err instanceof Error ? err.message : 'Failed to load market overview.');
+                          })
+                          .finally(() => setOverviewLoading(false));
+                      }}
+                      className="flex w-fit items-center gap-2 rounded-xl bg-zinc-800 px-4 py-2 text-sm font-bold text-zinc-200 hover:bg-zinc-700 transition-colors"
+                    >
+                      <Zap size={16} className="text-amber-400" />
+                      重试加载市场概览
+                    </button>
+                  </div>
+                )}
 
                 <div className="grid grid-cols-2 gap-4 md:grid-cols-5">
                   {overviewLoading ? Array(5).fill(0).map((_, i) => (

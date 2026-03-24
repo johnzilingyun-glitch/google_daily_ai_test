@@ -66,9 +66,9 @@ export const DiscussionPanel: React.FC<DiscussionPanelProps> = ({ messages, isDi
         className="flex-1 overflow-y-auto p-6 space-y-8 scrollbar-hide"
       >
         <AnimatePresence initial={false}>
-          {messages.map((msg) => (
+          {messages.map((msg, i) => (
             <motion.div
-              key={msg.id || `${msg.role}-${msg.timestamp}`}
+              key={msg.id || `msg-${i}`}
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ type: "spring", stiffness: 100, damping: 15 }}

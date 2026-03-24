@@ -10,6 +10,8 @@ export interface StockInfo {
   currency: string;
   lastUpdated: string;
   previousClose: number;
+  dailyHigh?: number;
+  dailyLow?: number;
 }
 
 export interface NewsItem {

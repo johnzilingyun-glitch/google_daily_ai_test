@@ -5,6 +5,9 @@ import { fileURLToPath } from 'url';
 import dotenv from 'dotenv';
 import { GoogleGenAI } from '@google/genai';
 import fs from 'fs';
+import YahooFinance from 'yahoo-finance2';
+
+const yahooFinance = new YahooFinance();
 
 dotenv.config();
 
@@ -150,6 +153,93 @@ async function startServer() {
       appUrl: process.env.APP_URL,
       nodeEnv: process.env.NODE_ENV
     });
+  });
+
+  // Real-time Stock Data Endpoint
+  app.get('/api/stock/realtime', async (req, res) => {
+    const { symbol, market, symbols } = req.query;
+    
+    // Handle multiple symbols if provided
+    if (symbols && typeof symbols === 'string') {
+      try {
+        const symbolList = symbols.split(',');
+        const results = await yahooFinance.quote(symbolList);
+        return res.json(results);
+      } catch (error) {
+        console.error('Yahoo Finance Batch Error:', error);
+        return res.status(500).json({ error: 'Failed to fetch batch stock data' });
+      }
+    }
+
+    if (!symbol || !market) {
+      return res.status(400).json({ error: 'Symbol and market are required' });
+    }
+
+    try {
+      let yfSymbol = symbol as string;
+      
+      // If the symbol already contains a dot or starts with a caret, assume it's already a valid Yahoo symbol
+      if (!yfSymbol.includes('.') && !yfSymbol.startsWith('^')) {
+        if (market === 'A-Share') {
+          if (yfSymbol.startsWith('6')) {
+            yfSymbol = `${yfSymbol}.SS`;
+          } else {
+            yfSymbol = `${yfSymbol}.SZ`;
+          }
+        } else if (market === 'HK-Share') {
+          yfSymbol = `${yfSymbol.padStart(5, '0')}.HK`;
+        }
+      }
+
+      console.log(`Fetching quote for: ${yfSymbol} (Original: ${symbol}, Market: ${market})`);
+      let result: any;
+      try {
+        result = await yahooFinance.quote(yfSymbol);
+      } catch (e) {
+        console.log(`Quote failed for ${yfSymbol}, trying search...`);
+      }
+      
+      if (!result) {
+        // Try searching if quote fails (might be a name or abbreviation)
+        const searchResults = await yahooFinance.search(symbol as string);
+        if (searchResults.quotes && searchResults.quotes.length > 0) {
+          // Find the best match for the requested market
+          const bestMatch = searchResults.quotes.find((q: any) => {
+            if (market === 'A-Share') return q.symbol.endsWith('.SS') || q.symbol.endsWith('.SZ');
+            if (market === 'HK-Share') return q.symbol.endsWith('.HK');
+            return true;
+          }) || searchResults.quotes[0];
+          
+          console.log(`Search found best match: ${bestMatch.symbol} for ${symbol}`);
+          result = await yahooFinance.quote(bestMatch.symbol);
+        }
+      }
+      
+      if (!result) {
+        throw new Error(`No data returned from Yahoo Finance for ${yfSymbol} or search ${symbol}`);
+      }
+
+      res.json({
+        symbol,
+        name: result.shortName || result.longName || symbol,
+        price: result.regularMarketPrice,
+        change: result.regularMarketChange,
+        changePercent: result.regularMarketChangePercent,
+        previousClose: result.regularMarketPreviousClose,
+        open: result.regularMarketOpen,
+        dayHigh: result.regularMarketDayHigh,
+        dayLow: result.regularMarketDayLow,
+        volume: result.regularMarketVolume,
+        marketCap: result.marketCap,
+        pe: result.trailingPE,
+        currency: result.currency,
+        lastUpdated: new Date().toISOString(),
+        source: 'Yahoo Finance API'
+      });
+    } catch (error) {
+      console.error('Yahoo Finance Error:', error);
+      res.status(500).json({ error: 'Failed to fetch real-time stock data' });
+    }
   });
 
   // Vite middleware for development
