@@ -9,6 +9,7 @@ export interface StockInfo {
   market: Market;
   currency: string;
   lastUpdated: string;
+  previousClose: number;
 }
 
 export interface NewsItem {
@@ -25,6 +26,7 @@ export interface IndexInfo {
   price: number;
   change: number;
   changePercent: number;
+  previousClose: number;
 }
 
 export interface SectorAnalysis {

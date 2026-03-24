@@ -110,6 +110,15 @@ Requirements:
 1. Prioritize today's A-share market tone in the summary.
 2. Include exactly 5 indices: SSE Composite, Shenzhen Component, ChiNext Index, CSI 300, and Hang Seng Index.
 3. For each index provide: name, symbol, price, change, changePercent.
+**SEARCH STRATEGY (CRITICAL)**: 
+   - You MUST use Google Search to find the *real-time* or *latest* values for these indices. 
+   - Search query should be something like: "SSE Composite index today ${new Date().toLocaleDateString()}", "上证指数 实时行情 ${new Date().toLocaleDateString()}", or "CSI 300 real-time".
+   - **DO NOT** rely on your internal knowledge for the current values. 
+   - **VERIFY THE DATE**: Ensure the data you find is from TODAY (${new Date().toLocaleDateString()}) or the most recent trading session. Check the date explicitly in the search results.
+**CRITICAL DATA ACCURACY**: 
+   - You MUST search for the most recent trading data for these indices. 
+   - Cross-reference at least TWO authoritative sources (e.g., Sina Finance, East Money, Xueqiu) to verify the current price and change.
+   - Ensure the data is from TODAY'S trading session if the market is open. Note the source and time (with timezone, e.g. UTC+8) in the summary. Briefly mention the calculation used for indices.
 4. **SECTOR ANALYSIS (NEW)**: Analyze current hot sectors (板块) and provide a conclusion for each.
 5. **COMMODITY ANALYSIS (NEW)**: Analyze major commodity trends (e.g., Gold, Oil, Copper) and provide expected analysis.
 6. **RECOMMENDATIONS**: Provide recommended stocks or sectors based on the above analysis.
@@ -136,7 +145,8 @@ JSON schema:
       "symbol": "string",
       "price": 0,
       "change": 0,
-      "changePercent": 0
+      "changePercent": 0,
+      "previousClose": 0
     }
   ],
   "topNews": [
@@ -212,25 +222,32 @@ Return JSON only, with no markdown fences and no explanation outside the JSON ob
 Requirements:
 1. **STRICT MARKET ADHERENCE (CRITICAL)**: 
    - You MUST identify the company that matches this symbol SPECIFICALLY in the ${market} market. 
+   - **NAME-TO-CODE RESOLUTION**: If "${symbol}" is a company name (e.g., "佳力图"), you MUST first find its official stock code (e.g., 603912.SH) before searching for price data. Ensure the suffix (.SH, .SZ, .HK) matches the ${market}.
    - **A-SHARE PINYIN SUPPORT**: For the A-Share market, the search term "${symbol}" might be a 6-digit code (e.g., 600989) OR a pinyin abbreviation (e.g., "BFNY" for 宝丰能源). You MUST resolve these abbreviations to the correct A-share stock.
    - If the symbol exists in multiple markets (e.g., "AAPL" in US vs "AAPL" as a placeholder elsewhere), you MUST prioritize the ${market} version.
    - The "market" field in the returned JSON MUST be exactly "${market}".
    - If the symbol is NOT found in the ${market} market, return an error in the "summary" field and provide empty data for other fields, but DO NOT return a stock from a different market.
-2. Provide stockInfo with symbol, name, price, change, changePercent, market, currency, lastUpdated.
-3. **FUNDAMENTAL DATA (NEW)**: Provide specific fundamental data (e.g., PE, PB, ROE, EPS, Revenue Growth).
-4. **VALUATION LEVEL (NEW)**: Provide current "water level" (水位) - valuation percentile compared to historical data.
-5. **HISTORICAL CONTEXT (NEW)**: Include historical price ranges and major historical events affecting the stock.
-6. **CRITICAL DATA ACCURACY**: 
+2. Provide stockInfo with symbol, name, price, change, changePercent, market, currency, lastUpdated, and **previousClose** (the closing price of the previous trading day).
+3. **SEARCH STRATEGY (CRITICAL)**: 
+   - You MUST use Google Search to find the *real-time* or *latest* price for "${symbol}" in the ${market} market. 
+   - Search query should be something like: "${symbol} ${market} stock price today ${new Date().toLocaleDateString()}", "603912.SH 股价 ${new Date().toLocaleDateString()}", or "佳力图 实时行情".
+   - **DO NOT** rely on your internal knowledge for the current price. 
+   - **VERIFY THE DATE**: Ensure the data you find is from TODAY (${new Date().toLocaleDateString()}) or the most recent trading session. Check the date explicitly in the search results.
+4. **FUNDAMENTAL DATA (NEW)**: Provide specific fundamental data (e.g., PE, PB, ROE, EPS, Revenue Growth).
+5. **VALUATION LEVEL (NEW)**: Provide current "water level" (水位) - valuation percentile compared to historical data.
+6. **HISTORICAL CONTEXT (NEW)**: Include historical price ranges and major historical events affecting the stock.
+7. **CRITICAL DATA ACCURACY (HIGH PRIORITY)**: 
    - You MUST search for the most recent trading data for this stock. 
-   - If the market is currently open, provide the latest real-time price. 
-   - If the market is closed, provide the closing price of the most recent trading session.
-   - The "change" and "changePercent" MUST be calculated relative to the PREVIOUS trading day's closing price. 
-   - Double-check these values against multiple reliable financial news sources (e.g., Sina Finance, East Money, Xueqiu for A-shares).
-7. **DATA TYPES**: 
-   - "price", "change", and "changePercent" MUST be numbers (not strings). 
-   - "changePercent" should be the percentage value (e.g., 5.2 for 5.2%), not a decimal (e.g., 0.052).
-8. Include 3 to 5 recent and relevant news items for this exact company.
-9. **NEWS ACCURACY & ACCESSIBILITY (CRITICAL)**: 
+   - **CROSS-REFERENCE**: You MUST cross-reference at least TWO authoritative financial sources (e.g., Sina Finance, East Money, Xueqiu, or Yahoo Finance) to verify the current price, previous close, change, and changePercent.
+   - **MARKET STATUS**: Determine if the market is currently open or closed. If open, provide real-time data. If closed, provide the latest closing data.
+   - **CALCULATION CHECK**: The "change" MUST be (Current Price - Previous Close). The "changePercent" MUST be (Change / Previous Close * 100). Do NOT rely on pre-calculated values if they seem inconsistent. You MUST find the official "Previous Close" (昨收) from a reliable source to perform this calculation.
+   - **TIMESTAMP**: The "lastUpdated" field MUST reflect the actual time of the data point (e.g., "2026-03-24 10:25 CST" or "2026-03-24 10:25 UTC+8").
+   - If there is a discrepancy between sources, prioritize the most recent one and note the source, time, and the "Previous Close" value used for calculation in the "summary". Also briefly mention the calculation steps (e.g., "Price 10.5 - Prev Close 10.6 = -0.1 (-0.94%)").
+8. **DATA TYPES**: 
+   - "price", "change", and "changePercent" MUST be numbers (not strings). Ensure the "price" matches the "currency" (e.g., CNY for A-shares). Double-check the sign of "change" and "changePercent" (negative for price drops).
+   - "changePercent" should be the percentage value (e.g., 5.2 for 5.2% increase, -0.7 for 0.7% decrease), not a decimal (e.g., 0.052).
+9. Include 3 to 5 recent and relevant news items for this exact company.
+10. **NEWS ACCURACY & ACCESSIBILITY (CRITICAL)**: 
    - Each "url" MUST be the exact, direct, and publicly accessible link to the SPECIFIC article.
    - **STRICTLY PROHIBITED**: Do NOT use homepages (e.g., finance.sina.com.cn), search result pages, or login-required/paywalled content.
    - **VERIFICATION**: You MUST verify that the URL actually points to the specific article described by the title.
@@ -239,17 +256,17 @@ Requirements:
    - If a specific article URL is not available, do NOT include that news item.
    - **LATEST DATA**: Use Google Search to ensure all news and data are from the most recent trading session or the current day.
    - **TEST CASE**: A valid URL should look like 'https://finance.sina.com.cn/stock/s/2024-03-22/doc-imnvvxyz1234567.shtml' not 'https://finance.sina.com.cn/'.
-10. Provide summary, technicalAnalysis, fundamentalAnalysis, sentiment, score, recommendation, keyRisks, keyOpportunities, and a detailed tradingPlan.
-11. **MARGIN OF SAFETY (NEW)**: Incorporate "Margin of Safety" (安全边际) theory into the fundamental analysis and trading plan.
-12. **TRADING PLAN LOGIC (NEW)**: 
+11. Provide summary, technicalAnalysis, fundamentalAnalysis, sentiment, score, recommendation, keyRisks, keyOpportunities, and a detailed tradingPlan.
+12. **MARGIN OF SAFETY (NEW)**: Incorporate "Margin of Safety" (安全边际) theory into the fundamental analysis and trading plan.
+13. **TRADING PLAN LOGIC (NEW)**: 
     - If the recommendation is NOT "Buy" or "Strong Buy", the tradingPlan should state "Not Recommended" (不推荐) for entryPrice, targetPrice, and stopLoss. 
     - Do NOT provide specific price levels if not recommended.
     - **STRATEGY RISKS (NEW)**: Clearly state the specific risks associated with the recommended entry/target/stop-loss levels (e.g., "if stop-loss is too tight, it may be triggered by normal volatility"). This is separate from general keyRisks.
-13. tradingPlan must include: entryPrice, targetPrice, stopLoss, strategy, and strategyRisks (all as strings).
-14. sentiment must be one of: Bullish, Bearish, Neutral.
-15. recommendation must be one of: Strong Buy, Buy, Hold, Sell, Strong Sell.
-16. All long-form text fields must be in Simplified Chinese.
-17. Continuity: Based on previous analysis of this stock, identify if trends are continuing or reversing.
+14. tradingPlan must include: entryPrice, targetPrice, stopLoss, strategy, and strategyRisks (all as strings).
+15. sentiment must be one of: Bullish, Bearish, Neutral.
+16. recommendation must be one of: Strong Buy, Buy, Hold, Sell, Strong Sell.
+17. All long-form text fields must be in Simplified Chinese.
+18. Continuity: Based on previous analysis of this stock, identify if trends are continuing or reversing.
 
 JSON schema:
 {
@@ -261,7 +278,8 @@ JSON schema:
     "changePercent": 0,
     "market": "${market}",
     "currency": "string",
-    "lastUpdated": "string"
+    "lastUpdated": "string",
+    "previousClose": 0
   },
   "fundamentals": {
     "pe": "string",
