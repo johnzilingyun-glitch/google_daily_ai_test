@@ -158,12 +158,18 @@ async function startServer() {
   // Real-time Stock Data Endpoint
   app.get('/api/stock/realtime', async (req, res) => {
     const { symbol, market, symbols } = req.query;
+    console.log(`API Request: /api/stock/realtime - symbol: ${symbol}, market: ${market}, symbols: ${symbols}`);
     
     // Handle multiple symbols if provided
-    if (symbols && typeof symbols === 'string') {
+    if (symbols && typeof symbols === 'string' && symbols.trim()) {
       try {
-        const symbolList = symbols.split(',');
-        const results = await yahooFinance.quote(symbolList);
+        const symbolList = symbols.split(',').map(s => s.trim()).filter(s => !!s);
+        if (symbolList.length === 0) {
+          return res.status(400).json({ error: 'No valid symbols provided' });
+        }
+        console.log(`Fetching batch quotes for: ${symbolList.join(', ')}`);
+        const results = await yahooFinance.quote(symbolList as any);
+        console.log(`Successfully fetched ${results.length} quotes.`);
         return res.json(results);
       } catch (error) {
         console.error('Yahoo Finance Batch Error:', error);
@@ -171,12 +177,12 @@ async function startServer() {
       }
     }
 
-    if (!symbol || !market) {
+    if (!symbol || typeof symbol !== 'string' || !symbol.trim() || !market) {
       return res.status(400).json({ error: 'Symbol and market are required' });
     }
 
     try {
-      let yfSymbol = symbol as string;
+      let yfSymbol = (symbol as string).trim();
       
       // If the symbol already contains a dot or starts with a caret, assume it's already a valid Yahoo symbol
       if (!yfSymbol.includes('.') && !yfSymbol.startsWith('^')) {
@@ -211,7 +217,7 @@ async function startServer() {
           }) || searchResults.quotes[0];
           
           console.log(`Search found best match: ${bestMatch.symbol} for ${symbol}`);
-          result = await yahooFinance.quote(bestMatch.symbol);
+          result = await yahooFinance.quote(bestMatch.symbol as any);
         }
       }
       

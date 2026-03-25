@@ -25,14 +25,20 @@ import {
   Coins,
   Star,
   History,
-  ShieldCheck
+  ShieldCheck,
+  Download,
+  AlertTriangle,
+  Cpu,
+  Award,
+  Target
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
-import { Market, MarketOverview, StockAnalysis, AgentMessage } from './types';
-import { analyzeStock, getMarketOverview, sendChatMessage, getDailyReport, getStockReport, getChatReport, runAgentDiscussion, getDiscussionReport } from './services/aiService';
+import { Market, MarketOverview, StockAnalysis, AgentMessage, GeminiConfig, Scenario, Catalyst, SensitivityFactor, ExpectationGap, AnalystWeight, CalculationResult, TradingPlanVersion } from './types';
+import { analyzeStock, getMarketOverview, sendChatMessage, getDailyReport, getStockReport, getChatReport, runAgentDiscussion, continueAgentDiscussion, getDiscussionReport } from './services/aiService';
 import { DiscussionPanel } from './components/DiscussionPanel';
+import { SettingsModal } from './components/SettingsModal';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 
@@ -88,8 +94,87 @@ export default function App() {
 
   // Agent Discussion State
   const [discussionMessages, setDiscussionMessages] = useState<AgentMessage[]>([]);
+  const [scenarios, setScenarios] = useState<Scenario[]>([]);
+  const [valuationMatrix, setValuationMatrix] = useState<Scenario[]>([]);
+  const [sensitivityFactors, setSensitivityFactors] = useState<SensitivityFactor[]>([]);
+  const [expectationGap, setExpectationGap] = useState<ExpectationGap | null>(null);
+  const [analystWeights, setAnalystWeights] = useState<AnalystWeight[]>([]);
+  const [calculations, setCalculations] = useState<CalculationResult[]>([]);
+  const [controversialPoints, setControversialPoints] = useState<string[]>([]);
+  const [tradingPlanHistory, setTradingPlanHistory] = useState<TradingPlanVersion[]>([]);
+  const [dataFreshnessStatus, setDataFreshnessStatus] = useState<"Fresh" | "Stale" | "Warning" | null>(null);
+  const [stressTestLogic, setStressTestLogic] = useState<string>('');
+  const [catalystList, setCatalystList] = useState<Catalyst[]>([]);
+  const [backtestResult, setBacktestResult] = useState<any>(null);
   const [isDiscussing, setIsDiscussing] = useState(false);
+  const [isReviewing, setIsReviewing] = useState(false);
   const [showDiscussion, setShowDiscussion] = useState(false);
+
+  // Gemini Configuration State
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const [geminiConfig, setGeminiConfig] = useState<GeminiConfig>(() => {
+    try {
+      const saved = localStorage.getItem('gemini_config');
+      return saved ? JSON.parse(saved) : { model: 'gemini-3-flash-preview' };
+    } catch (e) {
+      console.error('Failed to parse gemini_config from localStorage:', e);
+      return { model: 'gemini-3-flash-preview' };
+    }
+  });
+
+  useEffect(() => {
+    localStorage.setItem('gemini_config', JSON.stringify(geminiConfig));
+  }, [geminiConfig]);
+
+  const handleDiscussionQuestion = async (question: string) => {
+    if (!analysis || isReviewing || isDiscussing) return;
+    
+    setIsReviewing(true);
+    const userMsg: AgentMessage = {
+      id: `user-q-${Date.now()}`,
+      role: "Moderator", 
+      content: question,
+      timestamp: new Date().toISOString(),
+      type: "user_question"
+    };
+    
+    setDiscussionMessages(prev => [...prev, userMsg]);
+    
+    try {
+      const discussion = await continueAgentDiscussion(
+        question,
+        analysis,
+        discussionMessages,
+        geminiConfig
+      );
+      setDiscussionMessages(prev => [...prev, ...discussion.messages]);
+      
+      if (discussion.scenarios) setScenarios(discussion.scenarios);
+      if (discussion.sensitivityFactors) setSensitivityFactors(discussion.sensitivityFactors);
+      if (discussion.controversialPoints) setControversialPoints(discussion.controversialPoints);
+      if (discussion.tradingPlanHistory) {
+        setTradingPlanHistory(prev => [...prev, ...discussion.tradingPlanHistory!]);
+      }
+      
+      // Update main analysis with updated conclusion/trading plan
+      setAnalysis(prev => prev ? {
+        ...prev,
+        finalConclusion: discussion.finalConclusion || prev.finalConclusion,
+        tradingPlan: discussion.tradingPlan || prev.tradingPlan
+      } : null);
+    } catch (err) {
+      console.error('Reviewer failed:', err);
+      setDiscussionMessages(prev => [...prev, {
+        id: `error-${Date.now()}`,
+        role: "Professional Reviewer",
+        content: `⚠️ 评审专家暂时无法回答：${err instanceof Error ? err.message : '未知错误'}`,
+        timestamp: new Date().toISOString(),
+        type: "review"
+      }]);
+    } finally {
+      setIsReviewing(false);
+    }
+  };
 
   // Manual Daily Report Trigger
   const handleTriggerDailyReport = async () => {
@@ -101,7 +186,7 @@ export default function App() {
     setIsTriggeringReport(true);
     try {
       // Generate report in frontend
-      const report = await getDailyReport(marketOverview);
+      const report = await getDailyReport(marketOverview, geminiConfig);
       
       // Send to Feishu via backend
       const response = await fetch('/api/feishu/send-report', {
@@ -136,22 +221,40 @@ export default function App() {
   };
 
   // Fetch Market Overview
-  useEffect(() => {
-    async function fetchOverview() {
-      try {
-        const data = await getMarketOverview();
-        setMarketOverview(data);
-        setOverviewError(null);
-      } catch (err) {
-        console.error('Failed to fetch market overview:', err);
-        const message = err instanceof Error ? err.message : 'Failed to load market overview.';
-        setOverviewError(message);
-      } finally {
-        setOverviewLoading(false);
+  const fetchMarketOverview = useCallback(async () => {
+    setOverviewLoading(true);
+    setOverviewError(null);
+    try {
+      const data = await getMarketOverview(geminiConfig);
+      setMarketOverview(data);
+    } catch (err) {
+      console.error('Failed to fetch market overview:', err);
+      let message = '无法加载市场概览。';
+      
+      if (err instanceof Error) {
+        const errStr = err.message;
+        if (errStr.includes('429') || errStr.includes('quota') || errStr.includes('RESOURCE_EXHAUSTED')) {
+          message = 'API 额度已耗尽 (429)。请检查您的 Google AI Studio 计费设置或稍后再试。';
+        } else {
+          try {
+            // Try to parse if it's a JSON error string
+            const parsed = JSON.parse(errStr);
+            if (parsed.error?.message) {
+              message = `API 错误: ${parsed.error.message}`;
+            }
+          } catch (e) {
+            message = errStr;
+          }
+        }
       }
+      setOverviewError(message);
+    } finally {
+      setOverviewLoading(false);
     }
+  }, [geminiConfig]);
 
-    void fetchOverview();
+  useEffect(() => {
+    void fetchMarketOverview();
     void fetchAdminData();
     
     // Log the UI and Report optimization
@@ -193,7 +296,7 @@ export default function App() {
     setIsGeneratingReport(true);
     setReportStatus('idle');
     try {
-      const report = await getDailyReport(marketOverview);
+      const report = await getDailyReport(marketOverview, geminiConfig);
       setDailyReport(report);
       setIsGeneratingReport(false);
       
@@ -315,7 +418,7 @@ export default function App() {
     setReportStatus('idle');
     
     try {
-      const report = await getDiscussionReport(analysis, discussionMessages);
+      const report = await getDiscussionReport(analysis, discussionMessages, scenarios, backtestResult, geminiConfig);
       
       const response = await fetch('/api/feishu/send-report', {
         method: 'POST',
@@ -362,9 +465,9 @@ export default function App() {
     try {
       let report = '';
       if (item.stockInfo) {
-        report = await getStockReport(item);
+        report = await getStockReport(item, geminiConfig);
       } else {
-        report = await getDailyReport(item);
+        report = await getDailyReport(item, geminiConfig);
       }
 
       const response = await fetch('/api/feishu/send-report', {
@@ -395,7 +498,7 @@ export default function App() {
 
   const handleSearch = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!symbol) return;
+    if (!symbol || !symbol.trim()) return;
 
     setLoading(true);
     setAnalysis(null);
@@ -406,46 +509,83 @@ export default function App() {
     setShowDiscussion(false);
 
     try {
-      const result = await analyzeStock(symbol, market);
+      const result = await analyzeStock(symbol, market, geminiConfig);
       setAnalysis(result);
 
       // Trigger Agent Discussion
       setShowDiscussion(true);
       setIsDiscussing(true);
       setDiscussionMessages([]);
+      setScenarios([]);
+      setValuationMatrix([]);
+      setStressTestLogic('');
+      setCatalystList([]);
+      setBacktestResult(null);
       
-      let finalMessages: AgentMessage[] = [];
       try {
-        await runAgentDiscussion(result, (msg) => {
-          setDiscussionMessages(prev => {
-            const next = [...prev, msg];
-            finalMessages = next;
-            return next;
-          });
+        const discussion = await runAgentDiscussion(result, (msg) => {
+          setDiscussionMessages(prev => [...prev, msg]);
+        }, geminiConfig);
+        
+        setScenarios(discussion.scenarios || []);
+        setValuationMatrix(discussion.valuationMatrix || []);
+        setSensitivityFactors(discussion.sensitivityFactors || []);
+        setExpectationGap(discussion.expectationGap || null);
+        setAnalystWeights(discussion.analystWeights || []);
+        setCalculations(discussion.calculations || []);
+        setControversialPoints(discussion.controversialPoints || []);
+        setTradingPlanHistory(discussion.tradingPlanHistory || []);
+        setDataFreshnessStatus(discussion.dataFreshnessStatus || null);
+        setStressTestLogic(discussion.stressTestLogic || '');
+        setCatalystList(discussion.catalystList || []);
+        setBacktestResult(discussion.backtestResult || null);
+
+        // Update main analysis with discussion results
+        setAnalysis(prev => prev ? {
+          ...prev,
+          finalConclusion: discussion.finalConclusion,
+          tradingPlan: discussion.tradingPlan || prev.tradingPlan
+        } : null);
+
+        // Save to history with discussion
+        void fetch('/api/admin/save-analysis', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ 
+            type: 'stock', 
+            data: { 
+              ...result, 
+              discussion: discussion.messages,
+              finalConclusion: discussion.finalConclusion,
+              scenarios: discussion.scenarios
+            } 
+          })
         });
       } catch (err) {
         console.error('Agent discussion failed:', err);
       } finally {
         setIsDiscussing(false);
       }
-
-      // Save to history with discussion
-      void fetch('/api/admin/save-analysis', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ 
-          type: 'stock', 
-          data: { 
-            ...result, 
-            discussion: finalMessages,
-            finalConclusion: finalMessages.find(m => m.role === 'Moderator')?.content 
-          } 
-        })
-      });
     } catch (err) {
       console.error(err);
       setAnalysis(null);
-      const message = err instanceof Error ? err.message : '分析股票失败，请稍后重试。';
+      let message = '分析股票失败，请稍后重试。';
+      
+      if (err instanceof Error) {
+        const errStr = err.message;
+        if (errStr.includes('429') || errStr.includes('quota') || errStr.includes('RESOURCE_EXHAUSTED')) {
+          message = 'API 额度已耗尽 (429)。请检查您的 Google AI Studio 计费设置或稍后再试。';
+        } else {
+          try {
+            const parsed = JSON.parse(errStr);
+            if (parsed.error?.message) {
+              message = `API 错误: ${parsed.error.message}`;
+            }
+          } catch (e) {
+            message = errStr;
+          }
+        }
+      }
       setAnalysisError(message);
     } finally {
       setLoading(false);
@@ -464,11 +604,27 @@ export default function App() {
     setIsChatting(true);
 
     try {
-      const reply = await sendChatMessage(userMsg, analysis);
+      const reply = await sendChatMessage(userMsg, analysis, geminiConfig);
       setChatHistory((prev) => [...prev, { role: 'ai', content: reply || '抱歉，我暂时无法回答这个问题。' }]);
     } catch (err) {
       console.error(err);
-      const message = err instanceof Error ? err.message : '对话出错，请稍后重试。';
+      let message = '对话出错，请稍后重试。';
+      
+      if (err instanceof Error) {
+        const errStr = err.message;
+        if (errStr.includes('429') || errStr.includes('quota') || errStr.includes('RESOURCE_EXHAUSTED')) {
+          message = 'API 额度已耗尽 (429)。请检查您的 Google AI Studio 计费设置或稍后再试。';
+        } else {
+          try {
+            const parsed = JSON.parse(errStr);
+            if (parsed.error?.message) {
+              message = `API 错误: ${parsed.error.message}`;
+            }
+          } catch (e) {
+            message = errStr;
+          }
+        }
+      }
       setChatError(message);
     } finally {
       setIsChatting(false);
@@ -508,14 +664,35 @@ export default function App() {
 
             <div className="flex flex-col gap-4 sm:flex-row items-center">
               {/* Daily Report Trigger */}
-              <button
-                onClick={handleTriggerDailyReport}
-                disabled={isTriggeringReport}
-                className="flex items-center gap-2 px-4 py-2 bg-emerald-900/20 border border-emerald-500/20 rounded-xl hover:bg-emerald-900/40 transition-all text-sm font-medium text-emerald-400 disabled:opacity-50"
-              >
-                {isTriggeringReport ? <Loader2 size={18} className="animate-spin" /> : <Bell size={18} />}
-                触发每日报告
-              </button>
+              <div className="flex items-center gap-2">
+                {dailyReport && (
+                  <button
+                    onClick={() => {
+                      const blob = new Blob([dailyReport], { type: 'text/markdown' });
+                      const url = URL.createObjectURL(blob);
+                      const a = document.createElement('a');
+                      a.href = url;
+                      a.download = `Daily_Market_Report_${new Date().toISOString().split('T')[0]}.md`;
+                      document.body.appendChild(a);
+                      a.click();
+                      document.body.removeChild(a);
+                      URL.revokeObjectURL(url);
+                    }}
+                    className="flex items-center gap-2 px-4 py-2 bg-zinc-800 border border-zinc-700 rounded-xl hover:bg-zinc-700 transition-all text-sm font-medium text-zinc-300"
+                    title="下载每日报告"
+                  >
+                    <Download size={18} />
+                  </button>
+                )}
+                <button
+                  onClick={handleTriggerDailyReport}
+                  disabled={isTriggeringReport}
+                  className="flex items-center gap-2 px-4 py-2 bg-emerald-900/20 border border-emerald-500/20 rounded-xl hover:bg-emerald-900/40 transition-all text-sm font-medium text-emerald-400 disabled:opacity-50"
+                >
+                  {isTriggeringReport ? <Loader2 size={18} className="animate-spin" /> : <Bell size={18} />}
+                  触发每日报告
+                </button>
+              </div>
 
               <button
                 onClick={() => {
@@ -593,6 +770,25 @@ export default function App() {
 
                 <div className="flex items-center gap-2">
                   <button
+                    onClick={async () => {
+                      if (!analysis) return;
+                      const report = await getStockReport(analysis);
+                      const blob = new Blob([report], { type: 'text/markdown' });
+                      const url = URL.createObjectURL(blob);
+                      const a = document.createElement('a');
+                      a.href = url;
+                      a.download = `Analysis_${analysis.stockInfo?.symbol}_${new Date().toISOString().split('T')[0]}.md`;
+                      document.body.appendChild(a);
+                      a.click();
+                      document.body.removeChild(a);
+                      URL.revokeObjectURL(url);
+                    }}
+                    className="flex items-center gap-2 px-4 py-2 rounded-xl bg-zinc-900 border border-white/10 hover:bg-zinc-800 text-zinc-300 text-sm font-medium transition-all"
+                  >
+                    <Download size={16} />
+                    下载报告
+                  </button>
+                  <button
                     onClick={handleSendStockReport}
                     disabled={isGeneratingReport || isSendingReport}
                     className={cn(
@@ -636,13 +832,29 @@ export default function App() {
                     <DiscussionPanel 
                       messages={discussionMessages} 
                       isDiscussing={isDiscussing} 
+                      isReviewing={isReviewing}
+                      stockSymbol={analysis.stockInfo?.symbol}
+                      onSendMessage={handleDiscussionQuestion}
+                      analystWeights={analystWeights}
                     />
                   </div>
                   <div className="space-y-6">
                     <div className="p-6 rounded-2xl bg-zinc-900/50 border border-zinc-800 h-full">
-                      <h3 className="text-sm font-bold uppercase tracking-widest text-zinc-500 mb-6 flex items-center gap-2">
-                        <Zap size={16} className="text-emerald-500" />
-                        研讨会核心结论
+                      <h3 className="text-sm font-bold uppercase tracking-widest text-zinc-500 mb-6 flex items-center justify-between gap-2">
+                        <div className="flex items-center gap-2">
+                          <Zap size={16} className="text-emerald-500" />
+                          研讨会核心结论与场景分析
+                        </div>
+                        {dataFreshnessStatus && (
+                          <div className={clsx(
+                            "px-2 py-0.5 rounded-full text-[9px] font-black uppercase tracking-widest border",
+                            dataFreshnessStatus === "Fresh" ? "bg-emerald-500/10 text-emerald-500 border-emerald-500/20" :
+                            dataFreshnessStatus === "Warning" ? "bg-amber-500/10 text-amber-500 border-amber-500/20" :
+                            "bg-rose-500/10 text-rose-500 border-rose-500/20"
+                          )}>
+                            {dataFreshnessStatus} Data
+                          </div>
+                        )}
                       </h3>
                       {isDiscussing && discussionMessages.length === 0 ? (
                         <div className="flex flex-col items-center justify-center gap-4 text-zinc-500 py-12">
@@ -654,6 +866,289 @@ export default function App() {
                         </div>
                       ) : (
                         <div className="space-y-6">
+                          {/* Final Conclusion Card */}
+                          {analysis.finalConclusion && (
+                            <div className="p-5 rounded-2xl bg-emerald-500/5 border border-emerald-500/20 relative overflow-hidden group">
+                              <div className="absolute top-0 right-0 p-3 opacity-10 group-hover:opacity-20 transition-opacity">
+                                <Award size={48} className="text-emerald-500" />
+                              </div>
+                              <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-emerald-500 mb-3 flex items-center gap-2">
+                                <Award size={14} />
+                                联席会议最终结论
+                              </h4>
+                              <p className="text-sm text-zinc-200 leading-relaxed font-medium relative z-10">
+                                {analysis.finalConclusion}
+                              </p>
+                            </div>
+                          )}
+
+                          {/* Conflict Logger Section */}
+                          {controversialPoints.length > 0 && (
+                            <div className="p-5 rounded-2xl bg-rose-500/5 border border-rose-500/20">
+                              <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-rose-400 mb-3 flex items-center gap-2">
+                                <AlertTriangle size={14} />
+                                逻辑冲突记录仪 (Conflict Logger)
+                              </h4>
+                              <div className="space-y-2">
+                                {controversialPoints.map((point, idx) => (
+                                  <div key={idx} className="flex items-start gap-2">
+                                    <div className="w-1 h-1 rounded-full bg-rose-500 mt-1.5 shrink-0" />
+                                    <p className="text-[11px] text-zinc-400 leading-relaxed italic">{point}</p>
+                                  </div>
+                                ))}
+                              </div>
+                              <p className="mt-3 text-[9px] text-zinc-600 uppercase font-black tracking-widest">
+                                * 真正的 Alpha 往往隐藏在被否定的“逆向观点”里
+                              </p>
+                            </div>
+                          )}
+
+                          {/* Trading Plan Card */}
+                          {analysis.tradingPlan && (
+                            <div className="p-5 rounded-2xl bg-blue-500/5 border border-blue-500/20">
+                              <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-blue-400 mb-4 flex items-center gap-2">
+                                <Target size={14} />
+                                联席会议执行计划
+                              </h4>
+                              <div className="grid grid-cols-3 gap-4 mb-4">
+                                <div className="space-y-1">
+                                  <p className="text-[9px] text-zinc-500 uppercase font-black tracking-widest">入场位</p>
+                                  <p className="text-xs text-emerald-400 font-black">{analysis.tradingPlan.entryPrice}</p>
+                                </div>
+                                <div className="space-y-1">
+                                  <p className="text-[9px] text-zinc-500 uppercase font-black tracking-widest">目标位</p>
+                                  <p className="text-xs text-blue-400 font-black">{analysis.tradingPlan.targetPrice}</p>
+                                </div>
+                                <div className="space-y-1">
+                                  <p className="text-[9px] text-zinc-500 uppercase font-black tracking-widest">止损位</p>
+                                  <p className="text-xs text-rose-400 font-black">{analysis.tradingPlan.stopLoss}</p>
+                                </div>
+                              </div>
+                              <div className="pt-3 border-t border-zinc-800/50">
+                                <p className="text-[9px] text-zinc-500 uppercase font-black tracking-widest mb-1">核心策略</p>
+                                <p className="text-[11px] text-zinc-300 italic">{analysis.tradingPlan.strategy}</p>
+                              </div>
+
+                              {/* Trading Plan Version History */}
+                              {tradingPlanHistory.length > 0 && (
+                                <div className="mt-4 pt-4 border-t border-zinc-800/50">
+                                  <h5 className="text-[9px] font-black uppercase tracking-widest text-zinc-500 mb-3 flex items-center gap-2">
+                                    <History size={12} />
+                                    交易计划版本控制 (Version Control)
+                                  </h5>
+                                  <div className="space-y-3">
+                                    {tradingPlanHistory.map((v, i) => (
+                                      <div key={i} className="p-3 rounded-xl bg-zinc-950/50 border border-zinc-800/50 text-[10px]">
+                                        <div className="flex items-center justify-between mb-1">
+                                          <span className="font-black text-blue-400 uppercase tracking-widest">{v.version}</span>
+                                          <span className="text-zinc-600 font-mono">{new Date(v.timestamp).toLocaleTimeString()}</span>
+                                        </div>
+                                        <p className="text-zinc-400 mb-2 leading-relaxed">
+                                          <span className="text-zinc-600 font-bold uppercase mr-1">变更原因:</span>
+                                          {v.changeReason}
+                                        </p>
+                                        <div className="grid grid-cols-3 gap-2 py-2 border-t border-zinc-900">
+                                          <div className="flex flex-col">
+                                            <span className="text-[8px] text-zinc-600 uppercase font-black">入场</span>
+                                            <span className="text-emerald-500/80 font-black">{v.plan.entryPrice}</span>
+                                          </div>
+                                          <div className="flex flex-col">
+                                            <span className="text-[8px] text-zinc-600 uppercase font-black">目标</span>
+                                            <span className="text-blue-500/80 font-black">{v.plan.targetPrice}</span>
+                                          </div>
+                                          <div className="flex flex-col">
+                                            <span className="text-[8px] text-zinc-600 uppercase font-black">止损</span>
+                                            <span className="text-rose-500/80 font-black">{v.plan.stopLoss}</span>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    ))}
+                                  </div>
+                                </div>
+                              )}
+                            </div>
+                          )}
+
+                          {scenarios.length > 0 && (
+                            <div className="space-y-6">
+                              {/* Expectation Gap Analysis */}
+                              {expectationGap && (
+                                <div className="rounded-2xl border border-indigo-500/20 bg-indigo-500/5 p-5">
+                                  <div className="mb-3 flex items-center justify-between gap-2 text-indigo-400">
+                                    <div className="flex items-center gap-2">
+                                      <Search size={16} />
+                                      <h4 className="text-[10px] font-black uppercase tracking-[0.2em]">预期偏差识别 (Expectation Gap)</h4>
+                                    </div>
+                                    {expectationGap.confidenceScore && (
+                                      <div className="px-2 py-0.5 rounded-full bg-indigo-500/10 text-indigo-400 text-[9px] font-black tracking-widest border border-indigo-500/20">
+                                        CONFIDENCE: {expectationGap.confidenceScore}%
+                                      </div>
+                                    )}
+                                  </div>
+                                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div className="space-y-1">
+                                      <p className="text-[10px] text-zinc-500 uppercase font-black tracking-widest">市场共识 (Market Consensus)</p>
+                                      <p className="text-xs text-zinc-300 font-medium">{expectationGap.marketConsensus}</p>
+                                    </div>
+                                    <div className="space-y-1">
+                                      <p className="text-[10px] text-emerald-500 uppercase font-black tracking-widest">AI 团队观点 (Our View)</p>
+                                      <p className="text-xs text-emerald-400 font-black">{expectationGap.ourView}</p>
+                                    </div>
+                                  </div>
+                                  <div className="mt-3 pt-3 border-t border-zinc-800/50">
+                                    <p className="text-[10px] text-zinc-500 uppercase font-black tracking-widest mb-1">偏差逻辑 (Gap Reason)</p>
+                                    <p className="text-[11px] text-zinc-400 leading-relaxed font-medium">{expectationGap.gapReason}</p>
+                                    {expectationGap.isSignificant && (
+                                      <div className="mt-2 inline-flex items-center gap-1 px-2 py-0.5 rounded bg-amber-500/10 border border-amber-500/20 text-[10px] text-amber-500 font-black uppercase tracking-widest">
+                                        <Zap size={10} />
+                                        显著 Alpha 来源
+                                      </div>
+                                    )}
+                                  </div>
+                                </div>
+                              )}
+
+                              <div className="overflow-x-auto rounded-2xl border border-zinc-800 bg-zinc-900/30">
+                                <table className="w-full text-left border-collapse">
+                                  <thead>
+                                    <tr className="border-b border-zinc-800 bg-zinc-800/50">
+                                      <th className="px-4 py-3 text-[10px] font-black uppercase tracking-widest text-zinc-500">场景 (Scenario)</th>
+                                      <th className="px-4 py-3 text-[10px] font-black uppercase tracking-widest text-zinc-500">关键假设</th>
+                                      <th className="px-4 py-3 text-[10px] font-black uppercase tracking-widest text-zinc-500">目标价 / 安全边际</th>
+                                      <th className="px-4 py-3 text-[10px] font-black uppercase tracking-widest text-zinc-500">预期回报 (12M)</th>
+                                      <th className="px-4 py-3 text-[10px] font-black uppercase tracking-widest text-zinc-500">概率</th>
+                                    </tr>
+                                  </thead>
+                                  <tbody>
+                                    {scenarios.map((s, i) => (
+                                      <tr key={i} className="border-b border-zinc-800/50 hover:bg-zinc-800/20 transition-colors">
+                                        <td className="px-4 py-4">
+                                          <span className={cn(
+                                            "text-[10px] font-black uppercase tracking-widest px-2 py-0.5 rounded-md border",
+                                            s.case === "Bull" ? "text-emerald-400 border-emerald-500/20 bg-emerald-500/10" :
+                                            s.case === "Stress" ? "text-rose-400 border-rose-500/20 bg-rose-500/10" :
+                                            "text-blue-400 border-blue-500/20 bg-blue-500/10"
+                                          )}>
+                                            {s.case}
+                                          </span>
+                                        </td>
+                                        <td className="px-4 py-4 text-[11px] text-zinc-400 font-medium">{s.keyInputs}</td>
+                                        <td className="px-4 py-4">
+                                          <div className="flex flex-col">
+                                            <span className="text-sm font-bold text-zinc-200">{s.targetPrice}</span>
+                                            <span className="text-[10px] text-zinc-500">安全边际: {s.marginOfSafety}</span>
+                                          </div>
+                                        </td>
+                                        <td className="px-4 py-4 text-sm font-bold text-emerald-500">{s.expectedReturn}</td>
+                                        <td className="px-4 py-4 text-xs font-bold text-zinc-400">{s.probability}%</td>
+                                      </tr>
+                                    ))}
+                                  </tbody>
+                                </table>
+                              </div>
+
+                              {/* Sensitivity Analysis Panel */}
+                              {sensitivityFactors && sensitivityFactors.length > 0 && (
+                                <div className="rounded-2xl border border-zinc-800 bg-zinc-900/40 p-5">
+                                  <h4 className="mb-4 text-[10px] font-black uppercase tracking-[0.2em] text-zinc-500">因子敏感度面板 (Sensitivity Analysis)</h4>
+                                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    {sensitivityFactors.map((f, i) => (
+                                      <div key={i} className="p-4 rounded-xl bg-zinc-950/50 border border-zinc-800/50 group hover:border-zinc-700 transition-all">
+                                        <div className="flex items-center justify-between mb-2">
+                                          <span className="text-xs font-bold text-zinc-300">{f.factor}</span>
+                                          <span className="text-[10px] font-mono text-zinc-500">{f.change}</span>
+                                        </div>
+                                        <div className="flex items-end justify-between">
+                                          <span className={cn(
+                                            "text-lg font-black tracking-tighter",
+                                            f.impact.includes('+') ? "text-emerald-400" : "text-rose-400"
+                                          )}>
+                                            {f.impact}
+                                            <span className="text-[10px] ml-1 font-bold text-zinc-600">Δ TP</span>
+                                          </span>
+                                          <div className="text-right max-w-[60%]">
+                                            <span className="text-[10px] text-zinc-500 leading-tight italic block">
+                                              {f.logic}
+                                            </span>
+                                            {f.formula && (
+                                              <code className="text-[9px] text-zinc-600 font-mono mt-1 block truncate">{f.formula}</code>
+                                            )}
+                                          </div>
+                                        </div>
+                                      </div>
+                                    ))}
+                                  </div>
+                                </div>
+                              )}
+
+                              {/* Calculation Engine Section */}
+                              {calculations.length > 0 && (
+                                <div className="rounded-2xl border border-amber-500/10 bg-amber-500/5 p-5">
+                                  <div className="flex items-center gap-2 text-amber-500 mb-4">
+                                    <Cpu size={16} />
+                                    <h4 className="text-[10px] font-black uppercase tracking-[0.2em]">计算引擎 (Calculation Engine)</h4>
+                                  </div>
+                                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    {calculations.map((calc, idx) => (
+                                      <div key={idx} className="p-4 rounded-xl bg-zinc-950/50 border border-amber-500/10 group hover:border-amber-500/20 transition-all">
+                                        <div className="flex items-center justify-between mb-3">
+                                          <span className="text-xs font-black text-amber-500 uppercase tracking-widest">{calc.formulaName}</span>
+                                          <span className="text-[9px] font-mono text-zinc-600">{new Date(calc.timestamp).toLocaleTimeString()}</span>
+                                        </div>
+                                        <div className="space-y-3">
+                                          <div className="grid grid-cols-2 gap-2">
+                                            {Object.entries(calc.inputs).map(([k, v]) => (
+                                              <div key={k} className="flex flex-col">
+                                                <span className="text-[8px] text-zinc-600 uppercase font-black">{k}</span>
+                                                <span className="text-[10px] text-zinc-400 font-mono">{String(v)}</span>
+                                              </div>
+                                            ))}
+                                          </div>
+                                          <div className="pt-2 border-t border-zinc-800/50 flex items-center justify-between">
+                                            <span className="text-[9px] text-zinc-500 uppercase font-black">结果 (Output)</span>
+                                            <span className="text-sm font-black text-amber-400 font-mono">{calc.output}</span>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    ))}
+                                  </div>
+                                </div>
+                              )}
+
+                              {stressTestLogic && (
+                                <div className="p-4 rounded-2xl bg-rose-500/5 border border-rose-500/10">
+                                  <h4 className="text-[10px] font-bold uppercase tracking-widest text-rose-500 mb-2 flex items-center gap-2">
+                                    <AlertTriangle size={12} />
+                                    压力测试逻辑 (Stress Test Logic)
+                                  </h4>
+                                  <div className="text-[11px] text-zinc-500 font-mono leading-relaxed">
+                                    {stressTestLogic}
+                                  </div>
+                                </div>
+                              )}
+
+                              {catalystList && catalystList.length > 0 && (
+                                <div className="p-4 rounded-2xl bg-amber-500/5 border border-amber-500/10">
+                                  <h4 className="text-[10px] font-bold uppercase tracking-widest text-amber-500 mb-3 flex items-center gap-2">
+                                    <Zap size={12} />
+                                    催化剂清单 (Catalyst List)
+                                  </h4>
+                                  <div className="space-y-2">
+                                    {catalystList.map((c, i) => (
+                                      <div key={i} className="flex items-center justify-between text-[11px]">
+                                        <span className="text-zinc-400 font-medium">{c.event}</span>
+                                        <div className="flex items-center gap-4">
+                                          <span className="text-zinc-600">概率: {c.probability}%</span>
+                                          <span className="text-amber-500 font-bold">影响: {c.impact}</span>
+                                        </div>
+                                      </div>
+                                    ))}
+                                  </div>
+                                </div>
+                              )}
+                            </div>
+                          )}
+
                           {discussionMessages.filter(m => m.role === "Moderator").map((m, i) => (
                             <div key={m.id || `mod-${i}`} className="relative">
                               <div className="absolute -left-2 top-0 bottom-0 w-1 bg-emerald-500/50 rounded-full" />
@@ -684,7 +1179,7 @@ export default function App() {
                       )}
 
                       {discussionMessages.length > 0 && !isDiscussing && (
-                        <div className="pt-4 border-t border-zinc-800 mt-4">
+                        <div className="pt-4 border-t border-zinc-800 mt-4 space-y-3">
                           <button
                             onClick={handleSendDiscussionReport}
                             disabled={isGeneratingReport || isSendingReport}
@@ -719,6 +1214,30 @@ export default function App() {
                               </>
                             )}
                           </button>
+
+                          <button
+                            onClick={() => {
+                              const content = discussionMessages.map(msg => {
+                                const time = new Date(msg.timestamp).toLocaleString();
+                                return `### [${msg.role}] - ${time}\n\n${msg.content}\n\n---\n\n`;
+                              }).join('\n');
+                              const header = `# AI 专家组研讨记录 - ${analysis.stockInfo?.name} (${analysis.stockInfo?.symbol})\n生成时间: ${new Date().toLocaleString()}\n\n---\n\n`;
+                              const fullContent = header + content;
+                              const blob = new Blob([fullContent], { type: 'text/markdown' });
+                              const url = URL.createObjectURL(blob);
+                              const a = document.createElement('a');
+                              a.href = url;
+                              a.download = `Discussion_${analysis.stockInfo?.symbol}_${new Date().toISOString().split('T')[0]}.md`;
+                              document.body.appendChild(a);
+                              a.click();
+                              document.body.removeChild(a);
+                              URL.revokeObjectURL(url);
+                            }}
+                            className="w-full flex items-center justify-center gap-2 px-4 py-2 rounded-xl text-xs font-medium bg-zinc-900 border border-zinc-800 hover:bg-zinc-800 text-zinc-400 transition-all"
+                          >
+                            <Download size={14} />
+                            下载完整研讨文档 (.md)
+                          </button>
                         </div>
                       )}
                     </div>
@@ -737,6 +1256,31 @@ export default function App() {
                         </span>
                         <h2 className="text-4xl font-black tracking-tighter text-gradient">{analysis.stockInfo?.name}</h2>
                         <span className="font-mono text-xl font-bold text-zinc-600 tracking-tighter">{analysis.stockInfo?.symbol}</span>
+                      </div>
+                      <div className="flex flex-wrap items-center gap-2">
+                        {analysis.isDeepValue && (
+                          <div className="px-2 py-1 rounded-md bg-amber-500/10 border border-amber-500/20 text-[10px] font-black text-amber-500 uppercase tracking-widest flex items-center gap-1">
+                            <Award size={12} />
+                            绝对安全边际 (Deep Value)
+                          </div>
+                        )}
+                        {analysis.moatAnalysis && analysis.moatAnalysis.strength !== "None" && (
+                          <div className="px-2 py-1 rounded-md bg-indigo-500/10 border border-indigo-500/20 text-[10px] font-black text-indigo-400 uppercase tracking-widest flex items-center gap-1">
+                            <ShieldCheck size={12} />
+                            护城河: {analysis.moatAnalysis.strength === "Wide" ? "宽阔" : "狭窄"} ({analysis.moatAnalysis.type})
+                          </div>
+                        )}
+                        {analysis.narrativeConsistency && (
+                          <div className={cn(
+                            "px-2 py-1 rounded-md border text-[10px] font-black uppercase tracking-widest flex items-center gap-1",
+                            analysis.narrativeConsistency.score >= 80 ? "bg-emerald-500/10 border-emerald-500/20 text-emerald-500" :
+                            analysis.narrativeConsistency.score >= 50 ? "bg-amber-500/10 border-amber-500/20 text-amber-500" :
+                            "bg-rose-500/10 border-rose-500/20 text-rose-500"
+                          )}>
+                            <MessageSquare size={12} />
+                            叙事一致性: {analysis.narrativeConsistency.score}%
+                          </div>
+                        )}
                       </div>
                       <div className="flex items-baseline gap-6">
                         <span className="text-7xl font-black tracking-tighter text-zinc-100">
@@ -1085,6 +1629,13 @@ export default function App() {
                     今日大盘概览
                   </h2>
                   <div className="flex items-center gap-4">
+                    <button
+                      onClick={() => setIsSettingsOpen(true)}
+                      className="flex h-10 w-10 items-center justify-center rounded-2xl border border-zinc-700 bg-zinc-800 text-zinc-400 transition-all hover:border-blue-500/50 hover:bg-blue-500/10 hover:text-blue-400"
+                      title="系统配置"
+                    >
+                      <Settings size={20} />
+                    </button>
                     {overviewLoading && <Loader2 className="animate-spin text-emerald-500" size={20} />}
                     <button
                       onClick={handleSendDailyReport}
@@ -1296,6 +1847,14 @@ export default function App() {
             </motion.div>
           )}
         </AnimatePresence>
+
+        {/* Settings Modal */}
+        <SettingsModal
+          isOpen={isSettingsOpen}
+          onClose={() => setIsSettingsOpen(false)}
+          config={geminiConfig}
+          onConfigChange={setGeminiConfig}
+        />
 
         {showAdminPanel && (
           <section className="space-y-8 pt-12 border-t border-zinc-900 mt-12">

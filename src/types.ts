@@ -12,6 +12,9 @@ export interface StockInfo {
   previousClose: number;
   dailyHigh?: number;
   dailyLow?: number;
+  dataFreshness?: string; // Timestamp from MCP/API
+  dataSource?: string; // e.g. "FMP", "Bloomberg"
+  sourceWeight?: number; // 0.0 - 1.0
 }
 
 export interface NewsItem {
@@ -78,6 +81,21 @@ export interface ValuationAnalysis {
   marginOfSafetySummary: string;
 }
 
+export interface TradingPlan {
+  entryPrice: string;
+  targetPrice: string;
+  stopLoss: string;
+  strategy: string;
+  strategyRisks: string;
+}
+
+export interface TradingPlanVersion {
+  version: string;
+  timestamp: string;
+  changeReason: string;
+  plan: TradingPlan;
+}
+
 export interface StockAnalysis {
   stockInfo: StockInfo;
   fundamentals?: StockFundamentals;
@@ -94,13 +112,20 @@ export interface StockAnalysis {
   keyOpportunities: string[];
   discussion?: AgentMessage[];
   finalConclusion?: string;
-  tradingPlan?: {
-    entryPrice: string;
-    targetPrice: string;
-    stopLoss: string;
-    strategy: string;
-    strategyRisks: string;
+  tradingPlan?: TradingPlan;
+  tradingPlanHistory?: TradingPlanVersion[];
+  moatAnalysis?: {
+    type: string;
+    strength: "Wide" | "Narrow" | "None";
+    logic: string;
   };
+  narrativeConsistency?: {
+    score: number; // 0-100
+    warning?: string;
+    details: string;
+  };
+  netNetValue?: number;
+  isDeepValue?: boolean;
 }
 
 export interface ChatMessage {
@@ -113,6 +138,9 @@ export type AgentRole =
   | "Fundamental Analyst" 
   | "Sentiment Analyst" 
   | "Risk Manager" 
+  | "Contrarian Strategist"
+  | "Deep Research Specialist"
+  | "Professional Reviewer"
   | "Moderator";
 
 export interface AgentMessage {
@@ -120,9 +148,80 @@ export interface AgentMessage {
   role: AgentRole;
   content: string;
   timestamp: string;
+  type?: "discussion" | "research" | "review" | "user_question" | "fact_check";
+  references?: { title: string; url: string }[];
+}
+
+export interface Scenario {
+  case: "Bull" | "Base" | "Stress";
+  probability: number; // 0-100
+  keyInputs: string;
+  targetPrice: string;
+  marginOfSafety: string;
+  expectedReturn: string; // e.g. "18%"
+  logic: string;
+}
+
+export interface Catalyst {
+  event: string;
+  probability: number;
+  impact: string; // e.g. "±5% 股价"
+}
+
+export interface SensitivityFactor {
+  factor: string; // e.g. "金价"
+  change: string; // e.g. "±5%"
+  impact: string; // e.g. "±3.2% 目标价"
+  logic: string;
+  formula?: string; // The standardized formula used
+}
+
+export interface ExpectationGap {
+  marketConsensus: string;
+  ourView: string;
+  gapReason: string; // Alpha source explanation
+  isSignificant: boolean;
+  confidenceScore?: number; // 0-100
+}
+
+export interface AnalystWeight {
+  role: AgentRole;
+  weight: number; // 0-1
+  isExpert: boolean;
+  expertiseArea?: string; // e.g. "Tech", "Commodities"
+}
+
+export interface CalculationResult {
+  formulaName: string;
+  inputs: Record<string, any>;
+  output: any;
+  timestamp: string;
 }
 
 export interface AgentDiscussion {
   messages: AgentMessage[];
   finalConclusion: string;
+  tradingPlan?: TradingPlan;
+  tradingPlanHistory?: TradingPlanVersion[];
+  controversialPoints?: string[];
+  scenarios?: Scenario[];
+  valuationMatrix?: Scenario[];
+  stressTestLogic?: string;
+  catalystList?: Catalyst[];
+  sensitivityFactors?: SensitivityFactor[];
+  expectationGap?: ExpectationGap;
+  analystWeights?: AnalystWeight[];
+  calculations?: CalculationResult[];
+  dataFreshnessStatus?: "Fresh" | "Stale" | "Warning";
+  backtestResult?: {
+    previousDate: string;
+    previousRecommendation: string;
+    actualReturn: string;
+    learningPoint: string;
+  };
+}
+
+export interface GeminiConfig {
+  model: string;
+  apiKey?: string;
 }

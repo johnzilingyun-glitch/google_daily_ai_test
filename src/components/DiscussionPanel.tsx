@@ -1,13 +1,17 @@
 import React, { useEffect, useRef } from 'react';
-import { AgentMessage, AgentRole } from '../types';
+import { AgentMessage, AgentRole, AnalystWeight } from '../types';
 import { motion, AnimatePresence } from 'motion/react';
-import { User, Shield, BarChart3, PieChart, MessageSquare, Loader2 } from 'lucide-react';
+import { User, Shield, BarChart3, PieChart, MessageSquare, Loader2, Download, Search, Zap, Send, HelpCircle, UserCheck, ExternalLink, AlertTriangle, Award } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 
 interface DiscussionPanelProps {
   messages: AgentMessage[];
   isDiscussing: boolean;
+  stockSymbol?: string;
+  onSendMessage?: (message: string) => void;
+  isReviewing?: boolean;
+  analystWeights?: AnalystWeight[];
 }
 
 const roleIcons: Record<AgentRole, React.ReactNode> = {
@@ -15,6 +19,9 @@ const roleIcons: Record<AgentRole, React.ReactNode> = {
   "Fundamental Analyst": <PieChart size={18} />,
   "Sentiment Analyst": <MessageSquare size={18} />,
   "Risk Manager": <Shield size={18} />,
+  "Contrarian Strategist": <Zap size={18} />,
+  "Deep Research Specialist": <Search size={18} />,
+  "Professional Reviewer": <UserCheck size={18} />,
   "Moderator": <User size={18} />,
 };
 
@@ -23,6 +30,9 @@ const roleColors: Record<AgentRole, string> = {
   "Fundamental Analyst": "text-emerald-400 bg-emerald-500/10 border-emerald-500/20",
   "Sentiment Analyst": "text-purple-400 bg-purple-500/10 border-purple-500/20",
   "Risk Manager": "text-rose-400 bg-rose-500/10 border-rose-500/20",
+  "Contrarian Strategist": "text-orange-400 bg-orange-500/10 border-orange-500/20",
+  "Deep Research Specialist": "text-cyan-400 bg-cyan-500/10 border-cyan-500/20",
+  "Professional Reviewer": "text-indigo-400 bg-indigo-500/10 border-indigo-500/20",
   "Moderator": "text-amber-400 bg-amber-500/10 border-amber-500/20",
 };
 
@@ -31,17 +41,68 @@ const roleNames: Record<AgentRole, string> = {
   "Fundamental Analyst": "基本面分析师",
   "Sentiment Analyst": "情绪分析师",
   "Risk Manager": "风险合规官",
+  "Contrarian Strategist": "反向策略师",
+  "Deep Research Specialist": "深度研究专家",
+  "Professional Reviewer": "高级评审专家",
   "Moderator": "首席策略师 (总结)",
 };
 
-export const DiscussionPanel: React.FC<DiscussionPanelProps> = ({ messages, isDiscussing }) => {
+export const DiscussionPanel: React.FC<DiscussionPanelProps> = ({ 
+  messages, 
+  isDiscussing, 
+  stockSymbol,
+  onSendMessage,
+  isReviewing,
+  analystWeights
+}) => {
   const scrollRef = useRef<HTMLDivElement>(null);
+  const [inputValue, setInputValue] = React.useState('');
+
+  const getWeightInfo = (role: AgentRole) => {
+    return analystWeights?.find(w => w.role === role);
+  };
 
   useEffect(() => {
     if (scrollRef.current) {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
     }
   }, [messages]);
+
+  const handleSend = () => {
+    if (inputValue.trim() && onSendMessage) {
+      onSendMessage(inputValue.trim());
+      setInputValue('');
+    }
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      handleSend();
+    }
+  };
+
+  const handleDownload = () => {
+    if (messages.length === 0) return;
+
+    const content = messages.map(msg => {
+      const time = new Date(msg.timestamp).toLocaleString();
+      return `### [${roleNames[msg.role]}] - ${time}\n\n${msg.content}\n\n---\n\n`;
+    }).join('\n');
+
+    const header = `# AI 专家组联席会议记录 - ${stockSymbol || '未知股票'}\n生成时间: ${new Date().toLocaleString()}\n\n---\n\n`;
+    const fullContent = header + content;
+
+    const blob = new Blob([fullContent], { type: 'text/markdown' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `AI_Discussion_${stockSymbol || 'Report'}_${new Date().toISOString().split('T')[0]}.md`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
 
   return (
     <div className="flex flex-col h-[600px] bg-zinc-950/50 border border-zinc-800 rounded-[2rem] overflow-hidden backdrop-blur-xl">
@@ -53,12 +114,24 @@ export const DiscussionPanel: React.FC<DiscussionPanelProps> = ({ messages, isDi
           </div>
           <h3 className="text-sm font-bold uppercase tracking-[0.2em] text-zinc-400">AI 专家组联席会议</h3>
         </div>
-        {isDiscussing && (
-          <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-zinc-800/50 border border-zinc-700 text-[10px] font-bold text-zinc-500 uppercase tracking-widest">
-            <Loader2 size={12} className="animate-spin text-emerald-500" />
-            正在研讨中
-          </div>
-        )}
+        <div className="flex items-center gap-3">
+          {messages.length > 0 && !isDiscussing && (
+            <button 
+              onClick={handleDownload}
+              className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 text-[10px] font-bold text-zinc-300 transition-colors"
+              title="下载研讨记录"
+            >
+              <Download size={14} />
+              下载记录
+            </button>
+          )}
+          {isDiscussing && (
+            <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-zinc-800/50 border border-zinc-700 text-[10px] font-bold text-zinc-500 uppercase tracking-widest">
+              <Loader2 size={12} className="animate-spin text-emerald-500" />
+              正在研讨中
+            </div>
+          )}
+        </div>
       </div>
 
       <div 
@@ -83,18 +156,77 @@ export const DiscussionPanel: React.FC<DiscussionPanelProps> = ({ messages, isDi
                     <span className={`text-[10px] font-black uppercase tracking-widest px-2 py-0.5 rounded-md border ${roleColors[msg.role]}`}>
                       {roleNames[msg.role]}
                     </span>
+                    {getWeightInfo(msg.role)?.isExpert && (
+                      <span className="text-[10px] font-bold text-amber-500 bg-amber-500/10 px-2 py-0.5 rounded-md border border-amber-500/20 flex items-center gap-1 animate-pulse">
+                        <Award size={10} />
+                        行业专家 ({getWeightInfo(msg.role)?.expertiseArea})
+                      </span>
+                    )}
+                    {msg.type === "research" && (
+                      <span className="text-[10px] font-bold text-cyan-500 bg-cyan-500/10 px-2 py-0.5 rounded-md border border-cyan-500/20 flex items-center gap-1">
+                        <Search size={10} />
+                        深度研究
+                      </span>
+                    )}
+                    {msg.type === "review" && (
+                      <span className="text-[10px] font-bold text-indigo-500 bg-indigo-500/10 px-2 py-0.5 rounded-md border border-indigo-500/20 flex items-center gap-1">
+                        <UserCheck size={10} />
+                        专家评审
+                      </span>
+                    )}
+                    {msg.type === "fact_check" && (
+                      <span className="text-[10px] font-bold text-rose-500 bg-rose-500/10 px-2 py-0.5 rounded-md border border-rose-500/20 flex items-center gap-1">
+                        <AlertTriangle size={10} />
+                        一致性监测
+                      </span>
+                    )}
+                    {msg.type === "user_question" && (
+                      <span className="text-[10px] font-bold text-zinc-400 bg-zinc-800 px-2 py-0.5 rounded-md border border-zinc-700 flex items-center gap-1">
+                        <HelpCircle size={10} />
+                        用户提问
+                      </span>
+                    )}
                   </div>
                   <span className="text-[10px] text-zinc-600 font-mono font-bold">
                     {new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
                   </span>
                 </div>
                 <div className="relative">
-                  <div className="text-sm text-zinc-200 leading-relaxed bg-zinc-900/90 p-5 rounded-2xl rounded-tl-none border border-zinc-800/50 shadow-xl group-hover:border-zinc-700 transition-colors">
+                  <div className={`text-sm leading-relaxed p-5 rounded-2xl rounded-tl-none border shadow-xl group-hover:border-zinc-700 transition-colors ${
+                    msg.type === "research" ? "bg-cyan-950/20 border-cyan-500/20 text-cyan-50" :
+                    msg.type === "review" ? "bg-indigo-950/20 border-indigo-500/20 text-indigo-50" :
+                    msg.type === "fact_check" ? "bg-rose-950/20 border-rose-500/20 text-rose-50" :
+                    msg.type === "user_question" ? "bg-zinc-800/50 border-zinc-700 text-zinc-300" :
+                    "bg-zinc-900/90 border-zinc-800/50 text-zinc-200"
+                  }`}>
                     <div className="prose prose-invert prose-sm max-w-none">
                       <ReactMarkdown remarkPlugins={[remarkGfm]}>
                         {msg.content}
                       </ReactMarkdown>
                     </div>
+
+                    {msg.references && msg.references.length > 0 && (
+                      <div className="mt-4 pt-4 border-t border-zinc-800/50">
+                        <p className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest mb-2 flex items-center gap-1">
+                          <ExternalLink size={10} />
+                          引用来源 (Grounding References)
+                        </p>
+                        <div className="flex flex-wrap gap-2">
+                          {msg.references.map((ref, idx) => (
+                            <a
+                              key={idx}
+                              href={ref.url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-[10px] font-medium text-cyan-400 hover:text-cyan-300 bg-cyan-500/5 border border-cyan-500/10 px-2 py-1 rounded-lg transition-colors flex items-center gap-1"
+                            >
+                              {ref.title.length > 20 ? ref.title.substring(0, 20) + '...' : ref.title}
+                              <ExternalLink size={8} />
+                            </a>
+                          ))}
+                        </div>
+                      </div>
+                    )}
                   </div>
                   {/* Subtle accent line */}
                   <div className={`absolute left-0 top-0 bottom-0 w-1 rounded-full opacity-60 ${roleColors[msg.role].split(' ')[0]}`} />
@@ -111,6 +243,47 @@ export const DiscussionPanel: React.FC<DiscussionPanelProps> = ({ messages, isDi
           </div>
         )}
       </div>
+
+      {/* Chat Input for Follow-up Questions */}
+      {messages.length > 0 && !isDiscussing && onSendMessage && (
+        <div className="p-4 border-t border-zinc-800 bg-zinc-900/60">
+          <div className="relative flex items-center gap-3">
+            <div className="flex-1 relative">
+              <textarea
+                value={inputValue}
+                onChange={(e) => setInputValue(e.target.value)}
+                onKeyDown={handleKeyDown}
+                placeholder="向专家组提问或要求深度评审..."
+                className="w-full bg-zinc-950 border border-zinc-800 rounded-2xl px-5 py-3 pr-12 text-sm text-zinc-200 placeholder:text-zinc-600 focus:outline-none focus:border-indigo-500/50 transition-all resize-none h-[48px] flex items-center"
+                rows={1}
+                disabled={isReviewing}
+              />
+              <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-2">
+                {isReviewing ? (
+                  <Loader2 size={18} className="animate-spin text-indigo-500" />
+                ) : (
+                  <button
+                    onClick={handleSend}
+                    disabled={!inputValue.trim()}
+                    className="p-1.5 rounded-lg text-indigo-500 hover:bg-indigo-500/10 disabled:opacity-30 transition-all"
+                  >
+                    <Send size={18} />
+                  </button>
+                )}
+              </div>
+            </div>
+            <div className="flex-shrink-0">
+              <div className="p-2 rounded-xl bg-indigo-500/10 border border-indigo-500/20 text-indigo-400" title="专家评审模式已开启">
+                <HelpCircle size={20} />
+              </div>
+            </div>
+          </div>
+          <p className="mt-2 text-[10px] text-zinc-500 px-2 flex items-center gap-1">
+            <Zap size={10} className="text-amber-500" />
+            提问后将由 <b>高级评审专家</b> 对研讨记录进行深度复核与解答
+          </p>
+        </div>
+      )}
     </div>
   );
 };
