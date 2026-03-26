@@ -226,7 +226,10 @@ async function startServer() {
             previousClose: prevClose,
             currency: result.currency,
             lastUpdated: formattedTime,
-            marketState: result.marketState
+            marketState: result.marketState,
+            source: 'Yahoo Finance API',
+            exchange: result.fullExchangeName || result.exchange,
+            quoteDelay: result.exchangeDataDelayedBy || 0
           };
         });
 
@@ -251,20 +254,42 @@ async function startServer() {
       // If the symbol already contains a dot or starts with a caret, assume it's already a valid Yahoo symbol
       if (!yfSymbol.includes('.') && !yfSymbol.startsWith('^')) {
         if (market === 'A-Share') {
-          // A-Share logic: 60xxxx/68xxxx -> .SS, 00xxxx/30xxxx -> .SZ, 43xxxx/83xxxx/87xxxx -> .BJ
-          if (yfSymbol.startsWith('60') || yfSymbol.startsWith('68')) {
-            yfSymbol = `${yfSymbol}.SS`;
-          } else if (yfSymbol.startsWith('00') || yfSymbol.startsWith('30')) {
-            yfSymbol = `${yfSymbol}.SZ`;
-          } else if (yfSymbol.startsWith('43') || yfSymbol.startsWith('83') || yfSymbol.startsWith('87')) {
-            yfSymbol = `${yfSymbol}.BJ`;
-          } else if (yfSymbol.startsWith('6')) {
-            yfSymbol = `${yfSymbol}.SS`;
+          // Only append suffix if it's a 6-digit number
+          if (/^\d{6}$/.test(yfSymbol)) {
+            if (yfSymbol.startsWith('60') || yfSymbol.startsWith('68')) {
+              yfSymbol = `${yfSymbol}.SS`;
+            } else if (yfSymbol.startsWith('00') || yfSymbol.startsWith('30')) {
+              yfSymbol = `${yfSymbol}.SZ`;
+            } else if (yfSymbol.startsWith('43') || yfSymbol.startsWith('83') || yfSymbol.startsWith('87')) {
+              yfSymbol = `${yfSymbol}.BJ`;
+            } else if (yfSymbol.startsWith('6')) {
+              yfSymbol = `${yfSymbol}.SS`;
+            } else {
+              yfSymbol = `${yfSymbol}.SZ`;
+            }
           } else {
-            yfSymbol = `${yfSymbol}.SZ`;
+            // It's likely a name or abbreviation, let search handle it later
+            // But we can try to map some common ones
+            const commonMappings: Record<string, string> = {
+              'WCDL': '000338.SZ', // 潍柴动力
+              'GZMT': '600519.SS', // 贵州茅台
+              'BYD': '002594.SZ', // 比亚迪 (A-share)
+              'WLY': '000858.SZ', // 五粮液
+              'ZGPA': '601318.SS', // 中国平安
+              'ZSYH': '600036.SS', // 招商银行
+              'ZGYH': '601988.SS', // 中国银行
+              'JSYH': '601939.SS', // 建设银行
+              'GSYH': '601398.SS', // 工商银行
+              'NYYH': '601288.SS', // 农业银行
+            };
+            if (commonMappings[yfSymbol]) {
+              yfSymbol = commonMappings[yfSymbol];
+            }
           }
         } else if (market === 'HK-Share') {
-          yfSymbol = `${yfSymbol.padStart(5, '0')}.HK`;
+          if (/^\d+$/.test(yfSymbol)) {
+            yfSymbol = `${yfSymbol.padStart(5, '0')}.HK`;
+          }
         }
       }
 
@@ -278,7 +303,14 @@ async function startServer() {
       
       if (!result) {
         // Try searching if quote fails (might be a name or abbreviation)
-        const searchResults = await yahooFinance.search(symbol as string);
+        let searchResults = await yahooFinance.search(symbol as string);
+        
+        // Fallback search with "stock" keyword if first search yields no results
+        if ((!searchResults.quotes || searchResults.quotes.length === 0) && typeof symbol === 'string') {
+          console.log(`Search for ${symbol} yielded no results, trying with 'stock' keyword...`);
+          searchResults = await yahooFinance.search(`${symbol} stock`);
+        }
+
         if (searchResults.quotes && searchResults.quotes.length > 0) {
           // Find the best match for the requested market
           const bestMatch = searchResults.quotes.find((q: any) => {
@@ -344,7 +376,10 @@ async function startServer() {
         pe: result.trailingPE,
         currency: result.currency,
         lastUpdated: formattedTime,
-        source: 'Yahoo Finance API'
+        source: 'Yahoo Finance API',
+        exchange: result.fullExchangeName || result.exchange,
+        marketState: result.marketState,
+        quoteDelay: result.exchangeDataDelayedBy || 0
       });
     } catch (error) {
       console.error('Yahoo Finance Error:', error);

@@ -522,7 +522,16 @@ ${realtimeData ? JSON.stringify(realtimeData, null, 2) : "No real-time data avai
 
 You are a professional equity analyst.
 Analyze stock "${symbol}" in the ${market} market using the latest available public information and Google Search grounding.
-If the real-time data above is available, it is your PRIMARY source for price, change, and previous close.
+
+**CROSS-VALIDATION (CRITICAL)**: 
+- You MUST cross-validate the "REAL-TIME DATA TOOL OUTPUT" (from Yahoo Finance) with your own Google Search results (from Sina Finance, East Money, etc.).
+- **IF THEY DIFFER**: 
+   - Yahoo Finance data for A-shares is often delayed by 15-20 minutes. 
+   - If Google Search shows a more recent price (e.g., from a Sina Finance snippet within the last 5 minutes), you MUST prioritize the Google Search data for the "price", "change", and "changePercent" fields.
+   - Explain the discrepancy in the "summary" field (e.g., "Note: Yahoo Finance data is delayed by 15 mins; using real-time data from Sina Finance").
+- **IF TOOL DATA IS MISSING**: Use Google Search as your primary source.
+- **IF THEY MATCH**: Proceed with the tool data as the "Ground Truth".
+
 If the current time in China is past 15:00 CST (for A-shares) or 16:00 HKT (for HK-shares), you MUST prioritize fetching the "Closing Price" (收盘价).
 
 Previous analysis context (for reference and continuity):
