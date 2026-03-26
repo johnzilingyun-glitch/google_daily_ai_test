@@ -1,17 +1,14 @@
 import React, { useEffect, useRef } from 'react';
-import { AgentMessage, AgentRole, AnalystWeight } from '../types';
+import { AgentRole } from '../types';
 import { motion, AnimatePresence } from 'motion/react';
 import { User, Shield, BarChart3, PieChart, MessageSquare, Loader2, Download, Search, Zap, Send, HelpCircle, UserCheck, ExternalLink, AlertTriangle, Award } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import { useAnalysisStore } from '../stores/useAnalysisStore';
+import { useUIStore } from '../stores/useUIStore';
 
 interface DiscussionPanelProps {
-  messages: AgentMessage[];
-  isDiscussing: boolean;
-  stockSymbol?: string;
   onSendMessage?: (message: string) => void;
-  isReviewing?: boolean;
-  analystWeights?: AnalystWeight[];
 }
 
 const roleIcons: Record<AgentRole, React.ReactNode> = {
@@ -48,15 +45,22 @@ const roleNames: Record<AgentRole, string> = {
 };
 
 export const DiscussionPanel: React.FC<DiscussionPanelProps> = ({ 
-  messages, 
-  isDiscussing, 
-  stockSymbol,
-  onSendMessage,
-  isReviewing,
-  analystWeights
+  onSendMessage
 }) => {
+  const { 
+    discussionMessages: messages, 
+    analystWeights,
+    analysis
+  } = useAnalysisStore();
+  
+  const { 
+    isDiscussing, 
+    isReviewing 
+  } = useUIStore();
+
   const scrollRef = useRef<HTMLDivElement>(null);
   const [inputValue, setInputValue] = React.useState('');
+  const stockSymbol = analysis?.stockInfo?.symbol;
 
   const getWeightInfo = (role: AgentRole) => {
     return analystWeights?.find(w => w.role === role);

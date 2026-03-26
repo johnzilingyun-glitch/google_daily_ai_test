@@ -1,14 +1,8 @@
 import React from 'react';
 import { X, Settings, ShieldCheck, Cpu } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
-import { GeminiConfig } from '../types';
-
-interface SettingsModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  config: GeminiConfig;
-  onConfigChange: (config: GeminiConfig) => void;
-}
+import { useConfigStore } from '../stores/useConfigStore';
+import { useUIStore } from '../stores/useUIStore';
 
 const AVAILABLE_MODELS = [
   { id: 'gemini-3-flash-preview', name: 'Gemini 3 Flash (Fast & Balanced)', description: 'Best for general analysis and quick summaries.' },
@@ -16,7 +10,10 @@ const AVAILABLE_MODELS = [
   { id: 'gemini-3.1-flash-lite-preview', name: 'Gemini 3.1 Flash Lite (Ultra Fast)', description: 'Optimized for speed and low-latency tasks.' },
 ];
 
-export function SettingsModal({ isOpen, onClose, config, onConfigChange }: SettingsModalProps) {
+export function SettingsModal() {
+  const { config, setConfig } = useConfigStore();
+  const { isSettingsOpen, setIsSettingsOpen } = useUIStore();
+
   const handleOpenKeySelector = async () => {
     const aiStudio = (window as any).aistudio;
     if (aiStudio?.openSelectKey) {
@@ -26,9 +23,11 @@ export function SettingsModal({ isOpen, onClose, config, onConfigChange }: Setti
     }
   };
 
+  const onClose = () => setIsSettingsOpen(false);
+
   return (
     <AnimatePresence>
-      {isOpen && (
+      {isSettingsOpen && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
           <motion.div
             initial={{ opacity: 0 }}
@@ -99,7 +98,7 @@ export function SettingsModal({ isOpen, onClose, config, onConfigChange }: Setti
                   {AVAILABLE_MODELS.map((model) => (
                     <button
                       key={model.id}
-                      onClick={() => onConfigChange({ ...config, model: model.id })}
+                      onClick={() => setConfig({ ...config, model: model.id })}
                       className={`flex flex-col gap-1 rounded-2xl border p-4 text-left transition-all ${
                         config.model === model.id
                           ? 'border-blue-500/50 bg-blue-500/10'

@@ -39,7 +39,11 @@ import { motion, AnimatePresence } from 'motion/react';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import { Market, MarketOverview, StockAnalysis, AgentMessage, GeminiConfig, Scenario, Catalyst, SensitivityFactor, ExpectationGap, AnalystWeight, CalculationResult, TradingPlanVersion, AgentDiscussion } from './types';
-import { analyzeStock, getMarketOverview, sendChatMessage, getDailyReport, getStockReport, getChatReport, runAgentDiscussion, continueAgentDiscussion, getDiscussionReport } from './services/aiService';
+import { analyzeStock, getMarketOverview, sendChatMessage, getDailyReport, getStockReport, getChatReport, startAgentDiscussion, getDiscussionReport } from './services/aiService';
+import { useConfigStore } from './stores/useConfigStore';
+import { useUIStore } from './stores/useUIStore';
+import { useMarketStore } from './stores/useMarketStore';
+import { useAnalysisStore } from './stores/useAnalysisStore';
 import { DiscussionPanel } from './components/DiscussionPanel';
 import { SettingsModal } from './components/SettingsModal';
 import ReactMarkdown from 'react-markdown';
@@ -70,68 +74,86 @@ const chatPrompts = [
 export default function App() {
   console.log('App is rendering');
 
-  // Market Analysis State
-  const [symbol, setSymbol] = useState('');
-  const [market, setMarket] = useState<Market>("A-Share");
-  const [analysis, setAnalysis] = useState<StockAnalysis | null>(null);
-  const [marketOverview, setMarketOverview] = useState<MarketOverview | null>(null);
-  const [loading, setLoading] = useState(false);
-  const [overviewLoading, setOverviewLoading] = useState(true);
-  const [overviewError, setOverviewError] = useState<string | null>(null);
-  const [dailyReport, setDailyReport] = useState<string | null>(null);
-  const [isGeneratingReport, setIsGeneratingReport] = useState(false);
-  const [isSendingReport, setIsSendingReport] = useState(false);
-  const [reportStatus, setReportStatus] = useState<'idle' | 'success' | 'error'>('idle');
-  const [analysisError, setAnalysisError] = useState<string | null>(null);
-  const [chatError, setChatError] = useState<string | null>(null);
-  const [chatMessage, setChatMessage] = useState('');
-  const [isChatting, setIsChatting] = useState(false);
-  const [chatHistory, setChatHistory] = useState<{ role: 'user' | 'ai'; content: string }[]>([]);
-  const [isTriggeringReport, setIsTriggeringReport] = useState(false);
+  // Stores
+  const { config: geminiConfig, setConfig: setGeminiConfig } = useConfigStore();
+  
+  const { 
+    loading, setLoading, 
+    overviewLoading, setOverviewLoading,
+    overviewError, setOverviewError,
+    analysisError, setAnalysisError,
+    chatError, setChatError,
+    isGeneratingReport, setIsGeneratingReport,
+    isSendingReport, setIsSendingReport,
+    reportStatus, setReportStatus,
+    isTriggeringReport, setIsTriggeringReport,
+    isChatting, setIsChatting,
+    isDiscussing, setIsDiscussing,
+    isReviewing, setIsReviewing,
+    showDiscussion, setShowDiscussion,
+    isSettingsOpen, setIsSettingsOpen,
+    showAdminPanel, setShowAdminPanel,
+    selectedDetail, setSelectedDetail,
+    resetErrors
+  } = useUIStore();
+  
+  const { 
+    marketOverview, setMarketOverview,
+    dailyReport, setDailyReport,
+    historyItems, setHistoryItems,
+    optimizationLogs, setOptimizationLogs
+  } = useMarketStore();
 
-  // History and Logs State
-  const [historyItems, setHistoryItems] = useState<any[]>([]);
-  const [optimizationLogs, setOptimizationLogs] = useState<any[]>([]);
-  const [showAdminPanel, setShowAdminPanel] = useState(false);
-  const [selectedDetail, setSelectedDetail] = useState<{ type: 'log' | 'history', data: any } | null>(null);
+  const {
+    symbol, setSymbol,
+    market, setMarket,
+    analysis, setAnalysis,
+    chatMessage, setChatMessage,
+    chatHistory, setChatHistory,
+    discussionMessages, setDiscussionMessages,
+    scenarios, setScenarios,
+    valuationMatrix, setValuationMatrix,
+    sensitivityFactors, setSensitivityFactors,
+    expectationGap, setExpectationGap,
+    analystWeights, setAnalystWeights,
+    calculations, setCalculations,
+    controversialPoints, setControversialPoints,
+    tradingPlanHistory, setTradingPlanHistory,
+    dataFreshnessStatus, setDataFreshnessStatus,
+    stressTestLogic, setStressTestLogic,
+    catalystList, setCatalystList,
+    backtestResult, setBacktestResult,
+    verificationMetrics, setVerificationMetrics,
+    capitalFlow, setCapitalFlow,
+    positionManagement, setPositionManagement,
+    timeDimension, setTimeDimension,
+    setDiscussionResults,
+    resetAnalysis
+  } = useAnalysisStore();
 
-  // Agent Discussion State
-  const [discussionMessages, setDiscussionMessages] = useState<AgentMessage[]>([]);
-  const [scenarios, setScenarios] = useState<Scenario[]>([]);
-  const [valuationMatrix, setValuationMatrix] = useState<Scenario[]>([]);
-  const [sensitivityFactors, setSensitivityFactors] = useState<SensitivityFactor[]>([]);
-  const [expectationGap, setExpectationGap] = useState<ExpectationGap | null>(null);
-  const [analystWeights, setAnalystWeights] = useState<AnalystWeight[]>([]);
-  const [calculations, setCalculations] = useState<CalculationResult[]>([]);
-  const [controversialPoints, setControversialPoints] = useState<string[]>([]);
-  const [tradingPlanHistory, setTradingPlanHistory] = useState<TradingPlanVersion[]>([]);
-  const [dataFreshnessStatus, setDataFreshnessStatus] = useState<"Fresh" | "Stale" | "Warning" | null>(null);
-  const [stressTestLogic, setStressTestLogic] = useState<string>('');
-  const [catalystList, setCatalystList] = useState<Catalyst[]>([]);
-  const [backtestResult, setBacktestResult] = useState<any>(null);
-  const [verificationMetrics, setVerificationMetrics] = useState<AgentDiscussion['verificationMetrics']>([]);
-  const [capitalFlow, setCapitalFlow] = useState<AgentDiscussion['capitalFlow'] | null>(null);
-  const [positionManagement, setPositionManagement] = useState<AgentDiscussion['positionManagement'] | null>(null);
-  const [timeDimension, setTimeDimension] = useState<AgentDiscussion['timeDimension'] | null>(null);
-  const [isDiscussing, setIsDiscussing] = useState(false);
-  const [isReviewing, setIsReviewing] = useState(false);
-  const [showDiscussion, setShowDiscussion] = useState(false);
-
-  // Gemini Configuration State
-  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
-  const [geminiConfig, setGeminiConfig] = useState<GeminiConfig>(() => {
+  // Helper for Feishu Reports
+  const sendReport = async (report: string, type: string, data?: any) => {
+    setIsSendingReport(true);
     try {
-      const saved = localStorage.getItem('gemini_config');
-      return saved ? JSON.parse(saved) : { model: 'gemini-3-flash-preview' };
-    } catch (e) {
-      console.error('Failed to parse gemini_config from localStorage:', e);
-      return { model: 'gemini-3-flash-preview' };
+      const response = await fetch('/api/feishu/send-report', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ content: report, type, data })
+      });
+      
+      if (!response.ok) throw new Error('Failed to send report');
+      
+      setReportStatus('success');
+      setTimeout(() => setReportStatus('idle'), 3000);
+      return true;
+    } catch (error) {
+      console.error('Report Error:', error);
+      setReportStatus('error');
+      return false;
+    } finally {
+      setIsSendingReport(false);
     }
-  });
-
-  useEffect(() => {
-    localStorage.setItem('gemini_config', JSON.stringify(geminiConfig));
-  }, [geminiConfig]);
+  };
 
   const handleDiscussionQuestion = async (question: string) => {
     if (!analysis || isReviewing || isDiscussing) return;
@@ -145,17 +167,13 @@ export default function App() {
       type: "user_question"
     };
     
-    setDiscussionMessages(prev => [...prev, userMsg]);
+    const updatedMessages = [...discussionMessages, userMsg];
+    setDiscussionMessages(updatedMessages);
     
     try {
-      const discussion = await continueAgentDiscussion(
-        question,
-        analysis,
-        discussionMessages,
-        geminiConfig
-      );
-      setDiscussionMessages(prev => [...prev, ...discussion.messages]);
+      const discussion = await startAgentDiscussion(analysis, geminiConfig, updatedMessages);
       
+      setDiscussionMessages(discussion.messages);
       if (discussion.scenarios) setScenarios(discussion.scenarios);
       if (discussion.sensitivityFactors) setSensitivityFactors(discussion.sensitivityFactors);
       if (discussion.controversialPoints) setControversialPoints(discussion.controversialPoints);
@@ -163,19 +181,16 @@ export default function App() {
       if (discussion.capitalFlow) setCapitalFlow(discussion.capitalFlow);
       if (discussion.positionManagement) setPositionManagement(discussion.positionManagement);
       if (discussion.timeDimension) setTimeDimension(discussion.timeDimension);
-      if (discussion.tradingPlanHistory) {
-        setTradingPlanHistory(prev => [...prev, ...discussion.tradingPlanHistory!]);
-      }
+      if (discussion.tradingPlanHistory) setTradingPlanHistory(discussion.tradingPlanHistory);
       
-      // Update main analysis with updated conclusion/trading plan
-      setAnalysis(prev => prev ? {
-        ...prev,
-        finalConclusion: discussion.finalConclusion || prev.finalConclusion,
-        tradingPlan: discussion.tradingPlan || prev.tradingPlan
-      } : null);
+      setAnalysis({
+        ...analysis,
+        finalConclusion: discussion.finalConclusion || analysis.finalConclusion,
+        tradingPlan: discussion.tradingPlan || analysis.tradingPlan
+      });
     } catch (err) {
       console.error('Reviewer failed:', err);
-      setDiscussionMessages(prev => [...prev, {
+      setDiscussionMessages([...updatedMessages, {
         id: `error-${Date.now()}`,
         role: "Professional Reviewer",
         content: `⚠️ 评审专家暂时无法回答：${err instanceof Error ? err.message : '未知错误'}`,
@@ -187,51 +202,6 @@ export default function App() {
     }
   };
 
-  // Manual Daily Report Trigger
-  const handleTriggerDailyReport = async () => {
-    if (!marketOverview) {
-      alert('请先等待市场概况加载完成。');
-      return;
-    }
-
-    setIsTriggeringReport(true);
-    try {
-      // Generate report in frontend
-      const report = await getDailyReport(marketOverview, geminiConfig);
-      
-      // Send to Feishu via backend
-      const response = await fetch('/api/feishu/send-report', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ content: report })
-      });
-
-      if (response.ok) {
-        // Log optimized daily report sending
-        void fetch('/api/admin/log', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ 
-            field: 'feishu_daily_report', 
-            oldValue: 'standard_format', 
-            newValue: 'optimized_newsletter_format', 
-            description: '成功发送优化后的每日市场内参' 
-          })
-        });
-        alert('每日报告已成功生成并发送至飞书！');
-      } else {
-        const data = await response.json();
-        alert(`报告发送失败: ${data.error || '未知错误'}`);
-      }
-    } catch (err) {
-      console.error('Manual report trigger failed:', err);
-      alert(`报告触发失败: ${err instanceof Error ? err.message : '未知错误'}`);
-    } finally {
-      setIsTriggeringReport(false);
-    }
-  };
-
-  // Fetch Market Overview
   const fetchMarketOverview = useCallback(async () => {
     setOverviewLoading(true);
     setOverviewError(null);
@@ -240,55 +210,13 @@ export default function App() {
       setMarketOverview(data);
     } catch (err) {
       console.error('Failed to fetch market overview:', err);
-      let message = '无法加载市场概览。';
-      
-      if (err instanceof Error) {
-        const errStr = err.message;
-        if (errStr.includes('429') || errStr.includes('quota') || errStr.includes('RESOURCE_EXHAUSTED')) {
-          message = 'API 额度已耗尽 (429)。请检查您的 Google AI Studio 计费设置或稍后再试。';
-        } else {
-          try {
-            // Try to parse if it's a JSON error string
-            const parsed = JSON.parse(errStr);
-            if (parsed.error?.message) {
-              message = `API 错误: ${parsed.error.message}`;
-            }
-          } catch (e) {
-            message = errStr;
-          }
-        }
-      }
-      setOverviewError(message);
+      setOverviewError(err instanceof Error ? err.message : '无法加载市场概览。');
     } finally {
       setOverviewLoading(false);
     }
-  }, [geminiConfig]);
+  }, [geminiConfig, setMarketOverview, setOverviewError, setOverviewLoading]);
 
-  useEffect(() => {
-    void fetchMarketOverview();
-    void fetchAdminData();
-    
-    // Log the UI and Report optimization
-    const logOptimization = async () => {
-      try {
-        await fetch('/api/admin/log', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ 
-            field: 'system_optimization', 
-            oldValue: 'standard_ui_reports', 
-            newValue: 'optimized_ui_and_feishu_reports', 
-            description: '优化了个股研讨 UI 显示和飞书报告的 Markdown 格式，增强了用户友好度和可读性。' 
-          })
-        });
-      } catch (err) {
-        console.error('Failed to log optimization:', err);
-      }
-    };
-    void logOptimization();
-  }, []);
-
-  const fetchAdminData = async () => {
+  const fetchAdminData = useCallback(async () => {
     try {
       const [historyRes, logsRes] = await Promise.all([
         fetch('/api/admin/history-context'),
@@ -299,211 +227,100 @@ export default function App() {
     } catch (err) {
       console.error('Failed to fetch admin data:', err);
     }
-  };
+  }, [setHistoryItems, setOptimizationLogs]);
 
-  const handleSendDailyReport = async () => {
+  useEffect(() => {
+    void fetchMarketOverview();
+    void fetchAdminData();
+  }, [fetchMarketOverview, fetchAdminData]);
+
+  const handleTriggerDailyReport = async () => {
     if (!marketOverview) return;
-    
-    setIsGeneratingReport(true);
-    setReportStatus('idle');
+    setIsTriggeringReport(true);
     try {
       const report = await getDailyReport(marketOverview, geminiConfig);
       setDailyReport(report);
-      setIsGeneratingReport(false);
-      
-      setIsSendingReport(true);
-      const response = await fetch('/api/feishu/send-report', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ content: report }),
-      });
-      
-      if (!response.ok) {
-        throw new Error('Failed to send report');
-      }
-      
-      setReportStatus('success');
-      setTimeout(() => setReportStatus('idle'), 3000);
+      setIsTriggeringReport(false);
+      await sendReport(report, 'daily', marketOverview);
     } catch (error) {
-      console.error('Report Error:', error);
       setReportStatus('error');
-      setIsGeneratingReport(false);
-    } finally {
-      setIsSendingReport(false);
+      setIsTriggeringReport(false);
     }
   };
 
   const handleSendStockReport = async () => {
     if (!analysis) return;
-    
     setIsGeneratingReport(true);
-    setReportStatus('idle');
     try {
-      const report = await getStockReport(analysis);
+      const report = await getStockReport(analysis, geminiConfig);
       setIsGeneratingReport(false);
-      
-      setIsSendingReport(true);
-      const response = await fetch('/api/feishu/send-report', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ 
-          content: report,
-          type: 'stock',
-          data: analysis
-        }),
-      });
-      
-      if (!response.ok) {
-        throw new Error('Failed to send report');
-      }
-      
-      setReportStatus('success');
-      setTimeout(() => setReportStatus('idle'), 3000);
+      await sendReport(report, 'stock', analysis);
     } catch (error) {
-      console.error('Report Error:', error);
       setReportStatus('error');
       setIsGeneratingReport(false);
-    } finally {
-      setIsSendingReport(false);
     }
   };
 
   const handleSendChatReport = async () => {
     if (!analysis || !chatHistory || chatHistory.length === 0) return;
-    
     setIsGeneratingReport(true);
-    setReportStatus('idle');
     try {
       const report = await getChatReport(analysis.stockInfo?.name || 'Unknown', chatHistory);
       setIsGeneratingReport(false);
+      const success = await sendReport(report, 'chat', { stock: analysis.stockInfo?.name || 'Unknown', history: chatHistory });
       
-      setIsSendingReport(true);
-      const response = await fetch('/api/feishu/send-report', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ 
-          content: report,
-          type: 'chat',
-          data: { stock: analysis.stockInfo?.name || 'Unknown', history: chatHistory }
-        }),
-      });
-      
-      if (!response.ok) {
-        throw new Error('Failed to send report');
+      if (success) {
+        void fetch('/api/admin/log', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ 
+            field: 'feishu_chat_report', 
+            oldValue: 'standard_format', 
+            newValue: 'optimized_markdown', 
+            description: `成功发送优化后的追问研讨报告: ${analysis.stockInfo?.name}` 
+          })
+        });
       }
-      
-      // Log optimized chat report sending
-      void fetch('/api/admin/log', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ 
-          field: 'feishu_chat_report', 
-          oldValue: 'standard_format', 
-          newValue: 'optimized_markdown', 
-          description: `成功发送优化后的追问研讨报告: ${analysis.stockInfo?.name}` 
-        })
-      });
-      
-      setReportStatus('success');
-      setTimeout(() => setReportStatus('idle'), 3000);
     } catch (error) {
-      console.error('Chat Report Error:', error);
       setReportStatus('error');
       setIsGeneratingReport(false);
-    } finally {
-      setIsSendingReport(false);
     }
   };
 
   const handleSendDiscussionReport = async () => {
     if (!analysis || discussionMessages.length === 0) return;
-    
     setIsGeneratingReport(true);
-    setIsSendingReport(true);
-    setReportStatus('idle');
-    
     try {
       const report = await getDiscussionReport(analysis, discussionMessages, scenarios, backtestResult, geminiConfig);
-      
-      const response = await fetch('/api/feishu/send-report', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ 
-          content: report,
-          type: 'discussion',
-          data: { stock: analysis.stockInfo?.name || 'Unknown', discussionCount: discussionMessages.length }
-        }),
-      });
-      
-      if (!response.ok) {
-        throw new Error('Failed to send report');
-      }
-      
-      // Log optimized discussion report sending
-      void fetch('/api/admin/log', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ 
-          field: 'feishu_discussion_report', 
-          oldValue: 'standard_format', 
-          newValue: 'optimized_markdown', 
-          description: `成功发送优化后的个股研讨报告: ${analysis.stockInfo?.name}` 
-        })
-      });
-      
-      setReportStatus('success');
-      setTimeout(() => setReportStatus('idle'), 3000);
-    } catch (error) {
-      console.error('Discussion Report Error:', error);
-      setReportStatus('error');
-    } finally {
       setIsGeneratingReport(false);
-      setIsSendingReport(false);
+      const success = await sendReport(report, 'discussion', { stock: analysis.stockInfo?.name || 'Unknown', discussionCount: discussionMessages.length });
+      
+      if (success) {
+        void fetch('/api/admin/log', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ 
+            field: 'feishu_discussion_report', 
+            oldValue: 'standard_format', 
+            newValue: 'optimized_markdown', 
+            description: `成功发送优化后的个股研讨报告: ${analysis.stockInfo?.name}` 
+          })
+        });
+      }
+    } catch (error) {
+      setReportStatus('error');
+      setIsGeneratingReport(false);
     }
   };
 
   const handleSendHistoryToFeishu = async (item: any) => {
-    setIsSendingReport(true);
-    setReportStatus('idle');
     try {
-      let report = '';
-      if (item.stockInfo) {
-        report = await getStockReport(item, geminiConfig);
-      } else {
-        report = await getDailyReport(item, geminiConfig);
-      }
-
-      const response = await fetch('/api/feishu/send-report', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ 
-          content: report,
-          type: 'history_backup',
-          data: item
-        }),
-      });
-      
-      if (!response.ok) {
-        throw new Error('Failed to send report');
-      }
-      
-      setReportStatus('success');
-      setTimeout(() => setReportStatus('idle'), 3000);
+      const report = item.stockInfo 
+        ? await getStockReport(item, geminiConfig)
+        : await getDailyReport(item, geminiConfig);
+      await sendReport(report, 'history_backup', item);
     } catch (error) {
-      console.error('History Report Error:', error);
       setReportStatus('error');
-    } finally {
-      setIsSendingReport(false);
     }
   };
 
@@ -512,12 +329,8 @@ export default function App() {
     if (!symbol || !symbol.trim()) return;
 
     setLoading(true);
-    setAnalysis(null);
-    setAnalysisError(null);
-    setChatError(null);
-    setChatHistory([]);
-    setDiscussionMessages([]);
-    setShowDiscussion(false);
+    resetAnalysis();
+    resetErrors();
 
     try {
       const result = await analyzeStock(symbol, market, geminiConfig);
@@ -526,61 +339,18 @@ export default function App() {
       // Trigger Agent Discussion
       setShowDiscussion(true);
       setIsDiscussing(true);
-      setDiscussionMessages([]);
-      setScenarios([]);
-      setValuationMatrix([]);
-      setStressTestLogic('');
-      setCatalystList([]);
-      setBacktestResult(null);
-      setVerificationMetrics([]);
-      setCapitalFlow(null);
-      setPositionManagement(null);
-      setTimeDimension(null);
       
       try {
-        const discussion = await runAgentDiscussion(result, (msg) => {
-          setDiscussionMessages(prev => [...prev, msg]);
-        }, geminiConfig);
-        
-        setScenarios(discussion.scenarios || []);
-        setValuationMatrix(discussion.valuationMatrix || []);
-        setSensitivityFactors(discussion.sensitivityFactors || []);
-        setExpectationGap(discussion.expectationGap || null);
-        setAnalystWeights(discussion.analystWeights || []);
-        setCalculations(discussion.calculations || []);
-        setControversialPoints(discussion.controversialPoints || []);
-        setTradingPlanHistory(discussion.tradingPlanHistory || []);
-        setDataFreshnessStatus(discussion.dataFreshnessStatus || null);
-        setStressTestLogic(discussion.stressTestLogic || '');
-        setCatalystList(discussion.catalystList || []);
-        setBacktestResult(discussion.backtestResult || null);
-        setVerificationMetrics(discussion.verificationMetrics || []);
-        setCapitalFlow(discussion.capitalFlow || null);
-        setPositionManagement(discussion.positionManagement || null);
-        setTimeDimension(discussion.timeDimension || null);
+        const discussion = await startAgentDiscussion(result, geminiConfig);
+        setDiscussionResults(discussion);
 
         // Update main analysis with discussion results
-        setAnalysis(prev => prev ? {
-          ...prev,
+        setAnalysis({
+          ...result,
           finalConclusion: discussion.finalConclusion,
-          tradingPlan: discussion.tradingPlan || prev.tradingPlan,
-          verificationMetrics: discussion.verificationMetrics || prev.verificationMetrics,
-          capitalFlow: discussion.capitalFlow || prev.capitalFlow
-        } : null);
-
-        // Save to history with discussion
-        void fetch('/api/admin/save-analysis', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ 
-            type: 'stock', 
-            data: { 
-              ...result, 
-              discussion: discussion.messages,
-              finalConclusion: discussion.finalConclusion,
-              scenarios: discussion.scenarios
-            } 
-          })
+          tradingPlan: discussion.tradingPlan || result.tradingPlan,
+          verificationMetrics: discussion.verificationMetrics || result.verificationMetrics,
+          capitalFlow: discussion.capitalFlow || result.capitalFlow
         });
       } catch (err) {
         console.error('Agent discussion failed:', err);
@@ -589,25 +359,7 @@ export default function App() {
       }
     } catch (err) {
       console.error(err);
-      setAnalysis(null);
-      let message = '分析股票失败，请稍后重试。';
-      
-      if (err instanceof Error) {
-        const errStr = err.message;
-        if (errStr.includes('429') || errStr.includes('quota') || errStr.includes('RESOURCE_EXHAUSTED')) {
-          message = 'API 额度已耗尽 (429)。请检查您的 Google AI Studio 计费设置或稍后再试。';
-        } else {
-          try {
-            const parsed = JSON.parse(errStr);
-            if (parsed.error?.message) {
-              message = `API 错误: ${parsed.error.message}`;
-            }
-          } catch (e) {
-            message = errStr;
-          }
-        }
-      }
-      setAnalysisError(message);
+      setAnalysisError(err instanceof Error ? err.message : '分析股票失败，请稍后重试。');
     } finally {
       setLoading(false);
     }
@@ -629,38 +381,14 @@ export default function App() {
       setChatHistory((prev) => [...prev, { role: 'ai', content: reply || '抱歉，我暂时无法回答这个问题。' }]);
     } catch (err) {
       console.error(err);
-      let message = '对话出错，请稍后重试。';
-      
-      if (err instanceof Error) {
-        const errStr = err.message;
-        if (errStr.includes('429') || errStr.includes('quota') || errStr.includes('RESOURCE_EXHAUSTED')) {
-          message = 'API 额度已耗尽 (429)。请检查您的 Google AI Studio 计费设置或稍后再试。';
-        } else {
-          try {
-            const parsed = JSON.parse(errStr);
-            if (parsed.error?.message) {
-              message = `API 错误: ${parsed.error.message}`;
-            }
-          } catch (e) {
-            message = errStr;
-          }
-        }
-      }
-      setChatError(message);
+      setChatError(err instanceof Error ? err.message : '对话出错，请稍后重试。');
     } finally {
       setIsChatting(false);
     }
   };
 
   const resetToHome = () => {
-    setAnalysis(null);
-    setSymbol('');
-    setChatMessage('');
-    setChatHistory([]);
-    setAnalysisError(null);
-    setChatError(null);
-    setDiscussionMessages([]);
-    setShowDiscussion(false);
+    resetAnalysis();
   };
 
   return (
@@ -793,7 +521,7 @@ export default function App() {
                   <button
                     onClick={async () => {
                       if (!analysis) return;
-                      const report = await getStockReport(analysis);
+                      const report = await getStockReport(analysis, geminiConfig);
                       const blob = new Blob([report], { type: 'text/markdown' });
                       const url = URL.createObjectURL(blob);
                       const a = document.createElement('a');
@@ -851,12 +579,7 @@ export default function App() {
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                   <div className="lg:col-span-2">
                     <DiscussionPanel 
-                      messages={discussionMessages} 
-                      isDiscussing={isDiscussing} 
-                      isReviewing={isReviewing}
-                      stockSymbol={analysis.stockInfo?.symbol}
                       onSendMessage={handleDiscussionQuestion}
-                      analystWeights={analystWeights}
                     />
                   </div>
                   <div className="space-y-6">
@@ -1175,7 +898,7 @@ export default function App() {
                                     可跟踪验证指标 (Verification Metrics)
                                   </h4>
                                   <div className="space-y-3">
-                                    {verificationMetrics.map((m, i) => (
+                                    {verificationMetrics?.map((m, i) => (
                                       <div key={i} className="space-y-1">
                                         <div className="flex items-center justify-between text-[11px]">
                                           <span className="text-zinc-200 font-bold">{m.indicator}</span>
@@ -1230,7 +953,7 @@ export default function App() {
                                     <div className="space-y-1">
                                       <span className="text-[8px] text-zinc-600 uppercase font-black">分层建仓 (Layered Entry)</span>
                                       <div className="flex flex-wrap gap-2">
-                                        {positionManagement.layeredEntry.map((step, i) => (
+                                        {positionManagement.layeredEntry?.map((step, i) => (
                                           <span key={i} className="text-[9px] px-2 py-0.5 rounded bg-zinc-800 text-zinc-400 border border-zinc-700">{step}</span>
                                         ))}
                                       </div>
@@ -1264,13 +987,13 @@ export default function App() {
                                       <div className="space-y-1">
                                         <span className="text-[8px] text-zinc-600 uppercase font-black">关键里程碑 (Milestones)</span>
                                         <ul className="list-disc list-inside text-[9px] text-zinc-400 space-y-0.5">
-                                          {timeDimension.keyMilestones.map((m, i) => <li key={i}>{m}</li>)}
+                                          {timeDimension.keyMilestones?.map((m, i) => <li key={i}>{m}</li>)}
                                         </ul>
                                       </div>
                                       <div className="space-y-1">
                                         <span className="text-[8px] text-zinc-600 uppercase font-black">退出触发 (Exit Triggers)</span>
                                         <ul className="list-disc list-inside text-[9px] text-zinc-400 space-y-0.5">
-                                          {timeDimension.exitTriggers.map((t, i) => <li key={i}>{t}</li>)}
+                                          {timeDimension.exitTriggers?.map((t, i) => <li key={i}>{t}</li>)}
                                         </ul>
                                       </div>
                                     </div>
@@ -1494,7 +1217,7 @@ export default function App() {
                         </div>
                       </div>
                       <ul className="space-y-2">
-                        {analysis.historicalData.majorEvents.map((event, i) => (
+                        {analysis.historicalData?.majorEvents?.map((event, i) => (
                           <li key={i} className="text-xs text-zinc-500 flex items-start gap-2">
                             <span className="mt-1.5 w-1 h-1 rounded-full bg-zinc-700 shrink-0" />
                             {event}
@@ -1560,7 +1283,7 @@ export default function App() {
                         可跟踪验证指标体系 (Verification Metrics)
                       </h4>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        {analysis.verificationMetrics.map((m, i) => (
+                        {analysis.verificationMetrics?.map((m, i) => (
                           <div key={i} className="p-4 rounded-xl bg-zinc-800/30 border border-zinc-700/30">
                             <div className="flex items-center justify-between mb-2">
                               <span className="font-bold text-zinc-100">{m.indicator}</span>
@@ -1857,7 +1580,7 @@ export default function App() {
                     </button>
                     {overviewLoading && <Loader2 className="animate-spin text-emerald-500" size={20} />}
                     <button
-                      onClick={handleSendDailyReport}
+                      onClick={handleTriggerDailyReport}
                       disabled={overviewLoading || isGeneratingReport || isSendingReport || !marketOverview}
                       className={cn(
                         "flex items-center gap-2 px-6 py-2.5 rounded-2xl text-sm font-bold transition-all shadow-lg",
@@ -1902,7 +1625,7 @@ export default function App() {
                         setOverviewLoading(true);
                         setOverviewError(null);
                         // The useEffect will handle the fetch if we trigger a state change or just call it directly
-                        getMarketOverview()
+                        getMarketOverview(geminiConfig)
                           .then(data => {
                             setMarketOverview(data);
                             setOverviewError(null);
@@ -2068,12 +1791,7 @@ export default function App() {
         </AnimatePresence>
 
         {/* Settings Modal */}
-        <SettingsModal
-          isOpen={isSettingsOpen}
-          onClose={() => setIsSettingsOpen(false)}
-          config={geminiConfig}
-          onConfigChange={setGeminiConfig}
-        />
+        <SettingsModal />
 
         {showAdminPanel && (
           <section className="space-y-8 pt-12 border-t border-zinc-900 mt-12">
