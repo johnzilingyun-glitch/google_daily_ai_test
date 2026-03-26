@@ -30,12 +30,15 @@ import {
   AlertTriangle,
   Cpu,
   Award,
-  Target
+  Target,
+  RefreshCcw,
+  Clock,
+  Layers
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
-import { Market, MarketOverview, StockAnalysis, AgentMessage, GeminiConfig, Scenario, Catalyst, SensitivityFactor, ExpectationGap, AnalystWeight, CalculationResult, TradingPlanVersion } from './types';
+import { Market, MarketOverview, StockAnalysis, AgentMessage, GeminiConfig, Scenario, Catalyst, SensitivityFactor, ExpectationGap, AnalystWeight, CalculationResult, TradingPlanVersion, AgentDiscussion } from './types';
 import { analyzeStock, getMarketOverview, sendChatMessage, getDailyReport, getStockReport, getChatReport, runAgentDiscussion, continueAgentDiscussion, getDiscussionReport } from './services/aiService';
 import { DiscussionPanel } from './components/DiscussionPanel';
 import { SettingsModal } from './components/SettingsModal';
@@ -106,6 +109,10 @@ export default function App() {
   const [stressTestLogic, setStressTestLogic] = useState<string>('');
   const [catalystList, setCatalystList] = useState<Catalyst[]>([]);
   const [backtestResult, setBacktestResult] = useState<any>(null);
+  const [verificationMetrics, setVerificationMetrics] = useState<AgentDiscussion['verificationMetrics']>([]);
+  const [capitalFlow, setCapitalFlow] = useState<AgentDiscussion['capitalFlow'] | null>(null);
+  const [positionManagement, setPositionManagement] = useState<AgentDiscussion['positionManagement'] | null>(null);
+  const [timeDimension, setTimeDimension] = useState<AgentDiscussion['timeDimension'] | null>(null);
   const [isDiscussing, setIsDiscussing] = useState(false);
   const [isReviewing, setIsReviewing] = useState(false);
   const [showDiscussion, setShowDiscussion] = useState(false);
@@ -152,6 +159,10 @@ export default function App() {
       if (discussion.scenarios) setScenarios(discussion.scenarios);
       if (discussion.sensitivityFactors) setSensitivityFactors(discussion.sensitivityFactors);
       if (discussion.controversialPoints) setControversialPoints(discussion.controversialPoints);
+      if (discussion.verificationMetrics) setVerificationMetrics(discussion.verificationMetrics);
+      if (discussion.capitalFlow) setCapitalFlow(discussion.capitalFlow);
+      if (discussion.positionManagement) setPositionManagement(discussion.positionManagement);
+      if (discussion.timeDimension) setTimeDimension(discussion.timeDimension);
       if (discussion.tradingPlanHistory) {
         setTradingPlanHistory(prev => [...prev, ...discussion.tradingPlanHistory!]);
       }
@@ -521,6 +532,10 @@ export default function App() {
       setStressTestLogic('');
       setCatalystList([]);
       setBacktestResult(null);
+      setVerificationMetrics([]);
+      setCapitalFlow(null);
+      setPositionManagement(null);
+      setTimeDimension(null);
       
       try {
         const discussion = await runAgentDiscussion(result, (msg) => {
@@ -539,12 +554,18 @@ export default function App() {
         setStressTestLogic(discussion.stressTestLogic || '');
         setCatalystList(discussion.catalystList || []);
         setBacktestResult(discussion.backtestResult || null);
+        setVerificationMetrics(discussion.verificationMetrics || []);
+        setCapitalFlow(discussion.capitalFlow || null);
+        setPositionManagement(discussion.positionManagement || null);
+        setTimeDimension(discussion.timeDimension || null);
 
         // Update main analysis with discussion results
         setAnalysis(prev => prev ? {
           ...prev,
           finalConclusion: discussion.finalConclusion,
-          tradingPlan: discussion.tradingPlan || prev.tradingPlan
+          tradingPlan: discussion.tradingPlan || prev.tradingPlan,
+          verificationMetrics: discussion.verificationMetrics || prev.verificationMetrics,
+          capitalFlow: discussion.capitalFlow || prev.capitalFlow
         } : null);
 
         // Save to history with discussion
@@ -1061,7 +1082,7 @@ export default function App() {
                                         <div className="flex items-end justify-between">
                                           <span className={cn(
                                             "text-lg font-black tracking-tighter",
-                                            f.impact.includes('+') ? "text-emerald-400" : "text-rose-400"
+                                            f.impact?.includes('+') ? "text-emerald-400" : "text-rose-400"
                                           )}>
                                             {f.impact}
                                             <span className="text-[10px] ml-1 font-bold text-zinc-600">Δ TP</span>
@@ -1143,6 +1164,116 @@ export default function App() {
                                         </div>
                                       </div>
                                     ))}
+                                  </div>
+                                </div>
+                              )}
+
+                              {verificationMetrics && verificationMetrics.length > 0 && (
+                                <div className="p-4 rounded-2xl bg-emerald-500/5 border border-emerald-500/10">
+                                  <h4 className="text-[10px] font-bold uppercase tracking-widest text-emerald-500 mb-3 flex items-center gap-2">
+                                    <CheckCircle2 size={12} />
+                                    可跟踪验证指标 (Verification Metrics)
+                                  </h4>
+                                  <div className="space-y-3">
+                                    {verificationMetrics.map((m, i) => (
+                                      <div key={i} className="space-y-1">
+                                        <div className="flex items-center justify-between text-[11px]">
+                                          <span className="text-zinc-200 font-bold">{m.indicator}</span>
+                                          <span className="text-emerald-400 font-mono">{m.threshold}</span>
+                                        </div>
+                                        <div className="flex items-center justify-between text-[9px] text-zinc-500">
+                                          <span>周期: {m.timeframe}</span>
+                                          <span className="italic">{m.logic}</span>
+                                        </div>
+                                      </div>
+                                    ))}
+                                  </div>
+                                </div>
+                              )}
+
+                              {capitalFlow && (
+                                <div className="p-4 rounded-2xl bg-blue-500/5 border border-blue-500/10">
+                                  <h4 className="text-[10px] font-bold uppercase tracking-widest text-blue-500 mb-3 flex items-center gap-2">
+                                    <Coins size={12} />
+                                    资金行为验证 (Capital Flow)
+                                  </h4>
+                                  <div className="grid grid-cols-2 gap-4">
+                                    <div className="space-y-1">
+                                      <span className="text-[8px] text-zinc-600 uppercase font-black">北向资金 (Northbound)</span>
+                                      <p className="text-[10px] text-zinc-300">{capitalFlow.northboundFlow}</p>
+                                    </div>
+                                    <div className="space-y-1">
+                                      <span className="text-[8px] text-zinc-600 uppercase font-black">机构持仓 (Institutional)</span>
+                                      <p className="text-[10px] text-zinc-300">{capitalFlow.institutionalHoldings}</p>
+                                    </div>
+                                    {capitalFlow.ahPremium && (
+                                      <div className="space-y-1">
+                                        <span className="text-[8px] text-zinc-600 uppercase font-black">AH 溢价 (AH Premium)</span>
+                                        <p className="text-[10px] text-zinc-300">{capitalFlow.ahPremium}</p>
+                                      </div>
+                                    )}
+                                    <div className="space-y-1">
+                                      <span className="text-[8px] text-zinc-600 uppercase font-black">市场情绪 (Sentiment)</span>
+                                      <p className="text-[10px] text-zinc-300">{capitalFlow.marketSentiment}</p>
+                                    </div>
+                                  </div>
+                                </div>
+                              )}
+
+                              {positionManagement && (
+                                <div className="p-4 rounded-2xl bg-zinc-800/50 border border-zinc-700/50">
+                                  <h4 className="text-[10px] font-bold uppercase tracking-widest text-zinc-400 mb-3 flex items-center gap-2">
+                                    <Layers size={12} />
+                                    仓位管理逻辑 (Position Management)
+                                  </h4>
+                                  <div className="space-y-3">
+                                    <div className="space-y-1">
+                                      <span className="text-[8px] text-zinc-600 uppercase font-black">分层建仓 (Layered Entry)</span>
+                                      <div className="flex flex-wrap gap-2">
+                                        {positionManagement.layeredEntry.map((step, i) => (
+                                          <span key={i} className="text-[9px] px-2 py-0.5 rounded bg-zinc-800 text-zinc-400 border border-zinc-700">{step}</span>
+                                        ))}
+                                      </div>
+                                    </div>
+                                    <div className="grid grid-cols-2 gap-4">
+                                      <div className="space-y-1">
+                                        <span className="text-[8px] text-zinc-600 uppercase font-black">仓位逻辑 (Sizing)</span>
+                                        <p className="text-[10px] text-zinc-300">{positionManagement.sizingLogic}</p>
+                                      </div>
+                                      <div className="space-y-1">
+                                        <span className="text-[8px] text-zinc-600 uppercase font-black">风险立场 (Stance)</span>
+                                        <p className="text-[10px] text-zinc-300">{positionManagement.riskAdjustedStance}</p>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              )}
+
+                              {timeDimension && (
+                                <div className="p-4 rounded-2xl bg-purple-500/5 border border-purple-500/10">
+                                  <h4 className="text-[10px] font-bold uppercase tracking-widest text-purple-500 mb-3 flex items-center gap-2">
+                                    <Clock size={12} />
+                                    时间维度 (Time Dimension)
+                                  </h4>
+                                  <div className="space-y-3">
+                                    <div className="space-y-1">
+                                      <span className="text-[8px] text-zinc-600 uppercase font-black">预期持仓周期 (Duration)</span>
+                                      <p className="text-[10px] text-zinc-300 font-bold">{timeDimension.expectedDuration}</p>
+                                    </div>
+                                    <div className="grid grid-cols-2 gap-4">
+                                      <div className="space-y-1">
+                                        <span className="text-[8px] text-zinc-600 uppercase font-black">关键里程碑 (Milestones)</span>
+                                        <ul className="list-disc list-inside text-[9px] text-zinc-400 space-y-0.5">
+                                          {timeDimension.keyMilestones.map((m, i) => <li key={i}>{m}</li>)}
+                                        </ul>
+                                      </div>
+                                      <div className="space-y-1">
+                                        <span className="text-[8px] text-zinc-600 uppercase font-black">退出触发 (Exit Triggers)</span>
+                                        <ul className="list-disc list-inside text-[9px] text-zinc-400 space-y-0.5">
+                                          {timeDimension.exitTriggers.map((t, i) => <li key={i}>{t}</li>)}
+                                        </ul>
+                                      </div>
+                                    </div>
                                   </div>
                                 </div>
                               )}
@@ -1387,6 +1518,94 @@ export default function App() {
                         <div className="space-y-2">
                           <p className="text-[10px] font-bold uppercase tracking-widest text-zinc-500">安全边际总结</p>
                           <p className="text-sm text-zinc-300 leading-relaxed font-medium">{analysis.valuationAnalysis.marginOfSafetySummary}</p>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {analysis.cycleAnalysis && (
+                    <div className="mt-6 p-6 rounded-2xl bg-blue-500/5 border border-blue-500/10">
+                      <h4 className="text-sm font-bold text-blue-400 mb-4 flex items-center gap-2">
+                        <RefreshCcw size={18} />
+                        周期性分析 (Cycle Analysis)
+                      </h4>
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                        <div className="space-y-2">
+                          <p className="text-[10px] font-bold uppercase tracking-widest text-zinc-500">当前阶段 (Stage)</p>
+                          <div className={cn(
+                            "inline-flex px-3 py-1 rounded-lg text-sm font-bold",
+                            analysis.cycleAnalysis.stage === "Bottom" ? "bg-emerald-500/20 text-emerald-400" :
+                            analysis.cycleAnalysis.stage === "Peak" ? "bg-rose-500/20 text-rose-400" :
+                            "bg-blue-500/20 text-blue-400"
+                          )}>
+                            {analysis.cycleAnalysis.stage}
+                          </div>
+                        </div>
+                        <div className="space-y-2 md:col-span-2">
+                          <p className="text-[10px] font-bold uppercase tracking-widest text-zinc-500">周期逻辑与波动风险</p>
+                          <p className="text-sm text-zinc-300 leading-relaxed">{analysis.cycleAnalysis.logic}</p>
+                          <p className="text-xs text-rose-400 mt-2 italic flex items-center gap-1">
+                            <AlertTriangle size={12} />
+                            波动风险: {analysis.cycleAnalysis.volatilityRisk}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {analysis.verificationMetrics && analysis.verificationMetrics.length > 0 && (
+                    <div className="mt-6 p-6 rounded-2xl bg-emerald-500/5 border border-emerald-500/10">
+                      <h4 className="text-sm font-bold text-emerald-400 mb-4 flex items-center gap-2">
+                        <CheckCircle2 size={18} />
+                        可跟踪验证指标体系 (Verification Metrics)
+                      </h4>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        {analysis.verificationMetrics.map((m, i) => (
+                          <div key={i} className="p-4 rounded-xl bg-zinc-800/30 border border-zinc-700/30">
+                            <div className="flex items-center justify-between mb-2">
+                              <span className="font-bold text-zinc-100">{m.indicator}</span>
+                              <span className="text-base font-black text-emerald-400 font-mono">{m.threshold}</span>
+                            </div>
+                            <div className="grid grid-cols-2 gap-4 text-[10px] text-zinc-500">
+                              <div className="flex flex-col">
+                                <span className="uppercase font-bold text-zinc-600">验证周期</span>
+                                <span>{m.timeframe}</span>
+                              </div>
+                              <div className="flex flex-col">
+                                <span className="uppercase font-bold text-zinc-600">验证逻辑</span>
+                                <span className="italic">{m.logic}</span>
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {analysis.capitalFlow && (
+                    <div className="mt-6 p-6 rounded-2xl bg-amber-500/5 border border-amber-500/10">
+                      <h4 className="text-sm font-bold text-amber-400 mb-4 flex items-center gap-2">
+                        <Coins size={18} />
+                        资金行为验证 (Capital Flow)
+                      </h4>
+                      <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+                        <div className="space-y-1">
+                          <p className="text-[10px] font-bold uppercase tracking-widest text-zinc-600">北向资金</p>
+                          <p className="text-sm text-zinc-300 font-medium">{analysis.capitalFlow.northboundFlow}</p>
+                        </div>
+                        <div className="space-y-1">
+                          <p className="text-[10px] font-bold uppercase tracking-widest text-zinc-600">机构持仓</p>
+                          <p className="text-sm text-zinc-300 font-medium">{analysis.capitalFlow.institutionalHoldings}</p>
+                        </div>
+                        {analysis.capitalFlow.ahPremium && (
+                          <div className="space-y-1">
+                            <p className="text-[10px] font-bold uppercase tracking-widest text-zinc-600">AH 溢价</p>
+                            <p className="text-sm text-zinc-300 font-medium">{analysis.capitalFlow.ahPremium}</p>
+                          </div>
+                        )}
+                        <div className="space-y-1">
+                          <p className="text-[10px] font-bold uppercase tracking-widest text-zinc-600">市场情绪</p>
+                          <p className="text-sm text-zinc-300 font-medium">{analysis.capitalFlow.marketSentiment}</p>
                         </div>
                       </div>
                     </div>
@@ -1742,7 +1961,7 @@ export default function App() {
                               <div className="flex items-center justify-between mb-1">
                                 <span className="font-bold text-zinc-200">{sector.name}</span>
                                 <span className={cn("text-[10px] px-1.5 py-0.5 rounded-full font-bold uppercase", 
-                                  sector.trend.includes('涨') || sector.trend.includes('强') ? "bg-emerald-500/20 text-emerald-400" : "bg-rose-500/20 text-rose-400"
+                                  sector.trend?.includes('涨') || sector.trend?.includes('强') ? "bg-emerald-500/20 text-emerald-400" : "bg-rose-500/20 text-rose-400"
                                 )}>{sector.trend}</span>
                               </div>
                               <p className="text-xs text-zinc-500 leading-relaxed">{sector.conclusion}</p>
@@ -1762,7 +1981,7 @@ export default function App() {
                               <div className="flex items-center justify-between mb-1">
                                 <span className="font-bold text-zinc-200">{item.name}</span>
                                 <span className={cn("text-[10px] px-1.5 py-0.5 rounded-full font-bold uppercase", 
-                                  item.trend.includes('涨') || item.trend.includes('强') ? "bg-emerald-500/20 text-emerald-400" : "bg-rose-500/20 text-rose-400"
+                                  item.trend?.includes('涨') || item.trend?.includes('强') ? "bg-emerald-500/20 text-emerald-400" : "bg-rose-500/20 text-rose-400"
                                 )}>{item.trend}</span>
                               </div>
                               <p className="text-xs text-zinc-500 leading-relaxed">{item.expectation}</p>

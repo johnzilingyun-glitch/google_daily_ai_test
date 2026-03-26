@@ -126,6 +126,23 @@ export interface StockAnalysis {
   };
   netNetValue?: number;
   isDeepValue?: boolean;
+  verificationMetrics?: {
+    indicator: string;
+    threshold: string;
+    timeframe: string;
+    logic: string;
+  }[];
+  capitalFlow?: {
+    northboundFlow: string;
+    institutionalHoldings: string;
+    ahPremium?: string;
+    marketSentiment: string;
+  };
+  cycleAnalysis?: {
+    stage: "Early" | "Mid" | "Late" | "Bottom" | "Peak";
+    logic: string;
+    volatilityRisk: string;
+  };
 }
 
 export interface ChatMessage {
@@ -218,6 +235,28 @@ export interface AgentDiscussion {
     previousRecommendation: string;
     actualReturn: string;
     learningPoint: string;
+  };
+  verificationMetrics?: {
+    indicator: string;
+    threshold: string;
+    timeframe: string;
+    logic: string;
+  }[];
+  capitalFlow?: {
+    northboundFlow: string;
+    institutionalHoldings: string;
+    ahPremium?: string;
+    marketSentiment: string;
+  };
+  positionManagement?: {
+    layeredEntry: string[];
+    sizingLogic: string;
+    riskAdjustedStance: string;
+  };
+  timeDimension?: {
+    expectedDuration: string;
+    keyMilestones: string[];
+    exitTriggers: string[];
   };
 }
 

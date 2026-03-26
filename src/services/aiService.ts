@@ -591,17 +591,22 @@ Requirements:
    - **TEST CASE**: A valid URL should look like 'https://finance.sina.com.cn/stock/s/2024-03-22/doc-imnvvxyz1234567.shtml' not 'https://finance.sina.com.cn/'.
 11. Provide summary, technicalAnalysis, fundamentalAnalysis, sentiment, score, recommendation, keyRisks, keyOpportunities, and a detailed tradingPlan.
 12. **MARGIN OF SAFETY (NEW)**: Incorporate "Margin of Safety" (安全边际) theory into the fundamental analysis and trading plan.
-13. **TRADING PLAN LOGIC (NEW)**: 
+13. **EVIDENCE-BASED REASONING (CRITICAL)**: For every claim made in the analysis, you MUST provide specific evidence (data points, news snippets, or financial ratios). Avoid vague storytelling (叙事过强).
+14. **CAUSATION VS CORRELATION**: Explicitly distinguish between variables that are merely correlated and those that have a verified causal link to the stock's performance.
+15. **CYCLE & VOLATILITY (NEW)**: For cyclical stocks, identify the current stage (Early/Mid/Late/Bottom/Peak) and analyze how volatility characteristics affect the thesis.
+16. **TRACKABLE METRICS (NEW)**: Define specific "Verification Metrics" with thresholds and timeframes (e.g., "If X > Y for Z weeks, then thesis is confirmed").
+17. **CAPITAL BEHAVIOR (NEW)**: Analyze Northbound flow, institutional changes, and AH premium to verify if the market "believes" your fundamental logic.
+18. **TRADING PLAN LOGIC (NEW)**: 
     - If the recommendation is NOT "Buy" or "Strong Buy", the tradingPlan should state "Not Recommended" (不推荐) for entryPrice, targetPrice, and stopLoss. 
     - Do NOT provide specific price levels if not recommended.
     - **STRATEGY RISKS (NEW)**: Clearly state the specific risks associated with the recommended entry/target/stop-loss levels (e.g., "if stop-loss is too tight, it may be triggered by normal volatility"). This is separate from general keyRisks.
-14. tradingPlan must include: entryPrice, targetPrice, stopLoss, strategy, and strategyRisks (all as strings).
-15. sentiment must be one of: Bullish, Bearish, Neutral.
-16. recommendation must be one of: Strong Buy, Buy, Hold, Sell, Strong Sell.
-17. All long-form text fields must be in Simplified Chinese.
-18. Continuity: Based on previous analysis of this stock, identify if trends are continuing or reversing.
-19. **ANTI-HALLUCINATION (CRITICAL)**: If you cannot find the data, state it clearly in the summary. Do NOT invent numbers.
-20. **REASONABLENESS CHECK**: If the price is significantly different from the previous close or historical ranges, you MUST double-check if you have the correct stock and market.
+19. tradingPlan must include: entryPrice, targetPrice, stopLoss, strategy, and strategyRisks (all as strings).
+20. sentiment must be one of: Bullish, Bearish, Neutral.
+21. recommendation must be one of: Strong Buy, Buy, Hold, Sell, Strong Sell.
+22. All long-form text fields must be in Simplified Chinese.
+23. Continuity: Based on previous analysis of this stock, identify if trends are continuing or reversing.
+24. **ANTI-HALLUCINATION (CRITICAL)**: If you cannot find the data, state it clearly in the summary. Do NOT invent numbers.
+25. **REASONABLENESS CHECK**: If the price is significantly different from the previous close or historical ranges, you MUST double-check if you have the correct stock and market.
 
 JSON schema:
 {
@@ -647,6 +652,25 @@ JSON schema:
   },
   "netNetValue": 0,
   "isDeepValue": true,
+  "verificationMetrics": [
+    {
+      "indicator": "string",
+      "threshold": "string",
+      "timeframe": "string",
+      "logic": "string"
+    }
+  ],
+  "capitalFlow": {
+    "northboundFlow": "string",
+    "institutionalHoldings": "string",
+    "ahPremium": "string",
+    "marketSentiment": "string"
+  },
+  "cycleAnalysis": {
+    "stage": "Early | Mid | Late | Bottom | Peak",
+    "logic": "string",
+    "volatilityRisk": "string"
+  },
   "news": [
     {
       "title": "string",
@@ -838,10 +862,12 @@ export async function runDeepResearch(
     Your Task (Multi-Source Parallel Search):
     1. **Real-time Financials**: Retrieve current PE/EPS, dividend yield, and recent earnings surprise data.
     2. **Commodity & Macro Monitor**: If relevant (e.g., gold, copper, oil), monitor current prices and supply/demand dynamics.
-    3. **Expectation Gap (预期偏差识别)**: Compare the MARKET CONSENSUS above with our current data. Identify if there's a significant gap (Alpha source). Explain why we might differ from the consensus.
-    4. **Freshness Check (强制时间戳)**: For every macro indicator or key data point, you MUST include the collection timestamp (e.g., [2026-03-25 10:00]).
-    5. **Confidence Intervals (置信区间)**: Provide ranges for key forecasts (e.g., "Expected 2026 Gold Price: $3200-3400, Confidence: 85%").
-    6. **X Semantic Search**: Capture market sentiment shifts and asymmetric information from social media and niche financial forums.
+    3. **Capital Flow Analysis (资金行为验证)**: Search for Northbound funds (北向资金) flow, institutional holding changes (机构持仓), and H-share/A-share premium (AH溢价) if applicable.
+    4. **Cycle Analysis (周期性分析)**: Identify where the stock is in its industry cycle (Early/Mid/Late/Bottom/Peak). Analyze volatility characteristics.
+    5. **Expectation Gap (预期偏差识别)**: Compare the MARKET CONSENSUS above with our current data. Identify if there's a significant gap (Alpha source). Explain why we might differ from the consensus.
+    6. **Freshness Check (强制时间戳)**: For every macro indicator or key data point, you MUST include the collection timestamp (e.g., [2026-03-25 10:00]).
+    7. **Confidence Intervals (置信区间)**: Provide ranges for key forecasts (e.g., "Expected 2026 Gold Price: $3200-3400, Confidence: 85%").
+    8. **X Semantic Search**: Capture market sentiment shifts and asymmetric information from social media and niche financial forums.
     
     Language: Simplified Chinese.
     Format: Markdown with clear sections. Use tables for quantified data.
@@ -1124,10 +1150,14 @@ export async function runAgentDiscussion(
        - **Expected Return (预期回报 12M)**
        - **Probability (概率)**: 0-100%
        - **Logic (核心逻辑)**
-    3. **Sensitivity Analysis (因子敏感度面板)**: Quantify the impact of key factors (e.g., Gold Price ±5%, Interest Rate ±25bps) on the target price. Provide at least 2 factors. Include the "formula" used for each factor.
-    4. **Expectation Gap (预期偏差识别)**: Identify the gap between market consensus (Bloomberg/Refinitiv) and our team's view. Is it an Alpha source? Provide a "confidenceScore" (0-100).
-    5. **Stress Test Logic (压力测试逻辑)**: Calculate sensitivity factors (e.g., ΔFCF formula).
-    6. **Catalyst List (催化剂清单)**: List upcoming events with probability and impact.
+    3. **Verification Metrics (可跟踪验证指标体系)**: Define 3-5 specific, quantifiable indicators with thresholds and timeframes that confirm or invalidate the thesis (e.g., "LNG > 0.72 for 2 weeks -> Valid Signal").
+    4. **Capital Flow Analysis (资金行为验证)**: Incorporate Northbound flow, institutional changes, and AH premium. Does the market "believe" the fundamental logic?
+    5. **Position Management (仓位管理逻辑)**: Provide a layered entry strategy (分层建仓) and sizing logic that matches the risk level.
+    6. **Time Dimension (时间维度)**: Specify the expected duration, key milestones, and exit triggers.
+    7. **Sensitivity Analysis (因子敏感度面板)**: Quantify the impact of key factors (e.g., Gold Price ±5%, Interest Rate ±25bps) on the target price. Provide at least 2 factors. Include the "formula" used for each factor.
+    8. **Expectation Gap (预期偏差识别)**: Identify the gap between market consensus (Bloomberg/Refinitiv) and our team's view. Is it an Alpha source? Provide a "confidenceScore" (0-100).
+    9. **Stress Test Logic (压力测试逻辑)**: Calculate sensitivity factors (e.g., ΔFCF formula).
+    10. **Catalyst List (催化剂清单)**: List upcoming events with probability and impact.
     
     Return the response in JSON format:
     {
@@ -1138,6 +1168,25 @@ export async function runAgentDiscussion(
         "stopLoss": "...",
         "strategy": "...",
         "strategyRisks": "..."
+      },
+      "verificationMetrics": [
+        { "indicator": "...", "threshold": "...", "timeframe": "...", "logic": "..." }
+      ],
+      "capitalFlow": {
+        "northboundFlow": "...",
+        "institutionalHoldings": "...",
+        "ahPremium": "...",
+        "marketSentiment": "..."
+      },
+      "positionManagement": {
+        "layeredEntry": ["...", "..."],
+        "sizingLogic": "...",
+        "riskAdjustedStance": "..."
+      },
+      "timeDimension": {
+        "expectedDuration": "...",
+        "keyMilestones": ["...", "..."],
+        "exitTriggers": ["...", "..."]
       },
       "controversialPoints": ["...", "..."],
       "scenarios": [...],
@@ -1244,6 +1293,10 @@ export async function runAgentDiscussion(
     catalystList: modData.catalystList,
     sensitivityFactors: modData.sensitivityFactors,
     expectationGap: modData.expectationGap,
+    verificationMetrics: modData.verificationMetrics,
+    capitalFlow: modData.capitalFlow,
+    positionManagement: modData.positionManagement,
+    timeDimension: modData.timeDimension,
     analystWeights: analystWeights,
     calculations: calculations,
     dataFreshnessStatus: "Fresh",
