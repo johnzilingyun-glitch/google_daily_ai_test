@@ -19,6 +19,7 @@ const roleIcons: Record<AgentRole, React.ReactNode> = {
   "Contrarian Strategist": <Zap size={18} />,
   "Deep Research Specialist": <Search size={18} />,
   "Professional Reviewer": <UserCheck size={18} />,
+  "Chief Strategist": <Award size={18} />,
   "Moderator": <User size={18} />,
 };
 
@@ -30,7 +31,8 @@ const roleColors: Record<AgentRole, string> = {
   "Contrarian Strategist": "text-orange-400 bg-orange-500/10 border-orange-500/20",
   "Deep Research Specialist": "text-cyan-400 bg-cyan-500/10 border-cyan-500/20",
   "Professional Reviewer": "text-indigo-400 bg-indigo-500/10 border-indigo-500/20",
-  "Moderator": "text-amber-400 bg-amber-500/10 border-amber-500/20",
+  "Chief Strategist": "text-amber-400 bg-amber-500/10 border-amber-500/20",
+  "Moderator": "text-zinc-400 bg-zinc-500/10 border-zinc-500/20",
 };
 
 const roleNames: Record<AgentRole, string> = {
@@ -41,7 +43,8 @@ const roleNames: Record<AgentRole, string> = {
   "Contrarian Strategist": "反向策略师",
   "Deep Research Specialist": "深度研究专家",
   "Professional Reviewer": "高级评审专家",
-  "Moderator": "首席策略师 (总结)",
+  "Chief Strategist": "首席策略师",
+  "Moderator": "研讨主持人",
 };
 
 export const DiscussionPanel: React.FC<DiscussionPanelProps> = ({ 
@@ -91,7 +94,8 @@ export const DiscussionPanel: React.FC<DiscussionPanelProps> = ({
 
     const content = messages.map(msg => {
       const time = new Date(msg.timestamp).toLocaleString();
-      return `### [${roleNames[msg.role]}] - ${time}\n\n${msg.content}\n\n---\n\n`;
+      const roleName = roleNames[msg.role] || msg.role;
+      return `### [${roleName}] - ${time}\n\n${msg.content}\n\n---\n\n`;
     }).join('\n');
 
     const header = `# AI 专家组联席会议记录 - ${stockSymbol || '未知股票'}\n生成时间: ${new Date().toLocaleString()}\n\n---\n\n`;
@@ -151,14 +155,14 @@ export const DiscussionPanel: React.FC<DiscussionPanelProps> = ({
               transition={{ type: "spring", stiffness: 100, damping: 15 }}
               className="flex gap-5 group"
             >
-              <div className={`flex-shrink-0 w-12 h-12 rounded-2xl flex items-center justify-center border transition-all duration-300 group-hover:scale-110 ${roleColors[msg.role]}`}>
-                {roleIcons[msg.role]}
+              <div className={`flex-shrink-0 w-12 h-12 rounded-2xl flex items-center justify-center border transition-all duration-300 group-hover:scale-110 ${roleColors[msg.role] || "text-zinc-400 bg-zinc-800 border-zinc-700"}`}>
+                {roleIcons[msg.role] || <MessageSquare size={18} />}
               </div>
               <div className="flex-1 space-y-2">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <span className={`text-[10px] font-black uppercase tracking-widest px-2 py-0.5 rounded-md border ${roleColors[msg.role]}`}>
-                      {roleNames[msg.role]}
+                    <span className={`text-[10px] font-black uppercase tracking-widest px-2 py-0.5 rounded-md border ${roleColors[msg.role] || "text-zinc-400 bg-zinc-800 border-zinc-700"}`}>
+                      {roleNames[msg.role] || msg.role}
                     </span>
                     {getWeightInfo(msg.role)?.isExpert && (
                       <span className="text-[10px] font-bold text-amber-500 bg-amber-500/10 px-2 py-0.5 rounded-md border border-amber-500/20 flex items-center gap-1 animate-pulse">
@@ -233,7 +237,7 @@ export const DiscussionPanel: React.FC<DiscussionPanelProps> = ({
                     )}
                   </div>
                   {/* Subtle accent line */}
-                  <div className={`absolute left-0 top-0 bottom-0 w-1 rounded-full opacity-60 ${roleColors[msg.role].split(' ')[0]}`} />
+                  <div className={`absolute left-0 top-0 bottom-0 w-1 rounded-full opacity-60 ${(roleColors[msg.role] || "bg-zinc-700").split(' ')[0]}`} />
                 </div>
               </div>
             </motion.div>

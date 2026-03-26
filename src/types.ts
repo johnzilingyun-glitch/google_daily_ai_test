@@ -158,6 +158,7 @@ export type AgentRole =
   | "Contrarian Strategist"
   | "Deep Research Specialist"
   | "Professional Reviewer"
+  | "Chief Strategist"
   | "Moderator";
 
 export interface AgentMessage {

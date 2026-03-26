@@ -1,15 +1,15 @@
 import { GoogleGenAI } from "@google/genai";
 import { createAI, withRetry, parseJsonResponse } from "./geminiService";
 import { getMarketOverviewPrompt, getDailyReportPrompt } from "./prompts";
-import { MarketOverview, GeminiConfig } from "../types";
+import { MarketOverview, GeminiConfig, Market } from "../types";
 import { getHistoryContext, saveAnalysisToHistory } from "./adminService";
 
-let marketCache: { data: MarketOverview; timestamp: number } | null = null;
+let marketCache: Record<string, { data: MarketOverview; timestamp: number }> = {};
 const CACHE_DURATION = 10 * 60 * 1000; // 10 minutes
 
-export async function getMarketOverview(config?: GeminiConfig): Promise<MarketOverview> {
-  if (marketCache && Date.now() - marketCache.timestamp < CACHE_DURATION) {
-    return marketCache.data;
+export async function getMarketOverview(config?: GeminiConfig, market: Market = "A-Share"): Promise<MarketOverview> {
+  if (marketCache[market] && Date.now() - marketCache[market].timestamp < CACHE_DURATION) {
+    return marketCache[market].data;
   }
 
   const ai = createAI(config);
@@ -19,7 +19,7 @@ export async function getMarketOverview(config?: GeminiConfig): Promise<MarketOv
 
   let indicesData = [];
   try {
-    const res = await fetch('/api/stock/indices');
+    const res = await fetch(`/api/stock/indices?market=${market}`);
     if (res.ok) {
       indicesData = await res.json();
     }
@@ -27,7 +27,7 @@ export async function getMarketOverview(config?: GeminiConfig): Promise<MarketOv
     console.warn('Indices tool failed, falling back to search:', e);
   }
 
-  const prompt = getMarketOverviewPrompt(indicesData, history, beijingDate, now);
+  const prompt = getMarketOverviewPrompt(indicesData, history, beijingDate, now, market);
 
   const response = await withRetry(async () => {
     const result = await ai.models.generateContent({
@@ -43,7 +43,7 @@ export async function getMarketOverview(config?: GeminiConfig): Promise<MarketOv
   const overview = parseJsonResponse<MarketOverview>(response);
   
   if (overview.indices && overview.indices.length > 0) {
-    marketCache = { data: overview, timestamp: Date.now() };
+    marketCache[market] = { data: overview, timestamp: Date.now() };
     await saveAnalysisToHistory('market', overview);
   }
 

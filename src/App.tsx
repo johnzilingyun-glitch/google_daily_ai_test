@@ -131,6 +131,8 @@ export default function App() {
     resetAnalysis
   } = useAnalysisStore();
 
+  const [overviewMarket, setOverviewMarket] = useState<Market>("A-Share");
+  
   // Helper for Feishu Reports
   const sendReport = async (report: string, type: string, data?: any) => {
     setIsSendingReport(true);
@@ -206,7 +208,7 @@ export default function App() {
     setOverviewLoading(true);
     setOverviewError(null);
     try {
-      const data = await getMarketOverview(geminiConfig);
+      const data = await getMarketOverview(geminiConfig, overviewMarket);
       setMarketOverview(data);
     } catch (err) {
       console.error('Failed to fetch market overview:', err);
@@ -214,7 +216,7 @@ export default function App() {
     } finally {
       setOverviewLoading(false);
     }
-  }, [geminiConfig, setMarketOverview, setOverviewError, setOverviewLoading]);
+  }, [geminiConfig, overviewMarket, setMarketOverview, setOverviewError, setOverviewLoading]);
 
   const fetchAdminData = useCallback(async () => {
     try {
@@ -576,19 +578,22 @@ export default function App() {
 
               {/* Agent Discussion Section */}
               {showDiscussion && (
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                  <div className="lg:col-span-2">
-                    <DiscussionPanel 
-                      onSendMessage={handleDiscussionQuestion}
-                    />
-                  </div>
-                  <div className="space-y-6">
-                    <div className="p-6 rounded-2xl bg-zinc-900/50 border border-zinc-800 h-full">
-                      <h3 className="text-sm font-bold uppercase tracking-widest text-zinc-500 mb-6 flex items-center justify-between gap-2">
-                        <div className="flex items-center gap-2">
-                          <Zap size={16} className="text-emerald-500" />
-                          研讨会核心结论与场景分析
-                        </div>
+                <div className="flex flex-col gap-8">
+                  <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    <div className="lg:col-span-1">
+                      <DiscussionPanel 
+                        onSendMessage={handleDiscussionQuestion}
+                      />
+                    </div>
+                    <div className="lg:col-span-2 space-y-6">
+                      <div className="p-8 rounded-[2.5rem] bg-zinc-900/50 border border-zinc-800 h-full shadow-2xl">
+                        <h3 className="text-lg font-black uppercase tracking-[0.2em] text-zinc-400 mb-8 flex items-center justify-between gap-4">
+                          <div className="flex items-center gap-3">
+                            <div className="p-2 rounded-xl bg-emerald-500/10 border border-emerald-500/20">
+                              <Zap size={24} className="text-emerald-500" />
+                            </div>
+                            研讨会核心结论与场景分析
+                          </div>
                         {dataFreshnessStatus && (
                           <div className={clsx(
                             "px-2 py-0.5 rounded-full text-[9px] font-black uppercase tracking-widest border",
@@ -752,43 +757,49 @@ export default function App() {
                                 </div>
                               )}
 
-                              <div className="overflow-x-auto rounded-2xl border border-zinc-800 bg-zinc-900/30">
-                                <table className="w-full text-left border-collapse">
-                                  <thead>
-                                    <tr className="border-b border-zinc-800 bg-zinc-800/50">
-                                      <th className="px-4 py-3 text-[10px] font-black uppercase tracking-widest text-zinc-500">场景 (Scenario)</th>
-                                      <th className="px-4 py-3 text-[10px] font-black uppercase tracking-widest text-zinc-500">关键假设</th>
-                                      <th className="px-4 py-3 text-[10px] font-black uppercase tracking-widest text-zinc-500">目标价 / 安全边际</th>
-                                      <th className="px-4 py-3 text-[10px] font-black uppercase tracking-widest text-zinc-500">预期回报 (12M)</th>
-                                      <th className="px-4 py-3 text-[10px] font-black uppercase tracking-widest text-zinc-500">概率</th>
-                                    </tr>
-                                  </thead>
-                                  <tbody>
-                                    {scenarios.map((s, i) => (
-                                      <tr key={i} className="border-b border-zinc-800/50 hover:bg-zinc-800/20 transition-colors">
-                                        <td className="px-4 py-4">
-                                          <span className={cn(
-                                            "text-[10px] font-black uppercase tracking-widest px-2 py-0.5 rounded-md border",
-                                            s.case === "Bull" ? "text-emerald-400 border-emerald-500/20 bg-emerald-500/10" :
-                                            s.case === "Stress" ? "text-rose-400 border-rose-500/20 bg-rose-500/10" :
-                                            "text-blue-400 border-blue-500/20 bg-blue-500/10"
-                                          )}>
-                                            {s.case}
-                                          </span>
-                                        </td>
-                                        <td className="px-4 py-4 text-[11px] text-zinc-400 font-medium">{s.keyInputs}</td>
-                                        <td className="px-4 py-4">
-                                          <div className="flex flex-col">
-                                            <span className="text-sm font-bold text-zinc-200">{s.targetPrice}</span>
-                                            <span className="text-[10px] text-zinc-500">安全边际: {s.marginOfSafety}</span>
-                                          </div>
-                                        </td>
-                                        <td className="px-4 py-4 text-sm font-bold text-emerald-500">{s.expectedReturn}</td>
-                                        <td className="px-4 py-4 text-xs font-bold text-zinc-400">{s.probability}%</td>
-                                      </tr>
-                                    ))}
-                                  </tbody>
-                                </table>
+                              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                {scenarios.map((s, i) => (
+                                  <div key={i} className={cn(
+                                    "p-6 rounded-[2rem] border transition-all hover:scale-[1.02] duration-300",
+                                    s.case === "Bull" ? "bg-emerald-500/5 border-emerald-500/20" :
+                                    s.case === "Stress" ? "bg-rose-500/5 border-rose-500/20" :
+                                    "bg-blue-500/5 border-blue-500/20"
+                                  )}>
+                                    <div className="flex items-center justify-between mb-4">
+                                      <span className={cn(
+                                        "text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-full border",
+                                        s.case === "Bull" ? "text-emerald-400 border-emerald-500/30 bg-emerald-500/10" :
+                                        s.case === "Stress" ? "text-rose-400 border-rose-500/30 bg-rose-500/10" :
+                                        "text-blue-400 border-blue-500/30 bg-blue-500/10"
+                                      )}>
+                                        {s.case === 'Bull' ? '乐观 (Bull)' : s.case === 'Stress' ? '压力 (Stress)' : '基准 (Base)'}
+                                      </span>
+                                      <span className="text-lg font-black text-zinc-100">{s.probability}%</span>
+                                    </div>
+                                    
+                                    <div className="space-y-4">
+                                      <div>
+                                        <p className="text-[10px] text-zinc-500 uppercase font-black tracking-widest mb-1">关键假设</p>
+                                        <p className="text-xs text-zinc-300 leading-relaxed font-medium">{s.keyInputs}</p>
+                                      </div>
+                                      
+                                      <div className="grid grid-cols-2 gap-4 pt-4 border-t border-zinc-800/50">
+                                        <div>
+                                          <p className="text-[10px] text-zinc-500 uppercase font-black tracking-widest mb-1">目标价</p>
+                                          <p className="text-lg font-black text-zinc-100 tracking-tighter">{s.targetPrice}</p>
+                                        </div>
+                                        <div>
+                                          <p className="text-[10px] text-emerald-500 uppercase font-black tracking-widest mb-1">预期回报</p>
+                                          <p className="text-lg font-black text-emerald-500 tracking-tighter">{s.expectedReturn}</p>
+                                        </div>
+                                      </div>
+                                      
+                                      <div className="pt-2">
+                                        <p className="text-[10px] text-zinc-600 uppercase font-black tracking-widest">安全边际: <span className="text-zinc-400">{s.marginOfSafety}</span></p>
+                                      </div>
+                                    </div>
+                                  </div>
+                                ))}
                               </div>
 
                               {/* Sensitivity Analysis Panel */}
@@ -1023,10 +1034,16 @@ export default function App() {
                               <p className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest">专家们正在激烈讨论中</p>
                             </div>
                           )}
-                          {discussionMessages.length > 0 && !isDiscussing && discussionMessages.every(m => m.role !== "Moderator") && (
-                            <div className="flex items-center gap-2 px-4 py-2 rounded-xl bg-zinc-800/30 border border-zinc-700/50">
-                              <Loader2 size={12} className="animate-spin text-amber-500" />
-                              <p className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest">首席策略师正在整理最终意见</p>
+                          {discussionMessages.length > 0 && isReviewing && (
+                            <div className="flex items-center gap-3 px-6 py-4 rounded-2xl bg-emerald-500/5 border border-emerald-500/20 mt-4">
+                              <Loader2 size={16} className="animate-spin text-emerald-500" />
+                              <p className="text-xs font-bold text-emerald-500 uppercase tracking-widest">专家组正在审阅并回复中...</p>
+                            </div>
+                          )}
+                          {discussionMessages.length > 0 && !isDiscussing && !isReviewing && !analysis.finalConclusion && (
+                            <div className="flex items-center gap-3 px-6 py-4 rounded-2xl bg-amber-500/5 border border-amber-500/20 mt-4">
+                              <Loader2 size={16} className="animate-spin text-amber-500" />
+                              <p className="text-xs font-bold text-amber-500 uppercase tracking-widest">首席策略师正在整理最终意见...</p>
                             </div>
                           )}
                         </div>
@@ -1097,7 +1114,8 @@ export default function App() {
                     </div>
                   </div>
                 </div>
-              )}
+              </div>
+            )}
 
               <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
                 <div className="space-y-8 lg:col-span-2">
@@ -1571,6 +1589,22 @@ export default function App() {
                     今日大盘概览
                   </h2>
                   <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-1 rounded-2xl bg-zinc-800 p-1 border border-zinc-700">
+                      {(['A-Share', 'HK-Share', 'US-Share'] as Market[]).map((m) => (
+                        <button
+                          key={m}
+                          onClick={() => setOverviewMarket(m)}
+                          className={cn(
+                            "px-4 py-1.5 rounded-xl text-xs font-bold transition-all",
+                            overviewMarket === m 
+                              ? "bg-emerald-500 text-white shadow-lg" 
+                              : "text-zinc-400 hover:text-zinc-200"
+                          )}
+                        >
+                          {m === 'A-Share' ? 'A股' : m === 'HK-Share' ? '港股' : '美股'}
+                        </button>
+                      ))}
+                    </div>
                     <button
                       onClick={() => setIsSettingsOpen(true)}
                       className="flex h-10 w-10 items-center justify-center rounded-2xl border border-zinc-700 bg-zinc-800 text-zinc-400 transition-all hover:border-blue-500/50 hover:bg-blue-500/10 hover:text-blue-400"
