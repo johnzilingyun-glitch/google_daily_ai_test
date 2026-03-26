@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   ExternalLink, 
   CheckCircle2, 
@@ -35,10 +35,14 @@ import {
 import { motion, AnimatePresence } from 'motion/react';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
-import { Market, MarketOverview, StockAnalysis, AgentMessage, GeminiConfig, Scenario, Catalyst, SensitivityFactor, ExpectationGap, AnalystWeight, CalculationResult, TradingPlanVersion } from './types';
-import { analyzeStock, getMarketOverview, sendChatMessage, getDailyReport, getStockReport, getChatReport, runAgentDiscussion, continueAgentDiscussion, getDiscussionReport } from './services/aiService';
+import { GeminiConfig, Market } from './types';
+import { sendChatMessage, getDailyReport, getStockReport, getChatReport, getDiscussionReport } from './services/aiService';
+import { fetchWithTimeout } from './services/geminiClient';
 import { DiscussionPanel } from './components/DiscussionPanel';
 import { SettingsModal } from './components/SettingsModal';
+import { useMarketOverview, useDailyReport } from './hooks/useMarketOverview';
+import { useStockAnalysis } from './hooks/useStockAnalysis';
+import { useUsageStats } from './hooks/useUsageStats';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 
@@ -65,60 +69,16 @@ const chatPrompts = [
 ];
 
 export default function App() {
-  console.log('App is rendering');
-
-  // Market Analysis State
-  const [symbol, setSymbol] = useState('');
-  const [market, setMarket] = useState<Market>("A-Share");
-  const [analysis, setAnalysis] = useState<StockAnalysis | null>(null);
-  const [marketOverview, setMarketOverview] = useState<MarketOverview | null>(null);
-  const [loading, setLoading] = useState(false);
-  const [overviewLoading, setOverviewLoading] = useState(true);
-  const [overviewError, setOverviewError] = useState<string | null>(null);
-  const [dailyReport, setDailyReport] = useState<string | null>(null);
-  const [isGeneratingReport, setIsGeneratingReport] = useState(false);
-  const [isSendingReport, setIsSendingReport] = useState(false);
-  const [reportStatus, setReportStatus] = useState<'idle' | 'success' | 'error'>('idle');
-  const [analysisError, setAnalysisError] = useState<string | null>(null);
-  const [chatError, setChatError] = useState<string | null>(null);
-  const [chatMessage, setChatMessage] = useState('');
-  const [isChatting, setIsChatting] = useState(false);
-  const [chatHistory, setChatHistory] = useState<{ role: 'user' | 'ai'; content: string }[]>([]);
-  const [isTriggeringReport, setIsTriggeringReport] = useState(false);
-
-  // History and Logs State
-  const [historyItems, setHistoryItems] = useState<any[]>([]);
-  const [optimizationLogs, setOptimizationLogs] = useState<any[]>([]);
-  const [showAdminPanel, setShowAdminPanel] = useState(false);
-  const [selectedDetail, setSelectedDetail] = useState<{ type: 'log' | 'history', data: any } | null>(null);
-
-  // Agent Discussion State
-  const [discussionMessages, setDiscussionMessages] = useState<AgentMessage[]>([]);
-  const [scenarios, setScenarios] = useState<Scenario[]>([]);
-  const [valuationMatrix, setValuationMatrix] = useState<Scenario[]>([]);
-  const [sensitivityFactors, setSensitivityFactors] = useState<SensitivityFactor[]>([]);
-  const [expectationGap, setExpectationGap] = useState<ExpectationGap | null>(null);
-  const [analystWeights, setAnalystWeights] = useState<AnalystWeight[]>([]);
-  const [calculations, setCalculations] = useState<CalculationResult[]>([]);
-  const [controversialPoints, setControversialPoints] = useState<string[]>([]);
-  const [tradingPlanHistory, setTradingPlanHistory] = useState<TradingPlanVersion[]>([]);
-  const [dataFreshnessStatus, setDataFreshnessStatus] = useState<"Fresh" | "Stale" | "Warning" | null>(null);
-  const [stressTestLogic, setStressTestLogic] = useState<string>('');
-  const [catalystList, setCatalystList] = useState<Catalyst[]>([]);
-  const [backtestResult, setBacktestResult] = useState<any>(null);
-  const [isDiscussing, setIsDiscussing] = useState(false);
-  const [isReviewing, setIsReviewing] = useState(false);
-  const [showDiscussion, setShowDiscussion] = useState(false);
 
   // Gemini Configuration State
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [geminiConfig, setGeminiConfig] = useState<GeminiConfig>(() => {
     try {
       const saved = localStorage.getItem('gemini_config');
-      return saved ? JSON.parse(saved) : { model: 'gemini-3-flash-preview' };
+      return saved ? JSON.parse(saved) : { model: 'gemini-2.5-flash-preview-05-20' };
     } catch (e) {
       console.error('Failed to parse gemini_config from localStorage:', e);
-      return { model: 'gemini-3-flash-preview' };
+      return { model: 'gemini-2.5-flash-preview-05-20' };
     }
   });
 
@@ -126,162 +86,71 @@ export default function App() {
     localStorage.setItem('gemini_config', JSON.stringify(geminiConfig));
   }, [geminiConfig]);
 
-  const handleDiscussionQuestion = async (question: string) => {
-    if (!analysis || isReviewing || isDiscussing) return;
-    
-    setIsReviewing(true);
-    const userMsg: AgentMessage = {
-      id: `user-q-${Date.now()}`,
-      role: "Moderator", 
-      content: question,
-      timestamp: new Date().toISOString(),
-      type: "user_question"
-    };
-    
-    setDiscussionMessages(prev => [...prev, userMsg]);
-    
-    try {
-      const discussion = await continueAgentDiscussion(
-        question,
-        analysis,
-        discussionMessages,
-        geminiConfig
-      );
-      setDiscussionMessages(prev => [...prev, ...discussion.messages]);
-      
-      if (discussion.scenarios) setScenarios(discussion.scenarios);
-      if (discussion.sensitivityFactors) setSensitivityFactors(discussion.sensitivityFactors);
-      if (discussion.controversialPoints) setControversialPoints(discussion.controversialPoints);
-      if (discussion.tradingPlanHistory) {
-        setTradingPlanHistory(prev => [...prev, ...discussion.tradingPlanHistory!]);
-      }
-      
-      // Update main analysis with updated conclusion/trading plan
-      setAnalysis(prev => prev ? {
-        ...prev,
-        finalConclusion: discussion.finalConclusion || prev.finalConclusion,
-        tradingPlan: discussion.tradingPlan || prev.tradingPlan
-      } : null);
-    } catch (err) {
-      console.error('Reviewer failed:', err);
-      setDiscussionMessages(prev => [...prev, {
-        id: `error-${Date.now()}`,
-        role: "Professional Reviewer",
-        content: `⚠️ 评审专家暂时无法回答：${err instanceof Error ? err.message : '未知错误'}`,
-        timestamp: new Date().toISOString(),
-        type: "review"
-      }]);
-    } finally {
-      setIsReviewing(false);
-    }
-  };
+  // Market Overview Hook
+  const {
+    marketOverview, overviewLoading, overviewError, fetchMarketOverview,
+  } = useMarketOverview(geminiConfig);
 
-  // Manual Daily Report Trigger
-  const handleTriggerDailyReport = async () => {
-    if (!marketOverview) {
-      alert('请先等待市场概况加载完成。');
-      return;
-    }
+  // Daily Report Hook
+  const { isTriggeringReport, handleTriggerDailyReport } = useDailyReport(marketOverview, geminiConfig);
 
-    setIsTriggeringReport(true);
-    try {
-      // Generate report in frontend
-      const report = await getDailyReport(marketOverview, geminiConfig);
-      
-      // Send to Feishu via backend
-      const response = await fetch('/api/feishu/send-report', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ content: report })
-      });
+  // Usage Stats
+  const usageStats = useUsageStats();
 
-      if (response.ok) {
-        // Log optimized daily report sending
-        void fetch('/api/admin/log', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ 
-            field: 'feishu_daily_report', 
-            oldValue: 'standard_format', 
-            newValue: 'optimized_newsletter_format', 
-            description: '成功发送优化后的每日市场内参' 
-          })
-        });
-        alert('每日报告已成功生成并发送至飞书！');
-      } else {
-        const data = await response.json();
-        alert(`报告发送失败: ${data.error || '未知错误'}`);
-      }
-    } catch (err) {
-      console.error('Manual report trigger failed:', err);
-      alert(`报告触发失败: ${err instanceof Error ? err.message : '未知错误'}`);
-    } finally {
-      setIsTriggeringReport(false);
-    }
-  };
+  // Stock Analysis Hook
+  const {
+    symbol, setSymbol,
+    market, setMarket,
+    analysis,
+    loading,
+    analysisError,
+    discussionMessages,
+    scenarios,
+    sensitivityFactors,
+    expectationGap,
+    analystWeights,
+    calculations,
+    controversialPoints,
+    tradingPlanHistory,
+    dataFreshnessStatus,
+    stressTestLogic,
+    catalystList,
+    backtestResult,
+    isDiscussing,
+    isReviewing,
+    showDiscussion,
+    handleSearch,
+    handleDiscussionQuestion,
+    resetAnalysis,
+  } = useStockAnalysis(geminiConfig);
 
-  // Fetch Market Overview
-  const fetchMarketOverview = useCallback(async () => {
-    setOverviewLoading(true);
-    setOverviewError(null);
-    try {
-      const data = await getMarketOverview(geminiConfig);
-      setMarketOverview(data);
-    } catch (err) {
-      console.error('Failed to fetch market overview:', err);
-      let message = '无法加载市场概览。';
-      
-      if (err instanceof Error) {
-        const errStr = err.message;
-        if (errStr.includes('429') || errStr.includes('quota') || errStr.includes('RESOURCE_EXHAUSTED')) {
-          message = 'API 额度已耗尽 (429)。请检查您的 Google AI Studio 计费设置或稍后再试。';
-        } else {
-          try {
-            // Try to parse if it's a JSON error string
-            const parsed = JSON.parse(errStr);
-            if (parsed.error?.message) {
-              message = `API 错误: ${parsed.error.message}`;
-            }
-          } catch (e) {
-            message = errStr;
-          }
-        }
-      }
-      setOverviewError(message);
-    } finally {
-      setOverviewLoading(false);
-    }
-  }, [geminiConfig]);
+  // Chat State (remains in App since it's UI-tied)
+  const [chatError, setChatError] = useState<string | null>(null); // eslint-disable-line @typescript-eslint/no-unused-vars
+  const [chatMessage, setChatMessage] = useState('');
+  const [isChatting, setIsChatting] = useState(false);
+  const [chatHistory, setChatHistory] = useState<{ role: 'user' | 'ai'; content: string }[]>([]);
+
+  // Report State
+  const [dailyReport, setDailyReport] = useState<string | null>(null);
+  const [isGeneratingReport, setIsGeneratingReport] = useState(false);
+  const [isSendingReport, setIsSendingReport] = useState(false);
+  const [reportStatus, setReportStatus] = useState<'idle' | 'success' | 'error'>('idle');
+
+  // History and Logs State
+  const [historyItems, setHistoryItems] = useState<any[]>([]);
+  const [optimizationLogs, setOptimizationLogs] = useState<any[]>([]);
+  const [showAdminPanel, setShowAdminPanel] = useState(false);
+  const [selectedDetail, setSelectedDetail] = useState<{ type: 'log' | 'history', data: any } | null>(null);
 
   useEffect(() => {
-    void fetchMarketOverview();
     void fetchAdminData();
-    
-    // Log the UI and Report optimization
-    const logOptimization = async () => {
-      try {
-        await fetch('/api/admin/log', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ 
-            field: 'system_optimization', 
-            oldValue: 'standard_ui_reports', 
-            newValue: 'optimized_ui_and_feishu_reports', 
-            description: '优化了个股研讨 UI 显示和飞书报告的 Markdown 格式，增强了用户友好度和可读性。' 
-          })
-        });
-      } catch (err) {
-        console.error('Failed to log optimization:', err);
-      }
-    };
-    void logOptimization();
   }, []);
 
   const fetchAdminData = async () => {
     try {
       const [historyRes, logsRes] = await Promise.all([
-        fetch('/api/admin/history-context'),
-        fetch('/api/admin/optimization-logs')
+        fetchWithTimeout('/api/admin/history-context'),
+        fetchWithTimeout('/api/admin/optimization-logs')
       ]);
       if (historyRes.ok) setHistoryItems(await historyRes.json());
       if (logsRes.ok) setOptimizationLogs(await logsRes.json());
@@ -301,7 +170,7 @@ export default function App() {
       setIsGeneratingReport(false);
       
       setIsSendingReport(true);
-      const response = await fetch('/api/feishu/send-report', {
+      const response = await fetchWithTimeout('/api/feishu/send-report', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -334,7 +203,7 @@ export default function App() {
       setIsGeneratingReport(false);
       
       setIsSendingReport(true);
-      const response = await fetch('/api/feishu/send-report', {
+      const response = await fetchWithTimeout('/api/feishu/send-report', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -367,11 +236,11 @@ export default function App() {
     setIsGeneratingReport(true);
     setReportStatus('idle');
     try {
-      const report = await getChatReport(analysis.stockInfo?.name || 'Unknown', chatHistory);
+      const report = await getChatReport(analysis.stockInfo?.name || 'Unknown', chatHistory, geminiConfig);
       setIsGeneratingReport(false);
       
       setIsSendingReport(true);
-      const response = await fetch('/api/feishu/send-report', {
+      const response = await fetchWithTimeout('/api/feishu/send-report', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -420,7 +289,7 @@ export default function App() {
     try {
       const report = await getDiscussionReport(analysis, discussionMessages, scenarios, backtestResult, geminiConfig);
       
-      const response = await fetch('/api/feishu/send-report', {
+      const response = await fetchWithTimeout('/api/feishu/send-report', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -470,7 +339,7 @@ export default function App() {
         report = await getDailyReport(item, geminiConfig);
       }
 
-      const response = await fetch('/api/feishu/send-report', {
+      const response = await fetchWithTimeout('/api/feishu/send-report', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -493,102 +362,6 @@ export default function App() {
       setReportStatus('error');
     } finally {
       setIsSendingReport(false);
-    }
-  };
-
-  const handleSearch = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!symbol || !symbol.trim()) return;
-
-    setLoading(true);
-    setAnalysis(null);
-    setAnalysisError(null);
-    setChatError(null);
-    setChatHistory([]);
-    setDiscussionMessages([]);
-    setShowDiscussion(false);
-
-    try {
-      const result = await analyzeStock(symbol, market, geminiConfig);
-      setAnalysis(result);
-
-      // Trigger Agent Discussion
-      setShowDiscussion(true);
-      setIsDiscussing(true);
-      setDiscussionMessages([]);
-      setScenarios([]);
-      setValuationMatrix([]);
-      setStressTestLogic('');
-      setCatalystList([]);
-      setBacktestResult(null);
-      
-      try {
-        const discussion = await runAgentDiscussion(result, (msg) => {
-          setDiscussionMessages(prev => [...prev, msg]);
-        }, geminiConfig);
-        
-        setScenarios(discussion.scenarios || []);
-        setValuationMatrix(discussion.valuationMatrix || []);
-        setSensitivityFactors(discussion.sensitivityFactors || []);
-        setExpectationGap(discussion.expectationGap || null);
-        setAnalystWeights(discussion.analystWeights || []);
-        setCalculations(discussion.calculations || []);
-        setControversialPoints(discussion.controversialPoints || []);
-        setTradingPlanHistory(discussion.tradingPlanHistory || []);
-        setDataFreshnessStatus(discussion.dataFreshnessStatus || null);
-        setStressTestLogic(discussion.stressTestLogic || '');
-        setCatalystList(discussion.catalystList || []);
-        setBacktestResult(discussion.backtestResult || null);
-
-        // Update main analysis with discussion results
-        setAnalysis(prev => prev ? {
-          ...prev,
-          finalConclusion: discussion.finalConclusion,
-          tradingPlan: discussion.tradingPlan || prev.tradingPlan
-        } : null);
-
-        // Save to history with discussion
-        void fetch('/api/admin/save-analysis', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ 
-            type: 'stock', 
-            data: { 
-              ...result, 
-              discussion: discussion.messages,
-              finalConclusion: discussion.finalConclusion,
-              scenarios: discussion.scenarios
-            } 
-          })
-        });
-      } catch (err) {
-        console.error('Agent discussion failed:', err);
-      } finally {
-        setIsDiscussing(false);
-      }
-    } catch (err) {
-      console.error(err);
-      setAnalysis(null);
-      let message = '分析股票失败，请稍后重试。';
-      
-      if (err instanceof Error) {
-        const errStr = err.message;
-        if (errStr.includes('429') || errStr.includes('quota') || errStr.includes('RESOURCE_EXHAUSTED')) {
-          message = 'API 额度已耗尽 (429)。请检查您的 Google AI Studio 计费设置或稍后再试。';
-        } else {
-          try {
-            const parsed = JSON.parse(errStr);
-            if (parsed.error?.message) {
-              message = `API 错误: ${parsed.error.message}`;
-            }
-          } catch (e) {
-            message = errStr;
-          }
-        }
-      }
-      setAnalysisError(message);
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -632,14 +405,10 @@ export default function App() {
   };
 
   const resetToHome = () => {
-    setAnalysis(null);
-    setSymbol('');
+    resetAnalysis();
     setChatMessage('');
     setChatHistory([]);
-    setAnalysisError(null);
     setChatError(null);
-    setDiscussionMessages([]);
-    setShowDiscussion(false);
   };
 
   return (
@@ -743,6 +512,36 @@ export default function App() {
             </form>
           </div>
         </header>
+
+        {/* API Usage Stats Bar */}
+        <div className="mb-6 flex flex-wrap items-center gap-x-6 gap-y-2 rounded-2xl border border-zinc-800/60 bg-zinc-900/40 px-5 py-3 text-[11px] font-mono text-zinc-500">
+          <span className="flex items-center gap-1.5">
+            <span className="inline-block h-1.5 w-1.5 rounded-full bg-emerald-500" />
+            <span className="text-zinc-400">模型</span>
+            <span className="text-zinc-300">{usageStats.lastModel}</span>
+          </span>
+          <span>
+            <span className="text-zinc-400">请求</span>{' '}
+            <span className="text-zinc-300">{usageStats.totalRequests}</span>
+          </span>
+          <span>
+            <span className="text-zinc-400">Tokens</span>{' '}
+            <span className="text-zinc-300">{usageStats.totalTokens.toLocaleString()}</span>
+            <span className="text-zinc-600 ml-1">({usageStats.totalInputTokens.toLocaleString()} in / {usageStats.totalOutputTokens.toLocaleString()} out)</span>
+          </span>
+          <span>
+            <span className="text-zinc-400">RPM</span>{' '}
+            <span className={usageStats.rpm > 10 ? 'text-amber-400' : 'text-zinc-300'}>{usageStats.rpm}</span>
+          </span>
+          <span>
+            <span className="text-zinc-400">TPM</span>{' '}
+            <span className={usageStats.tpm > 100000 ? 'text-amber-400' : 'text-zinc-300'}>{usageStats.tpm.toLocaleString()}</span>
+          </span>
+          <span>
+            <span className="text-zinc-400">RPD</span>{' '}
+            <span className={usageStats.rpd > 1000 ? 'text-amber-400' : 'text-zinc-300'}>{usageStats.rpd}</span>
+          </span>
+        </div>
 
         <AnimatePresence mode="wait">
           {analysisError && (
@@ -1679,20 +1478,7 @@ export default function App() {
                   <div className="flex flex-col gap-4">
                     <ErrorNotice title="市场概览加载失败" message={overviewError} />
                     <button 
-                      onClick={() => {
-                        setOverviewLoading(true);
-                        setOverviewError(null);
-                        // The useEffect will handle the fetch if we trigger a state change or just call it directly
-                        getMarketOverview()
-                          .then(data => {
-                            setMarketOverview(data);
-                            setOverviewError(null);
-                          })
-                          .catch(err => {
-                            setOverviewError(err instanceof Error ? err.message : 'Failed to load market overview.');
-                          })
-                          .finally(() => setOverviewLoading(false));
-                      }}
+                      onClick={() => void fetchMarketOverview()}
                       className="flex w-fit items-center gap-2 rounded-xl bg-zinc-800 px-4 py-2 text-sm font-bold text-zinc-200 hover:bg-zinc-700 transition-colors"
                     >
                       <Zap size={16} className="text-amber-400" />

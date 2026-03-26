@@ -2,21 +2,18 @@ import express from 'express';
 import { createServer as createViteServer } from 'vite';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import dotenv from 'dotenv';
-import { GoogleGenAI } from '@google/genai';
+import { config } from './src/config.js';
 import fs from 'fs';
 import YahooFinance from 'yahoo-finance2';
 
 const yahooFinance = new YahooFinance();
-
-dotenv.config();
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 async function startServer() {
   const app = express();
-  const PORT = 3000;
+  const PORT = config.port;
 
   app.use(express.json());
   app.use((req, res, next) => {
@@ -108,7 +105,7 @@ async function startServer() {
   // Feishu Webhook endpoint
   app.post('/api/feishu/send-report', async (req, res) => {
     const { content } = req.body;
-    const webhookUrl = process.env.FEISHU_WEBHOOK_URL;
+    const webhookUrl = config.feishuWebhookUrl;
 
     if (!webhookUrl) {
       return res.status(500).json({ error: 'FEISHU_WEBHOOK_URL is not configured' });
@@ -148,10 +145,9 @@ async function startServer() {
   // Env Check Endpoint for debugging
   app.get('/api/admin/env-check', (req, res) => {
     res.json({
-      keys: Object.keys(process.env),
-      feishuWebhookDefined: !!process.env.FEISHU_WEBHOOK_URL,
-      appUrl: process.env.APP_URL,
-      nodeEnv: process.env.NODE_ENV
+      feishuWebhookDefined: !!config.feishuWebhookUrl,
+      appUrl: config.appUrl,
+      nodeEnv: config.nodeEnv,
     });
   });
 
@@ -249,7 +245,7 @@ async function startServer() {
   });
 
   // Vite middleware for development
-  if (process.env.NODE_ENV !== 'production') {
+  if (config.nodeEnv !== 'production') {
     const vite = await createViteServer({
       server: { middlewareMode: true },
       appType: 'spa',

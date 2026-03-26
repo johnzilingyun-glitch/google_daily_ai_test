@@ -1,7 +1,8 @@
-import React from 'react';
-import { X, Settings, ShieldCheck, Cpu } from 'lucide-react';
+import React, { useState, useCallback } from 'react';
+import { X, Settings, ShieldCheck, Cpu, Eye, EyeOff, RefreshCw, Loader2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { GeminiConfig } from '../types';
+import { GoogleGenAI } from '@google/genai';
 
 interface SettingsModalProps {
   isOpen: boolean;
@@ -10,21 +11,60 @@ interface SettingsModalProps {
   onConfigChange: (config: GeminiConfig) => void;
 }
 
-const AVAILABLE_MODELS = [
-  { id: 'gemini-3-flash-preview', name: 'Gemini 3 Flash (Fast & Balanced)', description: 'Best for general analysis and quick summaries.' },
-  { id: 'gemini-3.1-pro-preview', name: 'Gemini 3.1 Pro (Advanced Reasoning)', description: 'Best for complex financial logic and deep analysis.' },
-  { id: 'gemini-3.1-flash-lite-preview', name: 'Gemini 3.1 Flash Lite (Ultra Fast)', description: 'Optimized for speed and low-latency tasks.' },
+const PRESET_MODELS = [
+  { id: 'gemini-3.1-flash-lite-preview', name: 'Gemini 3.1 Flash-Lite', description: '超轻量最新模型，极致低延迟，适合大规模翻译/转录/数据提取/文档摘要/路由分类。' },
+  { id: 'gemini-2.5-flash-preview-05-20', name: 'Gemini 2.5 Flash', description: '快速平衡模型，适合通用分析。' },
+  { id: 'gemini-2.0-flash', name: 'Gemini 2.0 Flash', description: '稳定版快速模型。' },
+  { id: 'gemini-2.0-flash-lite', name: 'Gemini 2.0 Flash Lite', description: '超轻量模型，极致低延迟。' },
+  { id: 'gemini-1.5-pro', name: 'Gemini 1.5 Pro', description: '成熟稳定的高级推理模型。' },
 ];
 
+interface RemoteModel {
+  name: string;
+  displayName: string;
+}
+
 export function SettingsModal({ isOpen, onClose, config, onConfigChange }: SettingsModalProps) {
-  const handleOpenKeySelector = async () => {
-    const aiStudio = (window as any).aistudio;
-    if (aiStudio?.openSelectKey) {
-      await aiStudio.openSelectKey();
-    } else {
-      alert('API Key selection is only available in the AI Studio environment.');
+  const [showKey, setShowKey] = useState(false);
+  const [remoteModels, setRemoteModels] = useState<RemoteModel[]>([]);
+  const [loadingModels, setLoadingModels] = useState(false);
+  const [modelsError, setModelsError] = useState<string | null>(null);
+  const [customModel, setCustomModel] = useState('');
+
+  const fetchRemoteModels = useCallback(async () => {
+    if (!config.apiKey) {
+      setModelsError('请先输入 API Key');
+      return;
     }
-  };
+    setLoadingModels(true);
+    setModelsError(null);
+    try {
+      const ai = new GoogleGenAI({ apiKey: config.apiKey });
+      const pager = await ai.models.list({ config: { pageSize: 100 } });
+      const models: RemoteModel[] = [];
+      for await (const m of pager) {
+        const name = m.name?.replace('models/', '') || '';
+        if (name.includes('gemini') && (name.includes('flash') || name.includes('pro') || name.includes('lite'))) {
+          models.push({ name, displayName: m.displayName || name });
+        }
+      }
+      models.sort((a, b) => a.name.localeCompare(b.name));
+      setRemoteModels(models);
+      if (models.length === 0) {
+        setModelsError('未找到可用模型，请检查 API Key 权限。');
+      }
+    } catch (err: any) {
+      setModelsError(err.message || '获取模型列表失败');
+    } finally {
+      setLoadingModels(false);
+    }
+  }, [config.apiKey]);
+
+  const displayModels = remoteModels.length > 0 ? remoteModels.map(m => ({
+    id: m.name,
+    name: m.displayName,
+    description: m.name,
+  })) : PRESET_MODELS;
 
   return (
     <AnimatePresence>
@@ -70,20 +110,36 @@ export function SettingsModal({ isOpen, onClose, config, onConfigChange }: Setti
                   <ShieldCheck size={16} />
                   <span>API 密钥管理</span>
                 </div>
-                <div className="rounded-2xl border border-white/5 bg-white/5 p-4">
+                <div className="rounded-2xl border border-white/5 bg-white/5 p-4 space-y-3">
                   <p className="text-sm text-white/70 leading-relaxed">
-                    为了安全起见，我们使用平台提供的密钥管理系统。您可以点击下方按钮来选择或更新您的 Gemini API Key。
+                    请输入您的 Gemini API Key。密钥仅保存在浏览器本地，不会上传至服务器。
                   </p>
-                  <button
-                    onClick={handleOpenKeySelector}
-                    className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl bg-blue-600 px-4 py-3 text-sm font-medium text-white transition-all hover:bg-blue-500 active:scale-[0.98]"
-                  >
-                    配置 API Key
-                  </button>
-                  <p className="mt-3 text-[10px] text-center text-white/30">
-                    提示：请确保选择一个已启用计费的 Google Cloud 项目。
-                    <a href="https://ai.google.dev/gemini-api/docs/billing" target="_blank" rel="noopener noreferrer" className="ml-1 text-blue-400 hover:underline">
-                      查看计费文档
+                  <div className="relative">
+                    <input
+                      type={showKey ? 'text' : 'password'}
+                      value={config.apiKey || ''}
+                      onChange={(e) => onConfigChange({ ...config, apiKey: e.target.value })}
+                      placeholder="AIza..."
+                      className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 pr-12 text-sm text-white placeholder-white/30 outline-none transition-colors focus:border-blue-500/50 focus:bg-white/[0.08]"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowKey(!showKey)}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 hover:text-white/70 transition-colors"
+                    >
+                      {showKey ? <EyeOff size={16} /> : <Eye size={16} />}
+                    </button>
+                  </div>
+                  {config.apiKey && (
+                    <div className="flex items-center gap-1.5 text-xs text-emerald-400">
+                      <ShieldCheck size={12} />
+                      <span>API Key 已配置</span>
+                    </div>
+                  )}
+                  <p className="text-[10px] text-white/30">
+                    获取 API Key：
+                    <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener noreferrer" className="ml-1 text-blue-400 hover:underline">
+                      Google AI Studio
                     </a>
                   </p>
                 </div>
@@ -91,12 +147,28 @@ export function SettingsModal({ isOpen, onClose, config, onConfigChange }: Setti
 
               {/* Model Selection Section */}
               <section className="space-y-4">
-                <div className="flex items-center gap-2 text-sm font-medium text-white/60">
-                  <Cpu size={16} />
-                  <span>模型选择</span>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2 text-sm font-medium text-white/60">
+                    <Cpu size={16} />
+                    <span>模型选择</span>
+                  </div>
+                  <button
+                    onClick={fetchRemoteModels}
+                    disabled={loadingModels}
+                    className="flex items-center gap-1.5 rounded-lg bg-white/5 px-3 py-1.5 text-[11px] text-white/50 transition-colors hover:bg-white/10 hover:text-white/80 disabled:opacity-50"
+                  >
+                    {loadingModels ? <Loader2 size={12} className="animate-spin" /> : <RefreshCw size={12} />}
+                    {remoteModels.length > 0 ? '刷新列表' : '获取可用模型'}
+                  </button>
                 </div>
-                <div className="grid gap-3">
-                  {AVAILABLE_MODELS.map((model) => (
+                {modelsError && (
+                  <p className="text-xs text-amber-400">{modelsError}</p>
+                )}
+                {remoteModels.length > 0 && (
+                  <p className="text-[10px] text-emerald-400/70">✓ 已从 API 获取 {remoteModels.length} 个可用模型</p>
+                )}
+                <div className="grid gap-3 max-h-64 overflow-y-auto pr-1">
+                  {displayModels.map((model) => (
                     <button
                       key={model.id}
                       onClick={() => onConfigChange({ ...config, model: model.id })}
@@ -114,12 +186,37 @@ export function SettingsModal({ isOpen, onClose, config, onConfigChange }: Setti
                           <div className="h-2 w-2 rounded-full bg-blue-500 shadow-[0_0_8px_rgba(59,130,246,0.5)]" />
                         )}
                       </div>
-                      <p className="text-xs text-white/40 leading-relaxed">
+                      <p className="text-xs text-white/40 leading-relaxed font-mono">
                         {model.description}
                       </p>
                     </button>
                   ))}
                 </div>
+                {/* Custom model input */}
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    value={customModel}
+                    onChange={(e) => setCustomModel(e.target.value)}
+                    placeholder="自定义模型名 (如 gemini-2.0-flash-lite)"
+                    className="flex-1 rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-xs text-white placeholder-white/25 outline-none focus:border-blue-500/50"
+                  />
+                  <button
+                    onClick={() => {
+                      if (customModel.trim()) {
+                        onConfigChange({ ...config, model: customModel.trim() });
+                        setCustomModel('');
+                      }
+                    }}
+                    disabled={!customModel.trim()}
+                    className="rounded-xl bg-blue-600 px-4 py-2 text-xs font-medium text-white transition-all hover:bg-blue-500 disabled:opacity-30"
+                  >
+                    使用
+                  </button>
+                </div>
+                <p className="text-[10px] text-white/30 font-mono">
+                  当前: {config.model}
+                </p>
               </section>
             </div>
 

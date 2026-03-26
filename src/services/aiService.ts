@@ -1,7 +1,9 @@
-import { GoogleGenAI } from "@google/genai";
-import { Market, MarketOverview, StockAnalysis, AgentMessage, AgentRole, StockInfo, AgentDiscussion, Scenario, AnalystWeight, CalculationResult, SensitivityFactor, ExpectationGap } from "../types";
+import { Market, MarketOverview, StockAnalysis, AgentMessage, AgentRole, StockInfo, AgentDiscussion, Scenario, AnalystWeight, CalculationResult, SensitivityFactor, ExpectationGap, GeminiConfig } from "../types";
+import { createAI, getModelName, delay, withRetry, extractJsonBlock, parseJsonResponse, fetchWithTimeout } from './geminiClient';
+import { getHistoryContext, saveAnalysisToHistory, logOptimization } from './adminClient';
 
-const GEMINI_MODEL = "gemini-3-flash-preview";
+// Re-export for backward compatibility with tests
+export { extractJsonBlock, parseJsonResponse } from './geminiClient';
 
 /**
  * Perception Layer: MCP Toolbox (Simulated)
@@ -82,78 +84,6 @@ const formulaLibrary = {
   }
 };
 
-/**
- * Helper to add delay between API calls
- */
-const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
-
-/**
- * Robust retry wrapper for Gemini API calls
- */
-async function withRetry<T>(
-  fn: () => Promise<T>,
-  maxRetries: number = 3,
-  baseDelay: number = 2000
-): Promise<T> {
-  let lastError: any;
-  for (let attempt = 1; attempt <= maxRetries; attempt++) {
-    try {
-      return await fn();
-    } catch (error: any) {
-      lastError = error;
-      
-      // Check for 429 / Quota Exceeded in various formats
-      const errorStr = typeof error === 'string' ? error : (error?.message || JSON.stringify(error));
-      const isRateLimit = errorStr.includes('429') || 
-                          errorStr.toLowerCase().includes('quota') || 
-                          errorStr.includes('RESOURCE_EXHAUSTED') ||
-                          error?.status === 429;
-      
-      if (isRateLimit && attempt < maxRetries) {
-        // Exponential backoff with jitter
-        const waitTime = baseDelay * Math.pow(2, attempt) + Math.random() * 1000;
-        console.warn(`Rate limit hit (429). Retrying in ${Math.round(waitTime)}ms... (Attempt ${attempt}/${maxRetries})`);
-        await delay(waitTime);
-        continue;
-      }
-      
-      if (attempt >= maxRetries) throw error;
-      
-      // For other errors, shorter delay
-      await delay(1000);
-    }
-  }
-  throw lastError;
-}
-
-function getApiKey(): string {
-  // Use the provided key directly to ensure it works
-  const apiKey = process.env.GEMINI_API_KEY;
-  
-  // If the key is missing or is a placeholder, use the new provided key
-  if (!apiKey || apiKey === "MY_GEMINI_API_KEY" || apiKey === "AIzaSyDPWJlFit8gSOzYnO5y29xit6-amjdJowI") {
-    return "AIzaSyA06MlY8alZiQQLVPvWw1iIWBty7mTP1hQ";
-  }
-  return apiKey;
-}
-
-export function extractJsonBlock(raw: string): string {
-  const trimmed = raw.trim();
-  if (trimmed.startsWith("{") || trimmed.startsWith("[")) {
-    return trimmed;
-  }
-  const fencedMatch = trimmed.match(/```(?:json)?\s*([\s\S]*?)```/i);
-  if (fencedMatch?.[1]) {
-    return fencedMatch[1].trim();
-  }
-  const firstBrace = trimmed.indexOf("{");
-  const lastBrace = trimmed.lastIndexOf("}");
-  if (firstBrace >= 0 && lastBrace > firstBrace) {
-    return trimmed.slice(firstBrace, lastBrace + 1);
-  }
-  throw new Error("Gemini returned a non-JSON response.");
-}
-
 export function validateStockInfo(info: StockInfo): void {
   const now = new Date();
   const beijingDate = new Intl.DateTimeFormat('en-CA', {
@@ -228,79 +158,20 @@ export function validateMarketOverview(overview: MarketOverview): void {
   }
 }
 
-export function parseJsonResponse<T>(raw: string): T {
-  try {
-    const parsed = JSON.parse(extractJsonBlock(raw));
-    // If the AI wrapped the result in a property like "analysis" or "data"
-    if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {
-      if (parsed.analysis) return parsed.analysis as T;
-      if (parsed.data) return parsed.data as T;
-      if (parsed.stockInfo && parsed.stockInfo.symbol) return parsed as T;
-      // If it's a single property object where the property name is the symbol or something else
-      const keys = Object.keys(parsed);
-      if (keys.length === 1 && parsed[keys[0]] && typeof parsed[keys[0]] === 'object' && parsed[keys[0]].stockInfo) {
-        return parsed[keys[0]] as T;
-      }
-    }
-    return parsed as T;
-  } catch (error) {
-    throw new Error(
-      error instanceof Error
-        ? `Failed to parse Gemini JSON response: ${error.message}`
-        : "Failed to parse Gemini JSON response."
-    );
-  }
-}
-
-async function getHistoryContext(): Promise<any[]> {
-  try {
-    const response = await fetch('/api/admin/history-context');
-    if (response.ok) {
-      return await response.json();
-    }
-  } catch (err) {
-    console.error('Failed to fetch history context:', err);
-  }
-  return [];
-}
-
-async function saveAnalysisToHistory(type: 'market' | 'stock', data: any) {
-  try {
-    await fetch('/api/admin/save-analysis', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ type, data })
-    });
-  } catch (err) {
-    console.error('Failed to save analysis to history:', err);
-  }
-}
-
-async function logOptimization(field: string, oldValue: any, newValue: any, description: string) {
-  try {
-    await fetch('/api/admin/log', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ field, oldValue, newValue, description })
-    });
-  } catch (err) {
-    console.error('Failed to log optimization:', err);
-  }
-}
-
-let marketOverviewCache: { data: MarketOverview; timestamp: number } | null = null;
+let marketOverviewCache: { data: MarketOverview; timestamp: number; model: string } | null = null;
 const CACHE_DURATION = 30 * 60 * 1000; // 30 minutes
 
-export async function getMarketOverview(config?: { model: string }): Promise<MarketOverview> {
-  // Check cache first
+export async function getMarketOverview(config?: GeminiConfig): Promise<MarketOverview> {
+  // Check cache first (invalidate on model change)
+  const currentModel = getModelName(config);
   const nowTime = Date.now();
-  if (marketOverviewCache && (nowTime - marketOverviewCache.timestamp < CACHE_DURATION)) {
+  if (marketOverviewCache && (nowTime - marketOverviewCache.timestamp < CACHE_DURATION) && marketOverviewCache.model === currentModel) {
     console.log('Returning market overview from cache');
     return marketOverviewCache.data;
   }
 
-  const ai = new GoogleGenAI({ apiKey: getApiKey() });
-  const modelName = config?.model || GEMINI_MODEL;
+  const ai = createAI(config);
+  const modelName = getModelName(config);
   const history = await getHistoryContext();
   const now = new Date();
   const beijingDate = new Intl.DateTimeFormat('en-CA', {
@@ -324,7 +195,7 @@ export async function getMarketOverview(config?: { model: string }): Promise<Mar
   let indicesData: any[] = [];
   try {
     console.log('Fetching real-time indices data...');
-    const response = await fetch(`/api/stock/realtime?symbols=${indicesSymbols.join(',')}`);
+    const response = await fetchWithTimeout(`/api/stock/realtime?symbols=${indicesSymbols.join(',')}`);
     if (response.ok) {
       indicesData = await response.json();
       console.log(`Successfully fetched ${indicesData.length} indices.`);
@@ -471,7 +342,8 @@ JSON schema:
   // Update cache
   marketOverviewCache = {
     data: result,
-    timestamp: Date.now()
+    timestamp: Date.now(),
+    model: currentModel
   };
 
   return result;
@@ -479,7 +351,7 @@ JSON schema:
 
 async function getRealtimeStockData(symbol: string, market: Market): Promise<any> {
   try {
-    const response = await fetch(`/api/stock/realtime?symbol=${encodeURIComponent(symbol)}&market=${encodeURIComponent(market)}`);
+    const response = await fetchWithTimeout(`/api/stock/realtime?symbol=${encodeURIComponent(symbol)}&market=${encodeURIComponent(market)}`);
     if (response.ok) {
       return await response.json();
     }
@@ -489,9 +361,9 @@ async function getRealtimeStockData(symbol: string, market: Market): Promise<any
   return null;
 }
 
-export async function analyzeStock(symbol: string, market: Market, config?: { model: string }): Promise<StockAnalysis> {
-  const ai = new GoogleGenAI({ apiKey: getApiKey() });
-  const modelName = config?.model || GEMINI_MODEL;
+export async function analyzeStock(symbol: string, market: Market, config?: GeminiConfig): Promise<StockAnalysis> {
+  const ai = createAI(config);
+  const modelName = getModelName(config);
   const history = await getHistoryContext();
   const now = new Date();
   const beijingDate = new Intl.DateTimeFormat('en-CA', {
@@ -716,10 +588,10 @@ JSON schema:
 export async function sendChatMessage(
   userMessage: string,
   analysis: StockAnalysis,
-  config?: { model: string }
+  config?: GeminiConfig
 ): Promise<string> {
-  const ai = new GoogleGenAI({ apiKey: getApiKey() });
-  const modelName = config?.model || GEMINI_MODEL;
+  const ai = createAI(config);
+  const modelName = getModelName(config);
   const prompt = `
 You are a professional equity analyst answering a follow-up question from a user.
 
@@ -750,9 +622,9 @@ If the question goes beyond the known analysis, say so clearly instead of invent
   return text;
 }
 
-export async function getStockReport(analysis: StockAnalysis, config?: { model: string }): Promise<string> {
-  const ai = new GoogleGenAI({ apiKey: getApiKey() });
-  const modelName = config?.model || GEMINI_MODEL;
+export async function getStockReport(analysis: StockAnalysis, config?: GeminiConfig): Promise<string> {
+  const ai = createAI(config);
+  const modelName = getModelName(config);
   const prompt = `
     基于以下个股分析数据，生成一份简洁、专业的个股研究简报。
     报告应包含：
@@ -784,8 +656,8 @@ export async function getStockReport(analysis: StockAnalysis, config?: { model: 
   return text;
 }
 
-export async function getChatReport(stockName: string, chatHistory: { role: 'user' | 'ai'; content: string }[]): Promise<string> {
-  const ai = new GoogleGenAI({ apiKey: getApiKey() });
+export async function getChatReport(stockName: string, chatHistory: { role: 'user' | 'ai'; content: string }[], config?: GeminiConfig): Promise<string> {
+  const ai = createAI(config);
   const prompt = `
     基于以下关于股票 "${stockName}" 的 AI 深度追问对话历史，生成一份简洁、专业的整理报告。
     报告应包含：
@@ -802,7 +674,7 @@ export async function getChatReport(stockName: string, chatHistory: { role: 'use
 
   const response = await withRetry(async () => {
     return await ai.models.generateContent({
-      model: GEMINI_MODEL,
+      model: getModelName(),
       contents: prompt,
       config: {
         systemInstruction: "You are a professional financial analyst. Summarize the chat history into a professional report.",
@@ -818,10 +690,10 @@ export async function getChatReport(stockName: string, chatHistory: { role: 'use
 
 export async function runDeepResearch(
   analysis: StockAnalysis,
-  config?: { model: string }
+  config?: GeminiConfig
 ): Promise<{ content: string; references: { title: string; url: string }[] }> {
-  const ai = new GoogleGenAI({ apiKey: getApiKey() });
-  const modelName = config?.model || GEMINI_MODEL;
+  const ai = createAI(config);
+  const modelName = getModelName(config);
   
   // Perception Layer: Fetch consensus data via MCP
   const consensus = await mcpToolbox.getConsensus(analysis.stockInfo?.symbol || "");
@@ -875,14 +747,14 @@ export async function runDeepResearch(
 export async function runAgentDiscussion(
   analysis: StockAnalysis,
   onMessage: (msg: AgentMessage) => void,
-  config?: { model: string }
+  config?: GeminiConfig
 ): Promise<AgentDiscussion> {
   if (!analysis || !analysis.stockInfo) {
     throw new Error("Invalid analysis data: missing stockInfo.");
   }
 
-  const ai = new GoogleGenAI({ apiKey: getApiKey() });
-  const modelName = config?.model || GEMINI_MODEL;
+  const ai = createAI(config);
+  const modelName = getModelName(config);
   
   // Perception Layer: Fetch real-time financials and macro data via MCP
   const financeData = await mcpToolbox.getFinanceData(analysis.stockInfo?.symbol || "");
@@ -907,7 +779,7 @@ export async function runAgentDiscussion(
 
   // 1. Backtesting & Dynamic Weighting
   let backtestResult = undefined;
-  let analystWeights: AnalystWeight[] = [
+  const analystWeights: AnalystWeight[] = [
     { role: "Technical Analyst", weight: 0.2, isExpert: false },
     { role: "Fundamental Analyst", weight: 0.2, isExpert: false },
     { role: "Sentiment Analyst", weight: 0.2, isExpert: false },
@@ -1171,7 +1043,7 @@ export async function runAgentDiscussion(
   const modData = JSON.parse(extractJsonBlock(modResponse.text || "{}"));
   
   // Threshold Monitor: Trigger Professional Reviewer if needed
-  let finalMessages = [...messages];
+  const finalMessages = [...messages];
   const disagreementThreshold = 15; // 15% disagreement in target price
   const confidenceThreshold = 70; // 70% confidence score
   
@@ -1255,10 +1127,10 @@ export async function continueAgentDiscussion(
   userQuestion: string,
   analysis: StockAnalysis,
   discussionHistory: AgentMessage[],
-  config?: { model: string }
+  config?: GeminiConfig
 ): Promise<AgentDiscussion> {
-  const ai = new GoogleGenAI({ apiKey: getApiKey() });
-  const modelName = config?.model || GEMINI_MODEL;
+  const ai = createAI(config);
+  const modelName = getModelName(config);
   
   // Active Stress Testing Detection
   const isStressTest = userQuestion.includes("如果") || userQuestion.includes("跌破") || userQuestion.includes("涨破") || userQuestion.includes("压力测试");
@@ -1344,10 +1216,10 @@ export async function getDiscussionReport(
   discussion: AgentMessage[], 
   scenarios?: Scenario[],
   backtestResult?: any,
-  config?: { model: string }
+  config?: GeminiConfig
 ): Promise<string> {
-  const ai = new GoogleGenAI({ apiKey: getApiKey() });
-  const modelName = config?.model || GEMINI_MODEL;
+  const ai = createAI(config);
+  const modelName = getModelName(config);
   const prompt = `
     基于以下个股分析数据、AI 专家组研讨记录以及场景概率分布，生成一份完整的个股深度研究报告。
     
@@ -1393,9 +1265,9 @@ export async function getDiscussionReport(
   return text;
 }
 
-export async function getDailyReport(marketOverview: MarketOverview, config?: { model: string }): Promise<string> {
-  const ai = new GoogleGenAI({ apiKey: getApiKey() });
-  const modelName = config?.model || GEMINI_MODEL;
+export async function getDailyReport(marketOverview: MarketOverview, config?: GeminiConfig): Promise<string> {
+  const ai = createAI(config);
+  const modelName = getModelName(config);
   const prompt = `
     Current date and time: ${new Date().toISOString()}
     
