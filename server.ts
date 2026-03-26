@@ -163,14 +163,75 @@ async function startServer() {
     // Handle multiple symbols if provided
     if (symbols && typeof symbols === 'string' && symbols.trim()) {
       try {
-        const symbolList = symbols.split(',').map(s => s.trim()).filter(s => !!s);
-        if (symbolList.length === 0) {
+        const rawSymbolList = symbols.split(',').map(s => s.trim()).filter(s => !!s);
+        if (rawSymbolList.length === 0) {
           return res.status(400).json({ error: 'No valid symbols provided' });
         }
+        
+        // Map symbols to Yahoo Finance format
+        const symbolList = rawSymbolList.map(s => {
+          let sym = s.toUpperCase();
+          if (sym.endsWith('.SH')) sym = sym.replace('.SH', '.SS');
+          if (sym.length === 6) {
+            if (sym.startsWith('60') || sym.startsWith('68')) return `${sym}.SS`;
+            if (sym.startsWith('00') || sym.startsWith('30')) return `${sym}.SZ`;
+            if (sym.startsWith('8') || sym.startsWith('4')) return `${sym}.BJ`;
+          }
+          return sym;
+        });
+
         console.log(`Fetching batch quotes for: ${symbolList.join(', ')}`);
         const results = await yahooFinance.quote(symbolList as any);
-        console.log(`Successfully fetched ${results.length} quotes.`);
-        return res.json(results);
+        
+        // Format results to be consistent with single quote response
+        const formattedResults = results.map(result => {
+          let changePercent = result.regularMarketChangePercent;
+          let change = result.regularMarketChange;
+          const price = result.regularMarketPrice;
+          const prevClose = result.regularMarketPreviousClose;
+
+          // Fallback calculations
+          if (change === undefined && price !== undefined && prevClose !== undefined) {
+            change = price - prevClose;
+          }
+          if (changePercent === undefined && change !== undefined && prevClose !== undefined && prevClose !== 0) {
+            changePercent = (change / prevClose) * 100;
+          }
+
+          // Robustness check for changePercent (decimal vs percentage)
+          if (changePercent !== undefined && Math.abs(changePercent) < 0.1 && changePercent !== 0 && change !== undefined && price !== undefined) {
+             // If changePercent is very small but change is significant, it's likely a decimal
+             if (Math.abs(change) > 0.005 * price) {
+               changePercent = changePercent * 100;
+             }
+          }
+
+          const marketTime = result.regularMarketTime ? new Date(result.regularMarketTime) : new Date();
+          const formattedTime = marketTime.toLocaleString('zh-CN', { 
+            timeZone: 'Asia/Shanghai',
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit'
+          });
+
+          return {
+            symbol: result.symbol,
+            name: result.shortName || result.longName || result.symbol,
+            price: price,
+            change: change !== undefined ? parseFloat(change.toFixed(2)) : 0,
+            changePercent: changePercent !== undefined ? parseFloat(changePercent.toFixed(2)) : 0,
+            previousClose: prevClose,
+            currency: result.currency,
+            lastUpdated: formattedTime,
+            marketState: result.marketState
+          };
+        });
+
+        console.log(`Successfully fetched and formatted ${formattedResults.length} quotes.`);
+        return res.json(formattedResults);
       } catch (error) {
         console.error('Yahoo Finance Batch Error:', error);
         return res.status(500).json({ error: 'Failed to fetch batch stock data' });
@@ -182,12 +243,22 @@ async function startServer() {
     }
 
     try {
-      let yfSymbol = (symbol as string).trim();
+      let yfSymbol = (symbol as string).trim().toUpperCase();
+      
+      // Handle common suffix variations
+      yfSymbol = yfSymbol.replace('.SH', '.SS');
       
       // If the symbol already contains a dot or starts with a caret, assume it's already a valid Yahoo symbol
       if (!yfSymbol.includes('.') && !yfSymbol.startsWith('^')) {
         if (market === 'A-Share') {
-          if (yfSymbol.startsWith('6')) {
+          // A-Share logic: 60xxxx/68xxxx -> .SS, 00xxxx/30xxxx -> .SZ, 43xxxx/83xxxx/87xxxx -> .BJ
+          if (yfSymbol.startsWith('60') || yfSymbol.startsWith('68')) {
+            yfSymbol = `${yfSymbol}.SS`;
+          } else if (yfSymbol.startsWith('00') || yfSymbol.startsWith('30')) {
+            yfSymbol = `${yfSymbol}.SZ`;
+          } else if (yfSymbol.startsWith('43') || yfSymbol.startsWith('83') || yfSymbol.startsWith('87')) {
+            yfSymbol = `${yfSymbol}.BJ`;
+          } else if (yfSymbol.startsWith('6')) {
             yfSymbol = `${yfSymbol}.SS`;
           } else {
             yfSymbol = `${yfSymbol}.SZ`;
@@ -211,7 +282,7 @@ async function startServer() {
         if (searchResults.quotes && searchResults.quotes.length > 0) {
           // Find the best match for the requested market
           const bestMatch = searchResults.quotes.find((q: any) => {
-            if (market === 'A-Share') return q.symbol.endsWith('.SS') || q.symbol.endsWith('.SZ');
+            if (market === 'A-Share') return q.symbol.endsWith('.SS') || q.symbol.endsWith('.SZ') || q.symbol.endsWith('.BJ');
             if (market === 'HK-Share') return q.symbol.endsWith('.HK');
             return true;
           }) || searchResults.quotes[0];
@@ -225,13 +296,46 @@ async function startServer() {
         throw new Error(`No data returned from Yahoo Finance for ${yfSymbol} or search ${symbol}`);
       }
 
+      // Robustness check for changePercent (Yahoo sometimes returns decimal like 0.0118 instead of 1.18)
+      let changePercent = result.regularMarketChangePercent;
+      let change = result.regularMarketChange;
+      const price = result.regularMarketPrice;
+      const prevClose = result.regularMarketPreviousClose;
+
+      // Fallback calculations
+      if (change === undefined && price !== undefined && prevClose !== undefined) {
+        change = price - prevClose;
+      }
+      if (changePercent === undefined && change !== undefined && prevClose !== undefined && prevClose !== 0) {
+        changePercent = (change / prevClose) * 100;
+      }
+
+      if (changePercent !== undefined && Math.abs(changePercent) < 0.1 && changePercent !== 0 && change !== undefined && price !== undefined) {
+        // If changePercent is very small but change is significant, it's likely a decimal
+        if (Math.abs(change) > 0.005 * price) {
+          changePercent = changePercent * 100;
+        }
+      }
+      
+      // Format last updated time
+      const dataTime = result.regularMarketTime ? new Date(result.regularMarketTime) : new Date();
+      const formattedTime = dataTime.toLocaleString('zh-CN', { 
+        timeZone: 'Asia/Shanghai',
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit'
+      }) + ' CST';
+
       res.json({
-        symbol,
+        symbol: result.symbol || symbol,
         name: result.shortName || result.longName || symbol,
-        price: result.regularMarketPrice,
-        change: result.regularMarketChange,
-        changePercent: result.regularMarketChangePercent,
-        previousClose: result.regularMarketPreviousClose,
+        price: price,
+        change: change !== undefined ? parseFloat(change.toFixed(2)) : 0,
+        changePercent: changePercent !== undefined ? parseFloat(changePercent.toFixed(2)) : 0,
+        previousClose: prevClose,
         open: result.regularMarketOpen,
         dayHigh: result.regularMarketDayHigh,
         dayLow: result.regularMarketDayLow,
@@ -239,7 +343,7 @@ async function startServer() {
         marketCap: result.marketCap,
         pe: result.trailingPE,
         currency: result.currency,
-        lastUpdated: new Date().toISOString(),
+        lastUpdated: formattedTime,
         source: 'Yahoo Finance API'
       });
     } catch (error) {
