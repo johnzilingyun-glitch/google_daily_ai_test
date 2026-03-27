@@ -109,26 +109,25 @@ export const getAnalyzeStockPrompt = (symbol: string, market: Market, realtimeDa
 Current date and time (UTC): ${now.toISOString()}
 Current date and time (China Standard Time): ${now.toLocaleString('zh-CN', { timeZone: 'Asia/Shanghai' })}
 
-**REAL-TIME DATA TOOL OUTPUT (GROUND TRUTH)**:
+**REAL-TIME DATA TOOL OUTPUT (ABSOLUTE GROUND TRUTH)**:
 ${realtimeData ? JSON.stringify(realtimeData, null, 2) : "No real-time data available from tool. Use Google Search grounding instead."}
 
 You are a professional equity analyst.
 Analyze stock "${symbol}" in the ${market} market using the latest available public information and Google Search grounding.
 All output MUST be in Simplified Chinese (简体中文).
 
-**CROSS-VALIDATION (CRITICAL)**: 
-- You MUST cross-validate the "REAL-TIME DATA TOOL OUTPUT" (from Yahoo Finance) with your own Google Search results (from Sina Finance, East Money, etc.).
-- **IF THEY DIFFER**: 
-   - Yahoo Finance data for A-shares is often delayed by 15-20 minutes. 
-   - If Google Search shows a more recent price (e.g., from a Sina Finance snippet within the last 5 minutes), you MUST prioritize the Google Search data for the "price", "change", and "changePercent" fields.
-   - Explain the discrepancy in the "summary" field (e.g., "Note: Yahoo Finance data is delayed by 15 mins; using real-time data from Sina Finance").
-- **IF TOOL DATA IS MISSING**: Use Google Search as your primary source.
-- **IF THEY MATCH**: Proceed with the tool data as the "Ground Truth".
+**DATA SOURCE HIERARCHY (CRITICAL)**: 
+1. If the "REAL-TIME DATA TOOL OUTPUT" is provided above, you **MUST MUST MUST** use its exact values for ALL matching fields in your JSON output. This includes: "price", "change", "changePercent", "previousClose", "lastUpdated", "dailyHigh" (use dayHigh), "dailyLow" (use dayLow), "pe" (use pe), and currency.
+2. **DO NOT** override ANY of the tool-provided numbers with data found in Google Search. The tool data is the absolute mathematical truth.
+3. Use Google Search grounding **ONLY** for:
+   - Filling in missing fundamental data not provided by the tool (e.g., PB, ROE, EPS, Revenue Growth).
+   - Gathering qualitative context: company news, sector trends, management narratives, and analyst opinions.
+4. If, and ONLY if, the "REAL-TIME DATA TOOL OUTPUT" says "No real-time data available", then you must use Google Search to find the latest valid price and fundamental data.
 
-If the current time in China is past 15:00 CST (for A-shares) or 16:00 HKT (for HK-shares), you MUST prioritize fetching the "Closing Price" (收盘价).
+If the current time in China is past 15:00 CST (for A-shares) or 16:00 HKT (for HK-shares), the market is closed and you are summarizing the closing action.
 
 Previous analysis context (for reference and continuity):
-${JSON.stringify(history.filter(h => h.stockInfo?.symbol === symbol).slice(0, 3))}
+${JSON.stringify(history.filter((h: any) => h.stockInfo?.symbol === symbol).slice(0, 3))}
 
 Return JSON only, with no markdown fences and no explanation outside the JSON object.
 **IMPORTANT**: The JSON MUST have "stockInfo" at the root level. Do NOT wrap the entire response in another object like "analysis" or "data".
@@ -136,8 +135,8 @@ Return JSON only, with no markdown fences and no explanation outside the JSON ob
 Requirements:
 1. **STRICT MARKET ADHERENCE (CRITICAL)**: 
    - You MUST identify the company that matches this symbol SPECIFICALLY in the ${market} market. 
-   - **NAME-TO-CODE RESOLUTION**: If "${symbol}" is a company name (e.g., "佳力图"), you MUST first find its official stock code (e.g., 603912.SH) before searching for price data. Ensure the suffix (.SH, .SZ, .HK) matches the ${market}.
-   - **A-SHARE PINYIN SUPPORT**: For the A-Share market, the search term "${symbol}" might be a 6-digit code (e.g., 600989) OR a pinyin abbreviation (e.g., "BFNY" for 宝丰能源). You MUST resolve these abbreviations to the correct A-share stock.
+   - **NAME-TO-CODE RESOLUTION**: If "${symbol}" is a company name (e.g., "贵州茅台"), you MUST first find its official stock code (e.g., 600519.SH) before searching for price data. Ensure the suffix (.SH, .SZ, .HK) matches the ${market}.
+   - **A-SHARE PINYIN SUPPORT**: For the A-Share market, the search term "${symbol}" might be a 6-digit code (e.g., 600989) OR a pinyin abbreviation (e.g., "GZMT" for 贵州茅台). You MUST resolve these abbreviations to the correct A-share stock.
    - If the symbol exists in multiple markets (e.g., "AAPL" in US vs "AAPL" as a placeholder elsewhere), you MUST prioritize the ${market} version.
    - The "market" field in the returned JSON MUST be exactly "${market}".
    - If the symbol is NOT found in the ${market} market, return an error in the "summary" field and provide empty data for other fields, but DO NOT return a stock from a different market.

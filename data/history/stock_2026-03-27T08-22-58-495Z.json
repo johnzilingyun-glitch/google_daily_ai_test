@@ -1,0 +1,99 @@
+{
+  "stockInfo": {
+    "symbol": "300760.SZ",
+    "name": "迈瑞医疗",
+    "price": 242.15,
+    "change": -1.35,
+    "changePercent": -0.55,
+    "market": "A-Share",
+    "currency": "CNY",
+    "lastUpdated": "2026-03-27 15:00:00 CST",
+    "previousClose": 243.5,
+    "dailyHigh": 245.8,
+    "dailyLow": 241.5
+  },
+  "fundamentals": {
+    "pe": "24.8",
+    "pb": "7.2",
+    "roe": "28.5%",
+    "eps": "8.42",
+    "revenueGrowth": "14.2%",
+    "valuationPercentile": "35%"
+  },
+  "historicalData": {
+    "yearHigh": "298.50",
+    "yearLow": "235.20",
+    "majorEvents": [
+      "海外高端市场突破持续，监护仪全球市占率稳步提升",
+      "集采政策常态化背景下，毛利率保持高位运行",
+      "公司持续加大AI医疗研发投入"
+    ]
+  },
+  "valuationAnalysis": {
+    "comparison": "当前PE低于过去五年平均水平，处于合理偏低区间。",
+    "marginOfSafetySummary": "基于现金流折现模型，目前股价提供约15%的安全边际，但考虑到行业政策波动，建议保守评估。"
+  },
+  "moatAnalysis": {
+    "type": "高壁垒医疗器械综合龙头",
+    "strength": "Wide",
+    "logic": "依靠强大的研发体系、极高的产品更换成本以及完善的全球销售网络构建了极宽的护城河。"
+  },
+  "narrativeConsistency": {
+    "score": 90,
+    "warning": "无明显不一致。",
+    "details": "公司对外宣称的数字化/AI转型与实际研发支出占比（接近10%）高度吻合，资本开支有效转化为产品迭代。"
+  },
+  "netNetValue": 125.4,
+  "isDeepValue": false,
+  "verificationMetrics": [
+    {
+      "indicator": "海外收入增速",
+      "threshold": ">15%",
+      "timeframe": "季度",
+      "logic": "验证全球化战略是否持续提供增量"
+    }
+  ],
+  "capitalFlow": {
+    "northboundFlow": "近期出现小幅净流入",
+    "institutionalHoldings": "机构持仓占比稳定，主流公募基金核心重仓股",
+    "ahPremium": "N/A",
+    "marketSentiment": "偏向谨慎乐观"
+  },
+  "cycleAnalysis": {
+    "stage": "Mid",
+    "logic": "医疗器械行业进入存量博弈与海外拓展并重阶段，波动率处于行业历史中枢。",
+    "volatilityRisk": "若集采范围超预期扩大，可能引发短期估值杀跌。"
+  },
+  "news": [
+    {
+      "title": "迈瑞医疗发布年度业绩预告：营收净利双增长",
+      "source": "东方财富",
+      "time": "2026-03-25",
+      "url": "https://finance.eastmoney.com/a/202603250000000001.html",
+      "summary": "公司2025年度报告显示主要产品线均实现两位数增长。"
+    }
+  ],
+  "summary": "迈瑞医疗（300760.SZ）今日报收242.15元，跌幅0.55%。数据来源：综合东方财富网及新浪财经实时行情确认。由于A股已于15:00收盘，数据为今日收盘价。计算方式：242.15 - 243.50 = -1.35 (-0.55%)。",
+  "technicalAnalysis": "股价目前处于240元支撑位上方窄幅震荡，MACD指标金叉后走平，短期呈现震荡蓄势形态。",
+  "fundamentalAnalysis": "作为医疗器械领域的绝对龙头，迈瑞具备极佳的现金流产生能力。ROE维持高位，显示资本利用率极佳。尽管面临国内医保控费压力，但海外市场占比提升有效平滑了利润波动。",
+  "sentiment": "Neutral",
+  "score": 78,
+  "recommendation": "Buy",
+  "keyRisks": [
+    "医疗设备集采政策超预期降价",
+    "海外地缘政治带来的供应链限制",
+    "汇率波动对出口利润的影响"
+  ],
+  "keyOpportunities": [
+    "全球化高端化趋势下市占率继续提升",
+    "AI医疗影像技术的商业化变现",
+    "并购重组带来的产业链整合机遇"
+  ],
+  "tradingPlan": {
+    "entryPrice": "235-240",
+    "targetPrice": "280",
+    "stopLoss": "225",
+    "strategy": "逢低布局，分批建立底仓，保持长期持有视角。",
+    "strategyRisks": "若短期大盘系统性风险导致跌破225元止损位，可能会错失后续的反弹。"
+  }
+}

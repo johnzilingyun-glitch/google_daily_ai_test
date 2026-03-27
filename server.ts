@@ -155,6 +155,88 @@ async function startServer() {
     });
   });
 
+  // Market Indices Endpoint (used by marketService for ground truth data)
+  app.get('/api/stock/indices', async (req, res) => {
+    const { market } = req.query;
+    console.log(`API Request: /api/stock/indices - market: ${market}`);
+
+    const indexSymbols: Record<string, { symbol: string; name: string }[]> = {
+      'A-Share': [
+        { symbol: '000001.SS', name: '上证综指' },
+        { symbol: '399001.SZ', name: '深证成指' },
+        { symbol: '399006.SZ', name: '创业板指' },
+        { symbol: '000300.SS', name: '沪深300' },
+        { symbol: '^HSI', name: '恒生指数' },
+      ],
+      'HK-Share': [
+        { symbol: '^HSI', name: '恒生指数' },
+        { symbol: '^HSTECH', name: '恒生科技指数' },
+        { symbol: '^HSCE', name: '国企指数' },
+        { symbol: '^HSCCI', name: '红筹指数' },
+        { symbol: '^S&P/HKEX GEM', name: '创业板指数' },
+      ],
+      'US-Share': [
+        { symbol: '^GSPC', name: 'S&P 500' },
+        { symbol: '^IXIC', name: '纳斯达克综合' },
+        { symbol: '^DJI', name: '道琼斯工业' },
+        { symbol: '^RUT', name: '罗素2000' },
+        { symbol: '^SOX', name: '费城半导体' },
+      ],
+    };
+
+    const marketKey = (market as string) || 'A-Share';
+    const symbols = indexSymbols[marketKey] || indexSymbols['A-Share'];
+
+    try {
+      const results = [];
+      for (const idx of symbols) {
+        try {
+          const quote = await yahooFinance.quote(idx.symbol as any);
+          if (quote) {
+            const price = quote.regularMarketPrice;
+            const prevClose = quote.regularMarketPreviousClose;
+            let change = quote.regularMarketChange;
+            let changePercent = quote.regularMarketChangePercent;
+
+            if (change === undefined && price !== undefined && prevClose !== undefined) {
+              change = price - prevClose;
+            }
+            if (changePercent === undefined && change !== undefined && prevClose !== undefined && prevClose !== 0) {
+              changePercent = (change / prevClose) * 100;
+            }
+
+            const marketTime = quote.regularMarketTime ? new Date(quote.regularMarketTime) : new Date();
+            const formattedTime = marketTime.toLocaleString('zh-CN', {
+              timeZone: 'Asia/Shanghai',
+              year: 'numeric', month: '2-digit', day: '2-digit',
+              hour: '2-digit', minute: '2-digit', second: '2-digit'
+            });
+
+            results.push({
+              name: idx.name,
+              symbol: idx.symbol,
+              price: price,
+              change: change !== undefined ? parseFloat(change.toFixed(2)) : 0,
+              changePercent: changePercent !== undefined ? parseFloat(changePercent.toFixed(2)) : 0,
+              previousClose: prevClose,
+              lastUpdated: formattedTime + ' CST',
+              source: 'Yahoo Finance API',
+              marketState: quote.marketState,
+            });
+          }
+        } catch (e) {
+          console.warn(`Failed to fetch index ${idx.symbol}:`, e);
+        }
+      }
+
+      console.log(`Successfully fetched ${results.length}/${symbols.length} indices for ${marketKey}`);
+      res.json(results);
+    } catch (error) {
+      console.error('Indices fetch error:', error);
+      res.status(500).json({ error: 'Failed to fetch indices data' });
+    }
+  });
+
   // Real-time Stock Data Endpoint
   app.get('/api/stock/realtime', async (req, res) => {
     const { symbol, market, symbols } = req.query;
@@ -254,6 +336,29 @@ async function startServer() {
       // If the symbol already contains a dot or starts with a caret, assume it's already a valid Yahoo symbol
       if (!yfSymbol.includes('.') && !yfSymbol.startsWith('^')) {
         if (market === 'A-Share') {
+          // Use East Money Suggest API to smartly resolve Chinese names and pinyins (e.g. MRYL, 迈瑞医疗) into 6-digit codes
+          if (!/^\d{6}$/.test(yfSymbol)) {
+            try {
+              const encodedInput = encodeURIComponent((symbol as string).trim());
+              const emUrl = `https://searchapi.eastmoney.com/api/suggest/get?cb=cb&input=${encodedInput}&type=14&token=D43BF722C8E33BDC906FB84D85E326E8`;
+              const response = await fetch(emUrl);
+              const text = await response.text();
+              const match = text.match(/^cb\((.*)\)$/);
+              if (match && match[1]) {
+                const data = JSON.parse(match[1]);
+                if (data?.QuotationCodeTable?.Data?.length > 0) {
+                  const bestCode = data.QuotationCodeTable.Data[0].Code;
+                  if (bestCode && /^\d{6}$/.test(bestCode)) {
+                    console.log(`Smart Resolved '${yfSymbol}' to '${bestCode}' via EastMoney`);
+                    yfSymbol = bestCode;
+                  }
+                }
+              }
+            } catch (error) {
+              console.error(`EastMoney resolution failed for ${yfSymbol}:`, error);
+            }
+          }
+
           // Only append suffix if it's a 6-digit number
           if (/^\d{6}$/.test(yfSymbol)) {
             if (yfSymbol.startsWith('60') || yfSymbol.startsWith('68')) {
@@ -266,24 +371,6 @@ async function startServer() {
               yfSymbol = `${yfSymbol}.SS`;
             } else {
               yfSymbol = `${yfSymbol}.SZ`;
-            }
-          } else {
-            // It's likely a name or abbreviation, let search handle it later
-            // But we can try to map some common ones
-            const commonMappings: Record<string, string> = {
-              'WCDL': '000338.SZ', // 潍柴动力
-              'GZMT': '600519.SS', // 贵州茅台
-              'BYD': '002594.SZ', // 比亚迪 (A-share)
-              'WLY': '000858.SZ', // 五粮液
-              'ZGPA': '601318.SS', // 中国平安
-              'ZSYH': '600036.SS', // 招商银行
-              'ZGYH': '601988.SS', // 中国银行
-              'JSYH': '601939.SS', // 建设银行
-              'GSYH': '601398.SS', // 工商银行
-              'NYYH': '601288.SS', // 农业银行
-            };
-            if (commonMappings[yfSymbol]) {
-              yfSymbol = commonMappings[yfSymbol];
             }
           }
         } else if (market === 'HK-Share') {

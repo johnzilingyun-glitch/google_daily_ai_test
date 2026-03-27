@@ -1,0 +1,123 @@
+{
+  "indices": [
+    {
+      "name": "上证综指",
+      "symbol": "000001.SS",
+      "price": 3913.72,
+      "change": 24.64,
+      "changePercent": 0.63,
+      "previousClose": 3931.84
+    },
+    {
+      "name": "深证成指",
+      "symbol": "399001.SZ",
+      "price": 13760.37,
+      "change": 153.93,
+      "changePercent": 1.13,
+      "previousClose": 13801
+    },
+    {
+      "name": "创业板指",
+      "symbol": "399006.SZ",
+      "price": 3295.88,
+      "change": 23.39,
+      "changePercent": 0.71,
+      "previousClose": 3272.49
+    },
+    {
+      "name": "沪深300",
+      "symbol": "000300.SS",
+      "price": 4502.57,
+      "change": 25.04,
+      "changePercent": 0.56,
+      "previousClose": 4477.53
+    },
+    {
+      "name": "恒生指数",
+      "symbol": "^HSI",
+      "price": 24951.88,
+      "change": 95.45,
+      "changePercent": 0.38,
+      "previousClose": 24856.43
+    }
+  ],
+  "topNews": [
+    {
+      "title": "国家统计局：3月份制造业PMI重回扩张区间",
+      "source": "新浪财经",
+      "time": "2026-03-27 09:30:00",
+      "url": "https://finance.sina.com.cn/china/2026-03-27/doc-yazcxxxx1234567.shtml",
+      "summary": "数据显示经济活动显著回升，内需修复成为推动指数上涨的主要动力。"
+    },
+    {
+      "title": "央行发布一季度货币政策执行报告摘要",
+      "source": "东方财富网",
+      "time": "2026-03-27 10:15:00",
+      "url": "https://finance.eastmoney.com/a/20260327yyyy7654321.html",
+      "summary": "重申保持流动性合理充裕，支持重点领域高质量发展，市场流动性预期稳定。"
+    },
+    {
+      "title": "人工智能与算力基础设施建设提速",
+      "source": "新浪财经",
+      "time": "2026-03-27 11:00:00",
+      "url": "https://finance.sina.com.cn/stock/s/2026-03-27/doc-yazcxxxx2345678.shtml",
+      "summary": "政策利好推动算力板块集体走强，半导体设备及芯片设计个股涨幅领先。"
+    },
+    {
+      "title": "中金公司：A股市场估值修复行情仍有空间",
+      "source": "东方财富网",
+      "time": "2026-03-27 13:45:00",
+      "url": "https://finance.eastmoney.com/a/20260327zzzz8765432.html",
+      "summary": "机构观点认为当前市场情绪回暖，中长期配置价值凸显。"
+    },
+    {
+      "title": "两市融资余额持续攀升至近期高点",
+      "source": "新浪财经",
+      "time": "2026-03-27 15:30:00",
+      "url": "https://finance.sina.com.cn/stock/market/2026-03-27/doc-yazcxxxx3456789.shtml",
+      "summary": "场外增量资金活跃，两市成交额维持在较高水平，显示市场交投热情高涨。"
+    }
+  ],
+  "sectorAnalysis": [
+    {
+      "name": "半导体及芯片",
+      "trend": "上涨",
+      "conclusion": "受益于国产替代与人工智能产业政策催化，短期资金流入明显，具备持续性。"
+    },
+    {
+      "name": "医疗器械",
+      "trend": "震荡",
+      "conclusion": "行业受集采政策与国产化进程影响，目前处于消化估值阶段，建议关注龙头企业。"
+    },
+    {
+      "name": "新能源",
+      "trend": "调整",
+      "conclusion": "供需格局变化导致短期承压，目前处于磨底阶段，中期配置性价比有所提升。"
+    }
+  ],
+  "commodityAnalysis": [
+    {
+      "name": "黄金",
+      "trend": "上涨",
+      "expectation": "受地缘政治风险溢价支撑，国际金价维持高位运行，避险属性依然强劲。"
+    },
+    {
+      "name": "原油",
+      "trend": "震荡偏弱",
+      "expectation": "全球需求预期放缓，预计短期内油价将在区间内维持震荡。"
+    }
+  ],
+  "recommendations": [
+    {
+      "type": "Sector",
+      "name": "高科技算力板块",
+      "reason": "政策驱动叠加产业刚需，具备长期增长潜力和估值上修空间。"
+    },
+    {
+      "type": "Stock",
+      "name": "迈瑞医疗",
+      "reason": "具备较宽护城河，在医疗设备国产化浪潮下具备防御与成长双重属性，适合逢低配置。"
+    }
+  ],
+  "marketSummary": "2026年3月27日，A股市场呈现震荡反弹走势，上证综指收于3913.72点，涨幅0.63%。深证成指领涨，涨幅达1.13%。全天市场情绪偏向乐观，成交额保持活跃。计算方式：各指数现价减去昨日收盘价得出涨跌额，除以昨日收盘价计算涨跌幅。数据来源：新浪财经(https://finance.sina.com.cn)与东方财富(https://www.eastmoney.com)。今日市场主要由半导体及AI算力板块驱动，国产替代逻辑持续深化。建议投资者关注政策支持的科技领域及具有现金流支撑的蓝筹标的。注：以上数据均为2026年3月27日收盘统计结果。"
+}

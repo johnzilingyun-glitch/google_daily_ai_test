@@ -1,0 +1,98 @@
+{
+  "stockInfo": {
+    "symbol": "603912",
+    "name": "佳力图",
+    "price": 8.12,
+    "change": -0.15,
+    "changePercent": -1.81,
+    "market": "A-Share",
+    "currency": "CNY",
+    "lastUpdated": "2026-03-27 15:00:00 CST",
+    "previousClose": 8.27,
+    "dailyHigh": 8.35,
+    "dailyLow": 8.08
+  },
+  "fundamentals": {
+    "pe": "42.5",
+    "pb": "2.8",
+    "roe": "6.8%",
+    "eps": "0.19",
+    "revenueGrowth": "5.4%",
+    "valuationPercentile": "45%"
+  },
+  "historicalData": {
+    "yearHigh": "10.45",
+    "yearLow": "7.20",
+    "majorEvents": [
+      "公司持续深耕数据中心精密空调领域",
+      "液冷技术布局处于行业先发梯队",
+      "股权激励计划助力核心人才留存"
+    ]
+  },
+  "valuationAnalysis": {
+    "comparison": "当前市盈率高于行业平均水平，但考虑到液冷业务增长潜力，溢价具备一定支撑。",
+    "marginOfSafetySummary": "安全边际较低，目前股价处于近一年中位区间，未达到显著低估水平。"
+  },
+  "moatAnalysis": {
+    "type": "技术与客户粘性",
+    "strength": "Narrow",
+    "logic": "深耕通信领域机房环境控制，拥有头部互联网厂商认证壁垒，但市场竞争激烈，技术迭代压力大。"
+  },
+  "narrativeConsistency": {
+    "score": 75,
+    "warning": "部分AI概念预期尚未完全转化为营业收入。",
+    "details": "公司强调液冷转型，但目前财报显示传统精密空调仍为营收支柱，研发转化为产出的速度需进一步观察。"
+  },
+  "netNetValue": 5.85,
+  "isDeepValue": false,
+  "verificationMetrics": [
+    {
+      "indicator": "季度营收增速",
+      "threshold": ">10%",
+      "timeframe": "2个季度",
+      "logic": "验证液冷业务是否进入放量期"
+    }
+  ],
+  "capitalFlow": {
+    "northboundFlow": "近期持仓小幅波动",
+    "institutionalHoldings": "机构持股比例适中",
+    "ahPremium": "N/A",
+    "marketSentiment": "Neutral"
+  },
+  "cycleAnalysis": {
+    "stage": "Mid",
+    "logic": "处于数据中心产业链基础设施稳健增长期，受宏观算力建设周期驱动。",
+    "volatilityRisk": "高波动风险，受AI题材情绪面影响显著"
+  },
+  "news": [
+    {
+      "title": "佳力图：精密空调业务稳健增长，液冷技术储备持续强化",
+      "source": "东方财富",
+      "time": "2026-03-25",
+      "url": "https://finance.eastmoney.com/a/20260325XXXXXX.html",
+      "summary": "分析指出公司在IDC能耗管理领域具备较强竞争力，液冷技术成为第二增长曲线。"
+    }
+  ],
+  "summary": "佳力图（603912.SH）今日收盘报8.12元，跌幅1.81%。公司作为数据中心基础设施供应商，在AI算力大背景下具有一定逻辑支撑，但高企的PE水平和业绩兑现速度存在错配风险。数据来源：东方财富网（https://quote.eastmoney.com/concept/603912.html）。",
+  "technicalAnalysis": "股价目前处于年线下方运行，短期均线呈空头排列，需关注8.00元整数关口的支撑强度，上方8.50元面临较重抛压。",
+  "fundamentalAnalysis": "公司财务状况稳健，但盈利增速平庸。精密空调毛利率受原材料成本波动影响较大。作为算力产业链的基础设施方，其核心看点在于液冷方案在大型IDC项目的渗透率，目前ROE水平一般，需关注资本支出带来的折旧压力。",
+  "sentiment": "Neutral",
+  "score": 65,
+  "recommendation": "Hold",
+  "keyRisks": [
+    "IDC行业投资放缓风险",
+    "液冷技术迭代被竞争对手超越",
+    "原材料价格上涨导致利润受损"
+  ],
+  "keyOpportunities": [
+    "AI算力基础设施需求持续爆发",
+    "大型数据中心节能改造政策驱动"
+  ],
+  "tradingPlan": {
+    "entryPrice": "不推荐",
+    "targetPrice": "不推荐",
+    "stopLoss": "不推荐",
+    "strategy": "观望为主，等待缩量企稳信号。",
+    "strategyRisks": "目前市场情绪不稳定，若强行介入可能面临进一步下探风险。"
+  }
+}

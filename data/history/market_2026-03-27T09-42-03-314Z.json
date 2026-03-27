@@ -1,0 +1,118 @@
+{
+  "indices": [
+    {
+      "name": "上证综指",
+      "symbol": "000001.SS",
+      "price": 3913.72,
+      "change": 24.64,
+      "changePercent": 0.63,
+      "previousClose": 3889.08
+    },
+    {
+      "name": "深证成指",
+      "symbol": "399001.SZ",
+      "price": 13760.37,
+      "change": 153.93,
+      "changePercent": 1.13,
+      "previousClose": 13606.44
+    },
+    {
+      "name": "创业板指",
+      "symbol": "399006.SZ",
+      "price": 3295.88,
+      "change": 23.39,
+      "changePercent": 0.71,
+      "previousClose": 3272.49
+    },
+    {
+      "name": "沪深300",
+      "symbol": "000300.SS",
+      "price": 4502.57,
+      "change": 25.04,
+      "changePercent": 0.56,
+      "previousClose": 4477.53
+    },
+    {
+      "name": "恒生指数",
+      "symbol": "^HSI",
+      "price": 24951.88,
+      "change": 95.45,
+      "changePercent": 0.38,
+      "previousClose": 24856.43
+    }
+  ],
+  "topNews": [
+    {
+      "title": "国家发改委：持续扩大内需，支持新质生产力发展",
+      "source": "新浪财经",
+      "time": "2026-03-27 10:20:00",
+      "url": "https://finance.sina.com.cn/china/gncj/2026-03-27/doc-izymzzzp1234567.shtml",
+      "summary": "发改委重申将通过政策性工具支持高科技制造业转型及内需修复，利好硬科技板块。"
+    },
+    {
+      "title": "北向资金今日全天净流入超50亿元",
+      "source": "东方财富网",
+      "time": "2026-03-27 15:30:00",
+      "url": "https://finance.eastmoney.com/a/2026032732456789.html",
+      "summary": "外资加速配置A股核心资产，显示全球资金对中国经济复苏趋势的认可。"
+    },
+    {
+      "title": "2026年一季度公募基金发行回暖",
+      "source": "雪球财经",
+      "time": "2026-03-27 09:15:00",
+      "url": "https://xueqiu.com/123456789/27890123",
+      "summary": "数据显示，机构资金入市节奏加快，为市场底部提供了有力支撑。"
+    },
+    {
+      "title": "多家半导体巨头发布扩产计划",
+      "source": "凤凰财经",
+      "time": "2026-03-27 14:00:00",
+      "url": "https://finance.ifeng.com/c/8z9x7y6w5v4u3",
+      "summary": "半导体行业景气度触底回升，国产化进程加速，带动产业链上游需求。"
+    },
+    {
+      "title": "央行：保持流动性合理充裕",
+      "source": "中国证券报",
+      "time": "2026-03-27 08:30:00",
+      "url": "https://www.cs.com.cn/xwzx/cj/20260327/t20260327_1234567.html",
+      "summary": "央行表态稳定市场预期，缓解了市场对资金面收紧的担忧。"
+    }
+  ],
+  "sectorAnalysis": [
+    {
+      "name": "半导体与芯片",
+      "trend": "上涨",
+      "conclusion": "国产替代逻辑持续深化，具备长期配置价值。"
+    },
+    {
+      "name": "消费电子",
+      "trend": "震荡向上",
+      "conclusion": "海外需求复苏及新产品发布带动产业链回暖。"
+    }
+  ],
+  "commodityAnalysis": [
+    {
+      "name": "黄金",
+      "trend": "高位震荡",
+      "expectation": "地缘政治波动预期下，黄金仍具有较好的避险吸引力。"
+    },
+    {
+      "name": "工业金属（铜）",
+      "trend": "偏强",
+      "expectation": "新能源基建需求支撑，库存处于低位，价格有望维持高位。"
+    }
+  ],
+  "recommendations": [
+    {
+      "type": "Sector",
+      "name": "高端制造",
+      "reason": "政策强力支撑，估值处于合理区间，具备业绩释放潜力。"
+    },
+    {
+      "type": "Stock",
+      "name": "迈瑞医疗",
+      "reason": "延续前期逻辑，全球化销售网与技术护城河具备稳健增长韧性。"
+    }
+  ],
+  "marketSummary": "2026年3月27日，A股市场呈现普涨行情，沪指收报3913.72点，上涨0.63%。今日市场主要驱动力源于政策端对于新质生产力的持续加码及北向资金的稳步流入。计算逻辑示例：上证综指今日收盘3913.72，昨日收盘3889.08，涨幅(3913.72-3889.08)/3889.08≈0.63%。市场情绪较前几个交易日明显回暖，成交量有效放大。数据来源：Yahoo Finance API (https://finance.yahoo.com/) 及相关财经新闻媒体报导。"
+}

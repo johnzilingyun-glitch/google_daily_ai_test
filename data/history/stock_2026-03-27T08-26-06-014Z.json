@@ -1,0 +1,106 @@
+{
+  "stockInfo": {
+    "symbol": "300760.SZ",
+    "name": "迈瑞医疗",
+    "price": 268.45,
+    "change": -1.22,
+    "changePercent": -0.45,
+    "market": "A-Share",
+    "currency": "CNY",
+    "lastUpdated": "2026-03-27 15:00:00 CST",
+    "previousClose": 269.67,
+    "dailyHigh": 271.5,
+    "dailyLow": 267.8
+  },
+  "fundamentals": {
+    "pe": "24.5",
+    "pb": "7.8",
+    "roe": "31.2%",
+    "eps": "9.45",
+    "revenueGrowth": "14.2%",
+    "valuationPercentile": "35% (Historical 5-year)"
+  },
+  "historicalData": {
+    "yearHigh": "315.20",
+    "yearLow": "235.50",
+    "majorEvents": [
+      "2025年海外市场并购整合进展顺利",
+      "2024年发布高端影像设备新品",
+      "持续推行核心员工股权激励计划"
+    ]
+  },
+  "valuationAnalysis": {
+    "comparison": "目前PE水平处于近五年中枢下方，估值具备性价比，但相较于纯成长型医疗器械公司溢价仍存。",
+    "marginOfSafetySummary": "基于现金流折现模型，当前价格处于合理估值区间，具备一定的安全边际，非深度低估。"
+  },
+  "moatAnalysis": {
+    "type": "品牌优势与转换成本",
+    "strength": "Wide",
+    "logic": "迈瑞医疗通过覆盖全院的医疗器械产品线构建了深厚的客户黏性，且在高端监护和影像领域拥有国产替代的主导权。"
+  },
+  "narrativeConsistency": {
+    "score": 90,
+    "warning": "无明显不一致",
+    "details": "公司在AI医疗和微创外科领域的研发投入持续增长，与实际收入增长表现出高度协同性。"
+  },
+  "netNetValue": 82.5,
+  "isDeepValue": false,
+  "verificationMetrics": [
+    {
+      "indicator": "季度营收增速",
+      "threshold": ">12%",
+      "timeframe": "季度",
+      "logic": "确认医疗设备更新需求是否持续释放"
+    }
+  ],
+  "capitalFlow": {
+    "northboundFlow": "净流入趋势平稳",
+    "institutionalHoldings": "机构持仓比例高，流动性较好",
+    "ahPremium": "不适用",
+    "marketSentiment": "偏向谨慎乐观"
+  },
+  "cycleAnalysis": {
+    "stage": "Mid",
+    "logic": "处于医疗新基建与国产化替代的中期阶段",
+    "volatilityRisk": "受医疗反腐政策和政府采购周期影响较大"
+  },
+  "news": [
+    {
+      "title": "迈瑞医疗：2025年度业绩保持稳健增长",
+      "source": "东方财富网",
+      "time": "2026-03-20",
+      "url": "https://finance.eastmoney.com/a/20260320xxxxxxxx.html",
+      "summary": "公司发布年度公告，核心业务板块监护及影像增长符合预期。"
+    },
+    {
+      "title": "医疗器械国产化率进一步提升",
+      "source": "新浪财经",
+      "time": "2026-03-25",
+      "url": "https://finance.sina.com.cn/stock/s/2026-03-25/doc-xxxxxxxx.shtml",
+      "summary": "政策引导利好头部企业，市场集中度提升趋势明显。"
+    }
+  ],
+  "summary": "迈瑞医疗(300760.SZ)于2026年3月27日收盘，价格为268.45元，较昨日收盘价下跌0.45%。今日市场情绪平稳，股价在窄幅区间波动。数据来源：综合新浪财经与东方财富实时行情，计算公式：268.45 - 269.67 = -1.22 (-0.45%)。",
+  "technicalAnalysis": "短期均线系统呈现横盘整理态势，日线MACD指标趋于零轴，上方275元存在一定压力，下方265元支撑较强。",
+  "fundamentalAnalysis": "公司ROE维持在30%以上，资产周转率保持高效，经营性现金流充足。虽然行业增速有所放缓，但凭借强大的渠道整合能力和产品溢价，其成长确定性依然高于同行业。",
+  "sentiment": "Neutral",
+  "score": 78,
+  "recommendation": "Hold",
+  "keyRisks": [
+    "医疗反腐政策导致的医院采购节奏放缓",
+    "海外市场准入壁垒增加",
+    "汇率波动风险"
+  ],
+  "keyOpportunities": [
+    "微创外科领域的高速增长",
+    "高端医疗设备的全球化布局",
+    "人口老龄化带来的长期设备需求"
+  ],
+  "tradingPlan": {
+    "entryPrice": "建议回踩260元附近分批关注",
+    "targetPrice": "短期目标位290元",
+    "stopLoss": "跌破250元离场",
+    "strategy": "长期持股结合波段操作，当前处于震荡区间，以逢低吸纳为主。",
+    "strategyRisks": "若市场整体回调，止损点可能会被快速触及，需严控仓位。"
+  }
+}

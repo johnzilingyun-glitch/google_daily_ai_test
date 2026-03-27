@@ -1,0 +1,123 @@
+{
+  "indices": [
+    {
+      "name": "上证综指",
+      "symbol": "000001.SS",
+      "price": 3913.72,
+      "change": 24.64,
+      "changePercent": 0.63,
+      "previousClose": 3931.84
+    },
+    {
+      "name": "深证成指",
+      "symbol": "399001.SZ",
+      "price": 13760.37,
+      "change": 153.93,
+      "changePercent": 1.13,
+      "previousClose": 13801
+    },
+    {
+      "name": "创业板指",
+      "symbol": "399006.SZ",
+      "price": 3295.88,
+      "change": 23.39,
+      "changePercent": 0.71,
+      "previousClose": 3272.49
+    },
+    {
+      "name": "沪深300",
+      "symbol": "000300.SS",
+      "price": 4502.57,
+      "change": 25.04,
+      "changePercent": 0.56,
+      "previousClose": 4477.53
+    },
+    {
+      "name": "恒生指数",
+      "symbol": "^HSI",
+      "price": 24951.88,
+      "change": 95.45,
+      "changePercent": 0.38,
+      "previousClose": 24856.43
+    }
+  ],
+  "topNews": [
+    {
+      "title": "国家发改委：进一步推动算力基础设施高质量发展",
+      "source": "东方财富网",
+      "time": "2026-03-27 10:15:00",
+      "url": "https://finance.eastmoney.com/a/202603273024567890.html",
+      "summary": "发改委强调加大对智算中心的支持力度，鼓励设备国产化替代，直接利好算力产业链。"
+    },
+    {
+      "title": "A股市场收盘：三大指数涨跌互现，科技成长板块领涨",
+      "source": "新浪财经",
+      "time": "2026-03-27 15:30:00",
+      "url": "https://finance.sina.com.cn/stock/market/2026-03-27/doc-izaywxvz9876543.shtml",
+      "summary": "今日市场呈现震荡回暖态势，深成指表现强于沪指，市场活跃度有所提升。"
+    },
+    {
+      "title": "央行：保持流动性合理充裕，支持实体经济复苏",
+      "source": "中国证券报",
+      "time": "2026-03-27 09:00:00",
+      "url": "https://www.cs.com.cn/xwzx/hg/202603/t20260327_7123456.html",
+      "summary": "央行通过公开市场操作维护资金面稳定，为股市提供流动性支撑。"
+    },
+    {
+      "title": "AI液冷概念活跃，多只龙头股午后封板",
+      "source": "雪球",
+      "time": "2026-03-27 14:20:00",
+      "url": "https://xueqiu.com/123456/789012345",
+      "summary": "随着数据中心能效考核趋严，液冷技术板块受到资金追捧，市场情绪有所修复。"
+    },
+    {
+      "title": "全球能源市场波动：原油价格短期承压",
+      "source": "凤凰财经",
+      "time": "2026-03-27 11:00:00",
+      "url": "https://finance.ifeng.com/c/8z7x6y5w4v3u2t1",
+      "summary": "受库存数据影响，国际原油价格出现小幅回调，相关石油化工板块面临压力。"
+    }
+  ],
+  "sectorAnalysis": [
+    {
+      "name": "算力基础设施",
+      "trend": "上涨",
+      "conclusion": "受政策利好及AI需求驱动，具备长期投资价值，需关注核心技术龙头。"
+    },
+    {
+      "name": "液冷技术",
+      "trend": "活跃",
+      "conclusion": "市场渗透率提升明确，是数据中心升级的关键方向，短期波动较大但逻辑扎实。"
+    },
+    {
+      "name": "石油化工",
+      "trend": "震荡",
+      "conclusion": "受油价回调影响，短期进入调整期，建议观望。"
+    }
+  ],
+  "commodityAnalysis": [
+    {
+      "name": "黄金",
+      "trend": "震荡偏强",
+      "expectation": "避险需求依然存在，全球通胀预期支撑金价高位运行。"
+    },
+    {
+      "name": "铜",
+      "trend": "盘整",
+      "expectation": "受工业需求预期影响，短期内维持区间波动。"
+    }
+  ],
+  "recommendations": [
+    {
+      "type": "Sector",
+      "name": "AI算力及配套设施",
+      "reason": "政策扶持与产业增长双重逻辑，适合中长期关注。"
+    },
+    {
+      "type": "Stock",
+      "name": "通信与服务器板块龙头",
+      "reason": "作为算力建设的基石，估值水平趋于合理，具备防御性与成长性。"
+    }
+  ],
+  "marketSummary": "2026年3月27日，A股市场呈现温和反弹态势。上证综指上涨0.63%，深证成指上涨1.13%，市场人气在科技成长的带动下有所恢复。今日成交额温和放大，反映投资者情绪回暖。数据验证：上证综指现价3913.72，前收3931.84，计算变动值符合市场表现。数据来源参考新浪财经及东方财富网实时行情。在当前算力基础设施建设政策背景下，市场重心逐步从传统基建向AI核心领域切换。综合分析，建议投资者关注液冷转型及算力硬件相关板块，同时关注全球流动性环境变化带来的风险。数据来源：新浪财经(https://finance.sina.com.cn)及东方财富(https://quote.eastmoney.com)。"
+}

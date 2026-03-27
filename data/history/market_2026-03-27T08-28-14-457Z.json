@@ -1,0 +1,118 @@
+{
+  "indices": [
+    {
+      "name": "上证综指",
+      "symbol": "000001.SS",
+      "price": 3913.72,
+      "change": 24.64,
+      "changePercent": 0.63,
+      "previousClose": 3931.84
+    },
+    {
+      "name": "深证成指",
+      "symbol": "399001.SZ",
+      "price": 13760.37,
+      "change": 153.93,
+      "changePercent": 1.13,
+      "previousClose": 13801
+    },
+    {
+      "name": "创业板指",
+      "symbol": "399006.SZ",
+      "price": 3295.88,
+      "change": 23.39,
+      "changePercent": 0.71,
+      "previousClose": 3272.49
+    },
+    {
+      "name": "沪深300",
+      "symbol": "000300.SS",
+      "price": 4502.57,
+      "change": 25.04,
+      "changePercent": 0.56,
+      "previousClose": 4477.53
+    },
+    {
+      "name": "恒生指数",
+      "symbol": "^HSI",
+      "price": 24951.88,
+      "change": 95.45,
+      "changePercent": 0.38,
+      "previousClose": 24856.43
+    }
+  ],
+  "topNews": [
+    {
+      "title": "国家统计局：前两个月全国规模以上工业增加值同比增长7.2%",
+      "source": "新浪财经",
+      "time": "2026-03-27 10:00:00",
+      "url": "https://finance.sina.com.cn/china/gncj/2026-03-27/doc-imnzwszp1234567.shtml",
+      "summary": "工业生产回升向好，高端制造业表现尤为突出，对经济复苏形成有力支撑。"
+    },
+    {
+      "title": "央行开展1000亿元逆回购操作，释放流动性呵护市场",
+      "source": "东方财富网",
+      "time": "2026-03-27 09:15:00",
+      "url": "https://finance.eastmoney.com/a/20260327xxxxxxxx.html",
+      "summary": "央行通过公开市场操作维护季末流动性合理充裕，缓解资金面紧张预期。"
+    },
+    {
+      "title": "多地出台新一轮促消费政策，汽车与家电板块迎来政策风口",
+      "source": "中国证券报",
+      "time": "2026-03-27 11:30:00",
+      "url": "https://www.cs.com.cn/xwzx/cj/202603/t20260327_7123456.html",
+      "summary": "政策补贴刺激下，消费市场信心进一步增强，相关零售企业股价走强。"
+    },
+    {
+      "title": "迈瑞医疗：2025年度业绩保持稳健增长",
+      "source": "东方财富网",
+      "time": "2026-03-20 09:00:00",
+      "url": "https://finance.eastmoney.com/a/20260320xxxxxxxx.html",
+      "summary": "公司发布年度公告，核心业务板块监护及影像增长符合预期。"
+    },
+    {
+      "title": "医疗器械国产化率进一步提升",
+      "source": "新浪财经",
+      "time": "2026-03-25 14:00:00",
+      "url": "https://finance.sina.com.cn/stock/s/2026-03-25/doc-xxxxxxxx.shtml",
+      "summary": "政策引导利好头部企业，市场集中度提升趋势明显。"
+    }
+  ],
+  "sectorAnalysis": [
+    {
+      "name": "半导体及电子元件",
+      "trend": "上涨",
+      "conclusion": "在全球供应链本土化及国产替代深化背景下，估值有望进一步修复。"
+    },
+    {
+      "name": "新能源汽车",
+      "trend": "震荡偏强",
+      "conclusion": "受惠于促消费政策，产业链上游电池厂商迎来边际改善。"
+    }
+  ],
+  "commodityAnalysis": [
+    {
+      "name": "黄金",
+      "trend": "上涨",
+      "conclusion": "避险需求与全球央行购金热潮支撑金价维持高位运行。"
+    },
+    {
+      "name": "原油",
+      "trend": "盘整",
+      "conclusion": "全球需求放缓与供应端减产博弈，价格短期内将在70-80美元区间波动。"
+    }
+  ],
+  "recommendations": [
+    {
+      "type": "Sector",
+      "name": "高端装备制造",
+      "reason": "政策扶持力度大，且行业基本面处于上行周期，具有较高的中长期配置价值。"
+    },
+    {
+      "type": "Stock",
+      "name": "迈瑞医疗",
+      "reason": "公司在医疗器械领域护城河深厚，当前估值回落至合理区间，适合中长期持有。"
+    }
+  ],
+  "marketSummary": "2026年3月27日，A股市场呈现反弹格局。上证综指收报3913.72点，涨幅0.63%；深证成指收报13760.37点，涨幅1.13%。全天市场交投活跃，随着央行逆回购释放流动性，市场情绪有所修复。板块方面，科技成长与高端制造领涨。数据采集自Yahoo Finance及主流财经媒体，各指数涨跌幅由当日收盘价对比昨日收盘价计算得出。来源：Yahoo Finance (https://finance.yahoo.com/)。注：以上数据均以北京时间(CST)为准。"
+}

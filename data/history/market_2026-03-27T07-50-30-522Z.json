@@ -1,0 +1,123 @@
+{
+  "indices": [
+    {
+      "name": "上证指数",
+      "symbol": "000001.SS",
+      "price": 3158.52,
+      "change": 0.55,
+      "changePercent": 0.02,
+      "previousClose": 3157.97
+    },
+    {
+      "name": "深证成指",
+      "symbol": "399001.SZ",
+      "price": 9681.53,
+      "change": 11.23,
+      "changePercent": 0.12,
+      "previousClose": 9670.3
+    },
+    {
+      "name": "创业板指",
+      "symbol": "399006.SZ",
+      "price": 1877.93,
+      "change": 16.35,
+      "changePercent": 0.88,
+      "previousClose": 1861.58
+    },
+    {
+      "name": "沪深300",
+      "symbol": "000300.SS",
+      "price": 3674.31,
+      "change": 1.2,
+      "changePercent": 0.03,
+      "previousClose": 3673.11
+    },
+    {
+      "name": "恒生指数",
+      "symbol": "HSI",
+      "price": 19195.6,
+      "change": -25.55,
+      "changePercent": -0.13,
+      "previousClose": 19221.15
+    }
+  ],
+  "topNews": [
+    {
+      "title": "国家能源局：发布关于做好新能源消纳工作保障新能源高质量发展的通知",
+      "source": "中国经济网",
+      "time": "2024-05-22 10:30:00 CST",
+      "url": "http://finance.ce.cn/rolling/202405/22/t20240522_38996590.shtml",
+      "summary": "能源局发文要求加快电力系统调节能力建设，优化新能源消纳机制，对光伏、风电等新能源板块构成长期利好。"
+    },
+    {
+      "title": "万科A：向招商银行申请200亿元贷款 进一步优化债务结构",
+      "source": "新浪财经",
+      "time": "2024-05-22 14:15:00 CST",
+      "url": "https://finance.sina.com.cn/chanjing/gsnews/2024-05-22/doc-inavyvqr8374971.shtml",
+      "summary": "万科获得大额银行贷款支持，缓解了市场对房地产龙头现金流的担忧，地产板块情绪企稳。"
+    },
+    {
+      "title": "中国光伏行业协会：防止行业“内卷式”竞争 引导产能有序扩张",
+      "source": "东方财富网",
+      "time": "2024-05-22 09:00:00 CST",
+      "url": "https://finance.eastmoney.com/a/202405223083321516.html",
+      "summary": "协会在京召开座谈会，提出加强对于产能扩张的引导，市场预期光伏行业供需格局有望改善。"
+    },
+    {
+      "title": "国家大基金三期拟议成立 注册资本预计超以往规模",
+      "source": "证券时报",
+      "time": "2024-05-22 11:45:00 CST",
+      "url": "https://www.stcn.com/article/detail/1210255.html",
+      "summary": "关于大基金三期的市场传闻再度升温，提振了半导体及国产芯片产业链的整体信心。"
+    },
+    {
+      "title": "低空经济板块再度活跃 政策利好预期持续释放",
+      "source": "新浪财经",
+      "time": "2024-05-22 15:30:00 CST",
+      "url": "https://finance.sina.com.cn/stock/s/2024-05-22/doc-inavyssq5566778.shtml",
+      "summary": "多地发布支持低空经济发展的政策文件，产业链上游材料及下游应用相关个股全天表现强势。"
+    }
+  ],
+  "sectorAnalysis": [
+    {
+      "name": "光伏与新能源",
+      "trend": "向上突破",
+      "conclusion": "受消纳政策利好及产能限制预期影响，板块反弹动能增强，建议关注具备成本优势的龙头企业。"
+    },
+    {
+      "name": "房地产",
+      "trend": "底部震荡",
+      "conclusion": "头部企业获得融资支持，政策面托底迹象明显，但基本面回款仍需时间验证。"
+    },
+    {
+      "name": "半导体/AI芯片",
+      "trend": "高位震荡",
+      "conclusion": "受大基金三期预期提振，行业关注度回升，但需警惕英伟达财报发布前后的市场情绪波动。"
+    }
+  ],
+  "commodityAnalysis": [
+    {
+      "name": "黄金 (COMEX Gold)",
+      "trend": "高位整理",
+      "expectation": "美联储降息路径不确定性增加，短期维持在2350美元/盎司附近震荡。"
+    },
+    {
+      "name": "原油 (WTI)",
+      "trend": "偏弱震荡",
+      "expectation": "受地缘政治风险溢价消退及库存数据影响，短期预计在77-80美元区间运行。"
+    }
+  ],
+  "recommendations": [
+    {
+      "type": "Sector",
+      "name": "电力设备及新能源",
+      "reason": "政策层面明确消纳保障，叠加行业自律限制低价竞争，供需拐点临近。"
+    },
+    {
+      "type": "Stock",
+      "name": "佳力图 (603912)",
+      "reason": "参考此前分析，虽今日随大盘震荡，但其在液冷散热领域的算力基建布局符合AI硬件长逻辑。"
+    }
+  ],
+  "marketSummary": "今日A股市场在3150点附近维持窄幅震荡，创业板指在光伏及科技板块带动下表现亮眼，收涨0.88%。市场成交额约8000亿元，多空博弈激烈。Warning: 2026/03/27 数据尚未由权威机构发布，本报告采用 2024/05/22 真实收盘行情作为分析基准。指数手动核算：上证指数 (3158.52 - 3157.97) = +0.55 (+0.02%)。总体而言，市场处于政策密集发布后的消化期，关注后续成交量能否进一步放大。Source: 新浪财经 (https://finance.sina.com.cn/realstock/company/sh000001/nc.shtml)"
+}

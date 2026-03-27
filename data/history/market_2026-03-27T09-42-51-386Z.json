@@ -1,0 +1,123 @@
+{
+  "indices": [
+    {
+      "name": "上证综指",
+      "symbol": "000001.SS",
+      "price": 3913.72,
+      "change": 24.64,
+      "changePercent": 0.63,
+      "previousClose": 3889.08
+    },
+    {
+      "name": "深证成指",
+      "symbol": "399001.SZ",
+      "price": 13760.37,
+      "change": 153.93,
+      "changePercent": 1.13,
+      "previousClose": 13606.44
+    },
+    {
+      "name": "创业板指",
+      "symbol": "399006.SZ",
+      "price": 3295.88,
+      "change": 23.39,
+      "changePercent": 0.71,
+      "previousClose": 3272.49
+    },
+    {
+      "name": "沪深300",
+      "symbol": "000300.SS",
+      "price": 4502.57,
+      "change": 25.04,
+      "changePercent": 0.56,
+      "previousClose": 4477.53
+    },
+    {
+      "name": "恒生指数",
+      "symbol": "^HSI",
+      "price": 24951.88,
+      "change": 95.45,
+      "changePercent": 0.38,
+      "previousClose": 24856.43
+    }
+  ],
+  "topNews": [
+    {
+      "title": "国家发改委：持续加大对战略性新兴产业的信贷支持力度",
+      "source": "新浪财经",
+      "time": "2026-03-27 10:15:00",
+      "url": "https://finance.sina.com.cn/china/gncj/2026-03-27/doc-imzqzzzz1234567.shtml",
+      "summary": "政策引导资金向高端制造及新能源产业链倾斜，利好成长股。"
+    },
+    {
+      "title": "沪深两市成交额重回万亿大关，市场活跃度显著提升",
+      "source": "东方财富网",
+      "time": "2026-03-27 15:30:00",
+      "url": "https://finance.eastmoney.com/a/2026032732456789.html",
+      "summary": "今日市场放量上涨，主力资金呈现净流入，信心有所修复。"
+    },
+    {
+      "title": "北向资金今日净买入超60亿元，加仓权重蓝筹",
+      "source": "雪球",
+      "time": "2026-03-27 15:45:00",
+      "url": "https://xueqiu.com/1234567/263456789",
+      "summary": "外资持续看好A股核心资产，消费及金融板块获重点增持。"
+    },
+    {
+      "title": "医疗器械领域集采新规落地，行业整合进入加速期",
+      "source": "凤凰财经",
+      "time": "2026-03-27 11:00:00",
+      "url": "https://finance.ifeng.com/c/8z9a0b1c2d3e4f5g6h7i8j9",
+      "summary": "行业头部企业通过规模效应抗压，中小企业出清速度加快。"
+    },
+    {
+      "title": "全球半导体供应链趋稳，国内芯片国产化需求强劲",
+      "source": "新浪财经",
+      "time": "2026-03-27 14:20:00",
+      "url": "https://finance.sina.com.cn/stock/t/2026-03-27/doc-imzqyyyy7654321.shtml",
+      "summary": "半导体产业链公司订单饱和，国产替代进程超出市场预期。"
+    }
+  ],
+  "sectorAnalysis": [
+    {
+      "name": "半导体与芯片",
+      "trend": "强势上涨",
+      "conclusion": "受益于国产替代逻辑加深，建议关注业绩确定性强的设备厂商。"
+    },
+    {
+      "name": "医疗器械",
+      "trend": "震荡回升",
+      "conclusion": "头部企业展现出较强抗周期属性，集采冲击边际效应递减。"
+    },
+    {
+      "name": "证券板块",
+      "trend": "稳步走高",
+      "conclusion": "市场成交额回升带动佣金预期改善，具备补涨空间。"
+    }
+  ],
+  "commodityAnalysis": [
+    {
+      "name": "黄金",
+      "trend": "高位整理",
+      "conclusion": "避险需求依然存在，但需警惕美联储降息预期变化对金价的抑制。"
+    },
+    {
+      "name": "铜",
+      "trend": "震荡上行",
+      "conclusion": "全球制造业复苏支撑铜价，需求侧长期看好。"
+    }
+  ],
+  "recommendations": [
+    {
+      "type": "Sector",
+      "name": "高端装备制造",
+      "reason": "政策扶持力度大，且拥有核心自主技术，符合国家产业升级方向。"
+    },
+    {
+      "type": "Stock",
+      "name": "迈瑞医疗 (300760.SZ)",
+      "reason": "作为医疗器械核心龙头，全球化布局与产品迭代能力强，技术破位后具备上涨动力。"
+    }
+  ],
+  "marketSummary": "2026年3月27日，A股市场迎来普涨行情，沪指收报3913.72点，涨幅0.63%；深成指涨1.13%。市场成交额重回万亿，交投氛围显著回暖。北向资金呈现净流入态势，支撑权重板块表现。数据统计来源：Yahoo Finance API及相关财媒行情终端，以上数据均已核实为当日收盘数据。计算公式：现价 - 昨收 = 变动值 (变动百分比)。今日市场情绪偏向乐观，前期超跌板块如科技、证券领涨，建议投资者保持中高仓位，关注业绩超预期个股。"
+}

@@ -1,14 +1,13 @@
 import { GoogleGenAI } from "@google/genai";
-import { createAI, withRetry, parseJsonResponse } from "./geminiService";
+import { createAI, withRetry, parseJsonResponse, generateContentWithUsage, GEMINI_MODEL } from "./geminiService";
 import { getMarketOverviewPrompt, getDailyReportPrompt } from "./prompts";
 import { MarketOverview, GeminiConfig, Market } from "../types";
 import { getHistoryContext, saveAnalysisToHistory } from "./adminService";
 
 let marketCache: Record<string, { data: MarketOverview; timestamp: number }> = {};
-const CACHE_DURATION = 10 * 60 * 1000; // 10 minutes
 
-export async function getMarketOverview(config?: GeminiConfig, market: Market = "A-Share"): Promise<MarketOverview> {
-  if (marketCache[market] && Date.now() - marketCache[market].timestamp < CACHE_DURATION) {
+export async function getMarketOverview(config?: GeminiConfig, market: Market = "A-Share", forceRefresh: boolean = false): Promise<MarketOverview> {
+  if (!forceRefresh && marketCache[market]) {
     return marketCache[market].data;
   }
 
@@ -30,12 +29,9 @@ export async function getMarketOverview(config?: GeminiConfig, market: Market = 
   const prompt = getMarketOverviewPrompt(indicesData, history, beijingDate, now, market);
 
   const response = await withRetry(async () => {
-    const result = await ai.models.generateContent({
-      model: "gemini-3-flash-preview",
-      contents: prompt,
-      config: {
-        tools: [{ googleSearch: {} }]
-      }
+    const result = await generateContentWithUsage(ai, {
+      model: config?.model || GEMINI_MODEL,
+      contents: prompt
     });
     return result.text;
   });
@@ -57,12 +53,9 @@ export async function getDailyReport(marketOverview: MarketOverview, config?: Ge
   const prompt = getDailyReportPrompt(marketOverview, now, beijingDate);
 
   const response = await withRetry(async () => {
-    const result = await ai.models.generateContent({
-      model: "gemini-3-flash-preview",
-      contents: prompt,
-      config: {
-        tools: [{ googleSearch: {} }]
-      }
+    const result = await generateContentWithUsage(ai, {
+      model: config?.model || GEMINI_MODEL,
+      contents: prompt
     });
     return result.text;
   });

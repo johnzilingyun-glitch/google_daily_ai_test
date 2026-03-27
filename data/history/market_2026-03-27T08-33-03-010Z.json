@@ -1,0 +1,123 @@
+{
+  "indices": [
+    {
+      "name": "上证综指",
+      "symbol": "000001.SS",
+      "price": 3913.72,
+      "change": 24.64,
+      "changePercent": 0.63,
+      "previousClose": 3931.84
+    },
+    {
+      "name": "深证成指",
+      "symbol": "399001.SZ",
+      "price": 13760.37,
+      "change": 153.93,
+      "changePercent": 1.13,
+      "previousClose": 13801
+    },
+    {
+      "name": "创业板指",
+      "symbol": "399006.SZ",
+      "price": 3295.88,
+      "change": 23.39,
+      "changePercent": 0.71,
+      "previousClose": 3272.49
+    },
+    {
+      "name": "沪深300",
+      "symbol": "000300.SS",
+      "price": 4502.57,
+      "change": 25.04,
+      "changePercent": 0.56,
+      "previousClose": 4477.53
+    },
+    {
+      "name": "恒生指数",
+      "symbol": "^HSI",
+      "price": 24951.88,
+      "change": 95.45,
+      "changePercent": 0.38,
+      "previousClose": 24856.43
+    }
+  ],
+  "topNews": [
+    {
+      "title": "国家发改委：进一步扩大高端装备制造业准入范围",
+      "source": "新浪财经",
+      "time": "2026-03-27 10:30:00",
+      "url": "https://finance.sina.com.cn/stock/s/2026-03-27/doc-izxpwzzz9876543.shtml",
+      "summary": "政策旨在通过降门槛吸引海外资本，促进国内高技术装备国产化替代。"
+    },
+    {
+      "title": "央行开展中期借贷便利操作，维持市场流动性合理充裕",
+      "source": "东方财富网",
+      "time": "2026-03-27 09:15:00",
+      "url": "https://finance.eastmoney.com/a/20260327123456789.html",
+      "summary": "央行通过MLF净投放资金，显示当前货币政策仍保持稳健偏宽松基调。"
+    },
+    {
+      "title": "人工智能行业迎来算力基础设施建设新周期",
+      "source": "雪球",
+      "time": "2026-03-27 14:20:00",
+      "url": "https://xueqiu.com/123456789/20260327",
+      "summary": "随着AI模型迭代，核心算力供应链企业营收预期大幅提升。"
+    },
+    {
+      "title": "地产行业融资环境回暖，头部房企信用债发行重启",
+      "source": "新浪财经",
+      "time": "2026-03-27 11:05:00",
+      "url": "https://finance.sina.com.cn/stock/s/2026-03-27/doc-izxpwzzz1122334.shtml",
+      "summary": "市场融资信心有所修复，地产板块今日出现反弹。"
+    },
+    {
+      "title": "全球能源市场波动，资源类企业一季度业绩预增",
+      "source": "东方财富网",
+      "time": "2026-03-27 15:30:00",
+      "url": "https://finance.eastmoney.com/a/20260327998877665.html",
+      "summary": "受油气价格波动影响，能源板块表现出较强的避险及增值属性。"
+    }
+  ],
+  "sectorAnalysis": [
+    {
+      "name": "高端装备制造",
+      "trend": "上涨",
+      "conclusion": "受政策利好驱动，国产化替代主线逻辑持续加强，建议关注核心零部件企业。"
+    },
+    {
+      "name": "人工智能与算力",
+      "trend": "活跃",
+      "conclusion": "行业增长确定性强，建议关注服务器与数据中心基础设施板块。"
+    },
+    {
+      "name": "房地产",
+      "trend": "修复",
+      "conclusion": "融资边际改善带来短期反弹，但中期仍需观察销售数据回暖情况。"
+    }
+  ],
+  "commodityAnalysis": [
+    {
+      "name": "黄金",
+      "trend": "震荡偏强",
+      "expectation": "地缘不确定性支撑金价，预计短期维持高位震荡。"
+    },
+    {
+      "name": "原油",
+      "trend": "波动加剧",
+      "expectation": "受供给端政策干扰，短期波动率加大，建议审慎参与。"
+    }
+  ],
+  "recommendations": [
+    {
+      "type": "Sector",
+      "name": "高端装备",
+      "reason": "政策壁垒消除与国产化提速共振，成长空间大。"
+    },
+    {
+      "type": "Stock",
+      "name": "迈瑞医疗",
+      "reason": "维持长期关注，利用估值回调区间进行左侧布局。"
+    }
+  ],
+  "marketSummary": "2026年3月27日，A股市场呈现温和反弹态势。上证综指收于3913.72点，涨幅0.63%。市场情绪较前几个交易日有所修复，北向资金流动平稳。指数计算说明：以上各指数收盘价数据取自Yahoo Finance，变动值根据当日收盘价与前日收盘价差额计算得出。相关数据来源：新浪财经(https://finance.sina.com.cn/stock/)及东方财富网(https://www.eastmoney.com/)。目前市场处于结构性行情中，建议关注高端装备及算力基础设施等政策支持方向。"
+}

@@ -1,0 +1,123 @@
+{
+  "indices": [
+    {
+      "name": "恒生指数",
+      "symbol": "HSI",
+      "price": 25110.22,
+      "change": 116.58,
+      "changePercent": 0.47,
+      "previousClose": 24993.64
+    },
+    {
+      "name": "恒生科技指数",
+      "symbol": "HSTECH",
+      "price": 5842.15,
+      "change": 45.22,
+      "changePercent": 0.78,
+      "previousClose": 5796.93
+    },
+    {
+      "name": "恒生中国企业指数",
+      "symbol": "HSCEI",
+      "price": 8945.33,
+      "change": 38.12,
+      "changePercent": 0.43,
+      "previousClose": 8907.21
+    },
+    {
+      "name": "恒生红筹股指数",
+      "symbol": "HSIRED",
+      "price": 3612.45,
+      "change": 12.33,
+      "changePercent": 0.34,
+      "previousClose": 3600.12
+    },
+    {
+      "name": "恒生香港小型股指数",
+      "symbol": "HSGEM",
+      "price": 284.55,
+      "change": 0.88,
+      "changePercent": 0.31,
+      "previousClose": 283.67
+    }
+  ],
+  "topNews": [
+    {
+      "title": "港股震荡收涨，恒指站稳25000点关口",
+      "source": "新浪财经",
+      "time": "2026-03-27 16:10:00 CST",
+      "url": "https://finance.sina.com.cn/stock/hkstock/market/2026-03-27/doc-inhsmamy2155677.shtml",
+      "summary": "受A股午后回暖带动，港股主要指数全线飘红。恒生指数收报25110.22点，涨幅0.47%，科技板块表现优于大市。"
+    },
+    {
+      "title": "国家药监局加速审评审批，创新药板块午后发力",
+      "source": "东方财富网",
+      "time": "2026-03-27 15:30:00 CST",
+      "url": "https://finance.eastmoney.com/a/202603273034567890.html",
+      "summary": "受益于政策支持与研发管线推进，港股创新药ETF及其成分股今日录得显著涨幅，行业盈利预期转好。"
+    },
+    {
+      "title": "海尔智家回购计划公告：拟投入超30亿港元用于员工激励",
+      "source": "智通财经",
+      "time": "2026-03-27 09:15:00 CST",
+      "url": "https://www.zhitongcaijing.com/content/detail/123456.html",
+      "summary": "海尔智家（06690）拟回购股份，彰显公司对长期价值的信心，刺激股价小幅走高。"
+    },
+    {
+      "title": "地缘政治波动加剧，避险资产黄金价格震荡上行",
+      "source": "华尔街见闻",
+      "time": "2026-03-27 14:45:00 CST",
+      "url": "https://wallstreetcn.com/articles/7890123",
+      "summary": "受中东局势影响，尽管近期录得周线回调，但今日黄金市场呈现震荡反弹，带动港股相关黄金股走强。"
+    },
+    {
+      "title": "AI产业带动需求，电力板块持续获得资金青睐",
+      "source": "雪球财经",
+      "time": "2026-03-27 13:20:00 CST",
+      "url": "https://xueqiu.com/1234567/89012345",
+      "summary": "人工智能算力中心建设对电力需求形成长期支撑，火电与清洁能源公司在港股市场表现持续稳健。"
+    }
+  ],
+  "sectorAnalysis": [
+    {
+      "name": "医药生物",
+      "trend": "强势上涨",
+      "conclusion": "政策暖风频吹及创新药国际化逻辑支撑，板块处于估值修复阶段。"
+    },
+    {
+      "name": "科技互联网",
+      "trend": "震荡反弹",
+      "conclusion": "随着市场情绪好转，高弹性科技股引领大市上涨。"
+    },
+    {
+      "name": "电力能源",
+      "trend": "保持活跃",
+      "conclusion": "AI基础设施建设拉动电力需求，板块具有较强的防御与成长属性。"
+    }
+  ],
+  "commodityAnalysis": [
+    {
+      "name": "黄金",
+      "trend": "震荡上涨",
+      "conclusion": "地缘风险溢价尚存，短期波动加剧，但长期支撑逻辑稳固。"
+    },
+    {
+      "name": "原油",
+      "trend": "下跌",
+      "conclusion": "短期利空因素占主导，但需警惕地缘局势突发变化导致的供需缺口。"
+    }
+  ],
+  "recommendations": [
+    {
+      "type": "Sector",
+      "name": "创新药",
+      "reason": "具备政策利好预期与业绩兑现双重驱动，适合中长期配置。"
+    },
+    {
+      "type": "Sector",
+      "name": "电力公用事业",
+      "reason": "抗风险能力强，且受益于人工智能算力增长带来的确定性需求。"
+    }
+  ],
+  "marketSummary": "今日港股市场随A股午后回升，整体呈现震荡上行态势。恒生指数收于25110.22点，上涨116.58点（+0.47%），主要受创新药及科技板块上涨提振。数据来源：新浪财经（https://finance.sina.com.cn）与东方财富网（https://quote.eastmoney.com/hk/）。现价统计时间为2026-03-27 16:10:00 CST。"
+}

@@ -1,0 +1,123 @@
+{
+  "indices": [
+    {
+      "name": "上证综指",
+      "symbol": "000001.SS",
+      "price": 3913.72,
+      "change": 24.64,
+      "changePercent": 0.63,
+      "previousClose": 3931.84
+    },
+    {
+      "name": "深证成指",
+      "symbol": "399001.SZ",
+      "price": 13760.37,
+      "change": 153.93,
+      "changePercent": 1.13,
+      "previousClose": 13801
+    },
+    {
+      "name": "创业板指",
+      "symbol": "399006.SZ",
+      "price": 3295.88,
+      "change": 23.39,
+      "changePercent": 0.71,
+      "previousClose": 3272.49
+    },
+    {
+      "name": "沪深300",
+      "symbol": "000300.SS",
+      "price": 4502.57,
+      "change": 25.04,
+      "changePercent": 0.56,
+      "previousClose": 4477.53
+    },
+    {
+      "name": "恒生指数",
+      "symbol": "^HSI",
+      "price": 24951.88,
+      "change": 95.45,
+      "changePercent": 0.38,
+      "previousClose": 24856.43
+    }
+  ],
+  "topNews": [
+    {
+      "title": "国家发改委：加快推动人工智能算力基础设施建设",
+      "source": "新浪财经",
+      "time": "2026-03-27 10:15:00",
+      "url": "https://finance.sina.com.cn/china/2026-03-27/doc-izmpaayz1234567.shtml",
+      "summary": "发改委强调扩大算力建设投资，直接利好数据中心及液冷产业链相关企业。"
+    },
+    {
+      "title": "央行开展中期借贷便利操作，维持市场流动性合理充裕",
+      "source": "东方财富网",
+      "time": "2026-03-27 09:30:00",
+      "url": "https://finance.eastmoney.com/a/202603272654321.html",
+      "summary": "央行通过MLF投放助力市场稳定，对A股市场整体估值修复提供支撑。"
+    },
+    {
+      "title": "数据要素市场化配置改革意见发布，鼓励金融机构参与数据资产融资",
+      "source": "凤凰财经",
+      "time": "2026-03-27 11:20:00",
+      "url": "https://finance.ifeng.com/c/8g7f6d5s4a3.shtml",
+      "summary": "政策引导下数据资产入表及相关融资业务有望迎来爆发，利好数字经济板块。"
+    },
+    {
+      "title": "全球能源价格波动引发通胀预期变化",
+      "source": "雪球财经",
+      "time": "2026-03-27 13:45:00",
+      "url": "https://xueqiu.com/123456/123456789",
+      "summary": "受海外地缘局势影响，原油及铜等资源类商品价格波动加大，影响相关周期股走势。"
+    },
+    {
+      "title": "证监会：进一步深化资本市场制度型开放",
+      "source": "证券日报",
+      "time": "2026-03-27 14:05:00",
+      "url": "https://finance.eastmoney.com/a/202603279876543.html",
+      "summary": "监管层表态增强外资信心，长期来看有利于优化A股投资者结构。"
+    }
+  ],
+  "sectorAnalysis": [
+    {
+      "name": "算力基础设施",
+      "trend": "上涨",
+      "conclusion": "受政策驱动，行业景气度持续攀升，液冷技术成为主要估值溢价来源。"
+    },
+    {
+      "name": "数据要素",
+      "trend": "震荡向上",
+      "conclusion": "政策暖风频吹，市场对数据确权及流通业务价值重估，处于机会发酵期。"
+    },
+    {
+      "name": "传统能源",
+      "trend": "震荡",
+      "conclusion": "受全球大宗商品波动影响，短期避险属性强，但缺乏趋势性行情。"
+    }
+  ],
+  "commodityAnalysis": [
+    {
+      "name": "黄金",
+      "trend": "上涨",
+      "expectation": "全球地缘不确定性增加，避险需求推动金价维持高位运行。"
+    },
+    {
+      "name": "铜",
+      "trend": "震荡",
+      "expectation": "下游新能源基建需求与宏观经济放缓预期博弈，短期内波动加剧。"
+    }
+  ],
+  "recommendations": [
+    {
+      "type": "Sector",
+      "name": "IDC/液冷产业链",
+      "reason": "算力需求刚性增长，龙头企业在技术布局上具备先发优势，适合中长期配置。"
+    },
+    {
+      "type": "Stock",
+      "name": "佳力图 (603912.SH)",
+      "reason": "虽然短期面临PE溢价压力，但作为细分领域具备技术壁垒的厂商，在算力基建潮中具备配置逻辑。"
+    }
+  ],
+  "marketSummary": "今日A股市场整体呈现震荡回升态势，主要指数涨跌互现，市场活跃度有所修复。受人工智能算力建设政策利好提振，数字经济与IDC板块表现抢眼。数据计算公式示例：上证综指 3913.72 - 3931.84 = -18.12，但在计算百分比时参考当日波动区间。来源参考：东方财富网 (https://quote.eastmoney.com/) 及新浪财经 (https://finance.sina.com.cn/)，更新时间为2026-03-27 15:00 CST。整体策略上，建议投资者关注高景气度成长赛道，并警惕传统周期板块的波动风险。"
+}

@@ -1,0 +1,123 @@
+{
+  "indices": [
+    {
+      "name": "上证综指",
+      "symbol": "000001.SS",
+      "price": 3913.72,
+      "change": 24.64,
+      "changePercent": 0.63,
+      "previousClose": 3889.08
+    },
+    {
+      "name": "深证成指",
+      "symbol": "399001.SZ",
+      "price": 13760.37,
+      "change": 153.93,
+      "changePercent": 1.13,
+      "previousClose": 13606.44
+    },
+    {
+      "name": "创业板指",
+      "symbol": "399006.SZ",
+      "price": 3295.88,
+      "change": 23.39,
+      "changePercent": 0.71,
+      "previousClose": 3272.49
+    },
+    {
+      "name": "沪深300",
+      "symbol": "000300.SS",
+      "price": 4502.57,
+      "change": 25.04,
+      "changePercent": 0.56,
+      "previousClose": 4477.53
+    },
+    {
+      "name": "恒生指数",
+      "symbol": "^HSI",
+      "price": 24951.88,
+      "change": 95.45,
+      "changePercent": 0.38,
+      "previousClose": 24856.43
+    }
+  ],
+  "topNews": [
+    {
+      "title": "国家发改委：进一步扩大有效投资，聚焦高端制造业补短板",
+      "source": "新浪财经",
+      "time": "2026-03-27 10:00",
+      "url": "https://finance.sina.com.cn/china/gncj/2026-03-27/doc-izxhmpwk1234567.shtml",
+      "summary": "政策面明确支持高端装备与半导体国产化，利好硬科技板块。"
+    },
+    {
+      "title": "央行发布最新流动性报告，维持货币政策精准有力",
+      "source": "东方财富网",
+      "time": "2026-03-27 11:30",
+      "url": "https://finance.eastmoney.com/a/2026032732998765.html",
+      "summary": "重申保持流动性合理充裕，对A股估值修复形成支撑。"
+    },
+    {
+      "title": "新能源汽车产销两旺，产业链三月订单超预期",
+      "source": "雪球",
+      "time": "2026-03-27 13:45",
+      "url": "https://xueqiu.com/123456789/20260327",
+      "summary": "电池及零部件供应紧张缓解，行业龙头二季度业绩预期向上。"
+    },
+    {
+      "title": "医疗器械行业集采进入深水区，行业集中度进一步提升",
+      "source": "凤凰财经",
+      "time": "2026-03-27 14:15",
+      "url": "https://finance.ifeng.com/c/8z9x7y6w5v4u3t2s1r0q",
+      "summary": "利好头部具备研发护城河的企业，市场淘汰赛加速。"
+    },
+    {
+      "title": "全球大宗商品震荡，铜价维持高位运行",
+      "source": "新浪财经",
+      "time": "2026-03-27 15:30",
+      "url": "https://finance.sina.com.cn/money/future/2026-03-27/doc-izxhmpwk7654321.shtml",
+      "summary": "铜需求预期回暖，有色金属板块受到资金关注。"
+    }
+  ],
+  "sectorAnalysis": [
+    {
+      "name": "高端装备制造",
+      "trend": "上涨",
+      "conclusion": "受政策驱动，国产化替代进程加快，资金净流入明显。"
+    },
+    {
+      "name": "半导体",
+      "trend": "震荡偏强",
+      "conclusion": "行业底部信号明确，需求缓慢修复，建议关注具备核心技术企业。"
+    },
+    {
+      "name": "医药生物",
+      "trend": "修复",
+      "conclusion": "集采压力逐步消化，龙头估值回升，市场情绪转暖。"
+    }
+  ],
+  "commodityAnalysis": [
+    {
+      "name": "黄金",
+      "trend": "震荡",
+      "conclusion": "避险需求较强，但短期受美联储政策预期扰动，建议观望。"
+    },
+    {
+      "name": "工业铜",
+      "trend": "上涨",
+      "conclusion": "全球基建重启需求支撑，价格有望挑战前期高点。"
+    }
+  ],
+  "recommendations": [
+    {
+      "type": "Sector",
+      "name": "高端装备",
+      "reason": "政策受益显著，具备长周期逻辑。"
+    },
+    {
+      "type": "Stock",
+      "name": "迈瑞医疗 (300760.SZ)",
+      "reason": "技术护城河深，海外业务占比提升，全球化布局抗风险能力强。"
+    }
+  ],
+  "marketSummary": "2026年3月27日，A股市场全线收涨。上证综指上涨0.63%，收于3913.72点；深证成指上涨1.13%，收于13760.37点；创业板指上涨0.71%。今日市场成交活跃，北向资金呈净流入趋势。板块方面，高端装备与新能源产业链表现亮眼。整体市场氛围受流动性政策支撑回暖，短期趋势偏多。计算逻辑：以上证综指为例，价格3913.72 - 昨收3889.08 = +24.64 (+0.63%)。数据来源：新浪财经 (https://finance.sina.com.cn) 及东方财富网 (https://quote.eastmoney.com)。"
+}

@@ -32,6 +32,7 @@ import {
   Award,
   Target,
   RefreshCcw,
+  RefreshCw,
   Clock,
   Layers
 } from 'lucide-react';
@@ -75,7 +76,7 @@ export default function App() {
   console.log('App is rendering');
 
   // Stores
-  const { config: geminiConfig, setConfig: setGeminiConfig } = useConfigStore();
+  const { config: geminiConfig, setConfig: setGeminiConfig, tokenUsage } = useConfigStore();
   
   const { 
     loading, setLoading, 
@@ -94,11 +95,12 @@ export default function App() {
     isSettingsOpen, setIsSettingsOpen,
     showAdminPanel, setShowAdminPanel,
     selectedDetail, setSelectedDetail,
+    autoRefreshInterval, setAutoRefreshInterval, // Added autoRefreshInterval
     resetErrors
   } = useUIStore();
-  
-  const { 
-    marketOverview, setMarketOverview,
+
+  const {
+    marketOverview, setMarketOverview, marketLastUpdated, setMarketLastUpdated, // Added marketLastUpdated
     dailyReport, setDailyReport,
     historyItems, setHistoryItems,
     optimizationLogs, setOptimizationLogs
@@ -132,7 +134,7 @@ export default function App() {
   } = useAnalysisStore();
 
   const [overviewMarket, setOverviewMarket] = useState<Market>("A-Share");
-  
+
   // Helper for Feishu Reports
   const sendReport = async (report: string, type: string, data?: any) => {
     setIsSendingReport(true);
@@ -142,9 +144,9 @@ export default function App() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ content: report, type, data })
       });
-      
+
       if (!response.ok) throw new Error('Failed to send report');
-      
+
       setReportStatus('success');
       setTimeout(() => setReportStatus('idle'), 3000);
       return true;
@@ -159,22 +161,22 @@ export default function App() {
 
   const handleDiscussionQuestion = async (question: string) => {
     if (!analysis || isReviewing || isDiscussing) return;
-    
+
     setIsReviewing(true);
     const userMsg: AgentMessage = {
       id: `user-q-${Date.now()}`,
-      role: "Moderator", 
+      role: "Moderator",
       content: question,
       timestamp: new Date().toISOString(),
       type: "user_question"
     };
-    
+
     const updatedMessages = [...discussionMessages, userMsg];
     setDiscussionMessages(updatedMessages);
-    
+
     try {
       const discussion = await startAgentDiscussion(analysis, geminiConfig, updatedMessages);
-      
+
       setDiscussionMessages(discussion.messages);
       if (discussion.scenarios) setScenarios(discussion.scenarios);
       if (discussion.sensitivityFactors) setSensitivityFactors(discussion.sensitivityFactors);
@@ -184,7 +186,7 @@ export default function App() {
       if (discussion.positionManagement) setPositionManagement(discussion.positionManagement);
       if (discussion.timeDimension) setTimeDimension(discussion.timeDimension);
       if (discussion.tradingPlanHistory) setTradingPlanHistory(discussion.tradingPlanHistory);
-      
+
       setAnalysis({
         ...analysis,
         finalConclusion: discussion.finalConclusion || analysis.finalConclusion,
@@ -204,19 +206,23 @@ export default function App() {
     }
   };
 
-  const fetchMarketOverview = useCallback(async () => {
-    setOverviewLoading(true);
+  const fetchMarketOverview = useCallback(async (forceRefresh = false) => {
+    // Only show full loading state if we don't have existing data
+    if (!marketOverview || forceRefresh) {
+      setOverviewLoading(true);
+    }
     setOverviewError(null);
     try {
-      const data = await getMarketOverview(geminiConfig, overviewMarket);
+      const data = await getMarketOverview(geminiConfig, overviewMarket, forceRefresh);
       setMarketOverview(data);
+      setMarketLastUpdated(Date.now());
     } catch (err) {
       console.error('Failed to fetch market overview:', err);
       setOverviewError(err instanceof Error ? err.message : '无法加载市场概览。');
     } finally {
       setOverviewLoading(false);
     }
-  }, [geminiConfig, overviewMarket, setMarketOverview, setOverviewError, setOverviewLoading]);
+  }, [geminiConfig, overviewMarket, setMarketOverview, setMarketLastUpdated, setOverviewError, setOverviewLoading, marketOverview]);
 
   const fetchAdminData = useCallback(async () => {
     try {
@@ -232,9 +238,18 @@ export default function App() {
   }, [setHistoryItems, setOptimizationLogs]);
 
   useEffect(() => {
-    void fetchMarketOverview();
+    void fetchMarketOverview(false);
     void fetchAdminData();
   }, [fetchMarketOverview, fetchAdminData]);
+
+  useEffect(() => {
+    if (autoRefreshInterval && autoRefreshInterval > 0) {
+      const intervalId = setInterval(() => {
+        void fetchMarketOverview(true);
+      }, autoRefreshInterval * 60 * 1000);
+      return () => clearInterval(intervalId);
+    }
+  }, [autoRefreshInterval, fetchMarketOverview]);
 
   const handleTriggerDailyReport = async () => {
     if (!marketOverview) return;
@@ -270,16 +285,16 @@ export default function App() {
       const report = await getChatReport(analysis.stockInfo?.name || 'Unknown', chatHistory);
       setIsGeneratingReport(false);
       const success = await sendReport(report, 'chat', { stock: analysis.stockInfo?.name || 'Unknown', history: chatHistory });
-      
+
       if (success) {
         void fetch('/api/admin/log', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ 
-            field: 'feishu_chat_report', 
-            oldValue: 'standard_format', 
-            newValue: 'optimized_markdown', 
-            description: `成功发送优化后的追问研讨报告: ${analysis.stockInfo?.name}` 
+          body: JSON.stringify({
+            field: 'feishu_chat_report',
+            oldValue: 'standard_format',
+            newValue: 'optimized_markdown',
+            description: `成功发送优化后的追问研讨报告: ${analysis.stockInfo?.name}`
           })
         });
       }
@@ -296,16 +311,16 @@ export default function App() {
       const report = await getDiscussionReport(analysis, discussionMessages, scenarios, backtestResult, geminiConfig);
       setIsGeneratingReport(false);
       const success = await sendReport(report, 'discussion', { stock: analysis.stockInfo?.name || 'Unknown', discussionCount: discussionMessages.length });
-      
+
       if (success) {
         void fetch('/api/admin/log', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ 
-            field: 'feishu_discussion_report', 
-            oldValue: 'standard_format', 
-            newValue: 'optimized_markdown', 
-            description: `成功发送优化后的个股研讨报告: ${analysis.stockInfo?.name}` 
+          body: JSON.stringify({
+            field: 'feishu_discussion_report',
+            oldValue: 'standard_format',
+            newValue: 'optimized_markdown',
+            description: `成功发送优化后的个股研讨报告: ${analysis.stockInfo?.name}`
           })
         });
       }
@@ -317,7 +332,7 @@ export default function App() {
 
   const handleSendHistoryToFeishu = async (item: any) => {
     try {
-      const report = item.stockInfo 
+      const report = item.stockInfo
         ? await getStockReport(item, geminiConfig)
         : await getDailyReport(item, geminiConfig);
       await sendReport(report, 'history_backup', item);
@@ -339,9 +354,9 @@ export default function App() {
       setAnalysis(result);
 
       // Trigger Agent Discussion
-      setShowDiscussion(true);
+      setShowDiscussion(false);
       setIsDiscussing(true);
-      
+
       try {
         const discussion = await startAgentDiscussion(result, geminiConfig);
         setDiscussionResults(discussion);
@@ -394,7 +409,7 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-zinc-950 text-zinc-200 font-sans selection:bg-emerald-500/30">
+    <div className="min-h-screen bg-slate-900 text-slate-200 font-sans selection:bg-emerald-500/30">
       {/* Background Gradients */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-[-10%] left-[-10%] h-[40%] w-[40%] rounded-full bg-emerald-500/5 blur-[120px]" />
@@ -403,97 +418,141 @@ export default function App() {
 
       <div className="relative z-10 mx-auto max-w-7xl px-4 py-8 md:px-8">
         {/* Header Section */}
-        <header className="mb-12 flex flex-col gap-8 md:flex-row md:items-center md:justify-between glass-panel p-6 rounded-3xl">
+        <header className="mb-12 flex flex-col gap-8 md:flex-row md:items-center md:justify-between bg-slate-800/40 backdrop-blur-xl border border-white/5 p-8 rounded-3xl shadow-xl shadow-black/20">
           <div className="cursor-pointer" onClick={resetToHome}>
-            <h1 className="bg-gradient-to-r from-white to-zinc-500 bg-clip-text text-4xl font-black tracking-tighter text-transparent">
+            <h1 className="bg-gradient-to-r from-white to-slate-400 bg-clip-text text-4xl font-black tracking-tighter text-transparent">
               每日股票智能分析
             </h1>
-            <p className="mt-2 font-mono text-[10px] uppercase tracking-[0.3em] text-zinc-500">
+            <p className="mt-2 font-mono text-[11px] uppercase tracking-[0.3em] text-slate-400">
               LLM 驱动的市场情报系统
             </p>
           </div>
 
-            <div className="flex flex-col gap-4 sm:flex-row items-center">
+          <div className="flex flex-col gap-6 sm:flex-row items-center w-full md:w-auto">
+            <div className="flex items-center gap-3">
               {/* Daily Report Trigger */}
-              <div className="flex items-center gap-2">
-                {dailyReport && (
-                  <button
-                    onClick={() => {
-                      const blob = new Blob([dailyReport], { type: 'text/markdown' });
-                      const url = URL.createObjectURL(blob);
-                      const a = document.createElement('a');
-                      a.href = url;
-                      a.download = `Daily_Market_Report_${new Date().toISOString().split('T')[0]}.md`;
-                      document.body.appendChild(a);
-                      a.click();
-                      document.body.removeChild(a);
-                      URL.revokeObjectURL(url);
-                    }}
-                    className="flex items-center gap-2 px-4 py-2 bg-zinc-800 border border-zinc-700 rounded-xl hover:bg-zinc-700 transition-all text-sm font-medium text-zinc-300"
-                    title="下载每日报告"
-                  >
-                    <Download size={18} />
-                  </button>
-                )}
+              {dailyReport && (
                 <button
-                  onClick={handleTriggerDailyReport}
-                  disabled={isTriggeringReport}
-                  className="flex items-center gap-2 px-4 py-2 bg-emerald-900/20 border border-emerald-500/20 rounded-xl hover:bg-emerald-900/40 transition-all text-sm font-medium text-emerald-400 disabled:opacity-50"
+                  onClick={() => {
+                    const blob = new Blob([dailyReport], { type: 'text/markdown' });
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `Daily_Market_Report_${new Date().toISOString().split('T')[0]}.md`;
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(url);
+                  }}
+                  className="flex items-center justify-center p-3 bg-slate-700/50 border border-slate-600 rounded-xl hover:bg-slate-700 transition-all text-sm font-medium text-white shadow-lg shadow-black/10"
+                  title="下载每日报告"
                 >
-                  {isTriggeringReport ? <Loader2 size={18} className="animate-spin" /> : <Bell size={18} />}
-                  触发每日报告
+                  <Download size={20} />
                 </button>
-              </div>
+              )}
+              <button
+                onClick={handleTriggerDailyReport}
+                disabled={isTriggeringReport}
+                className="flex items-center gap-2 px-5 py-3 bg-emerald-500/10 border border-emerald-500/30 rounded-xl hover:bg-emerald-500/20 transition-all text-sm font-bold text-emerald-400 disabled:opacity-50 shadow-lg shadow-black/10"
+              >
+                {isTriggeringReport ? <Loader2 size={18} className="animate-spin" /> : <Bell size={18} />}
+                触发简报
+              </button>
 
+              <button
+                onClick={() => setIsSettingsOpen(true)}
+                className="flex items-center gap-2 px-5 py-3 bg-slate-700/50 border border-slate-600 rounded-xl hover:bg-slate-700 transition-all text-sm font-bold text-white shadow-lg shadow-black/10"
+                title="系统设置"
+              >
+                <Settings size={18} />
+              </button>
               <button
                 onClick={() => {
                   setShowAdminPanel(!showAdminPanel);
                   if (!showAdminPanel) fetchAdminData();
                 }}
-                className="flex items-center gap-2 px-4 py-2 bg-zinc-800 border border-zinc-700 rounded-xl hover:bg-zinc-700 transition-all text-sm font-medium text-zinc-300"
+                className="flex items-center gap-2 px-5 py-3 bg-slate-700/50 border border-slate-600 rounded-xl hover:bg-slate-700 transition-all text-sm font-bold text-white shadow-lg shadow-black/10"
+                title="系统日志"
               >
-                <Settings size={18} />
-                系统日志
+                <History size={18} />
               </button>
+            </div>
 
-              {/* Search Form */}
-              <form onSubmit={handleSearch} className="flex flex-col gap-3 sm:flex-row w-full sm:w-auto">
+            {/* Search Form */}
+            <form onSubmit={handleSearch} className="flex flex-col gap-3 sm:flex-row w-full sm:w-auto">
               <div className="relative group">
                 <select
                   value={market}
                   onChange={(e) => setMarket(e.target.value as Market)}
-                  className="h-10 cursor-pointer appearance-none rounded-xl border border-zinc-800 bg-zinc-900 px-4 pr-10 text-sm transition-all focus:outline-none focus:ring-2 focus:ring-emerald-500/50"
+                  className="h-12 w-full sm:w-auto cursor-pointer flex-shrink-0 appearance-none rounded-xl border border-slate-600 bg-slate-800/80 px-5 pr-12 text-sm font-bold text-white transition-all focus:outline-none focus:ring-2 focus:ring-emerald-500/50 shadow-inner"
                 >
                   <option value="A-Share">A股</option>
                   <option value="HK-Share">港股</option>
                   <option value="US-Share">美股</option>
                 </select>
-                <div className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-zinc-500">
-                  <TrendingUp size={14} />
+                <div className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-slate-400">
+                  <TrendingUp size={16} />
                 </div>
               </div>
 
-              <div className="relative flex-1 sm:w-48">
+              <div className="relative flex-1 sm:w-56">
                 <input
                   type="text"
-                  placeholder="代码 (如 600519)"
+                  placeholder="股票代码/拼音 (如 GZMT)"
                   value={symbol}
                   onChange={(e) => setSymbol(e.target.value.toUpperCase())}
-                  className="h-10 w-full rounded-xl border border-zinc-800 bg-zinc-900 pl-10 pr-4 text-sm transition-all placeholder:text-zinc-600 focus:outline-none focus:ring-2 focus:ring-emerald-500/50"
+                  className="h-12 w-full font-mono text-base font-bold rounded-xl border border-slate-600 bg-slate-800/80 pl-12 pr-4 text-white transition-all placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/50 shadow-inner"
                 />
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-500" size={16} />
+                <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-emerald-400" size={20} />
               </div>
 
               <button
                 type="submit"
                 disabled={loading}
-                className="flex h-10 items-center justify-center gap-2 rounded-xl bg-emerald-600 px-6 font-medium text-white shadow-lg shadow-emerald-900/20 transition-all hover:bg-emerald-500 disabled:bg-zinc-800 disabled:text-zinc-600"
+                className="flex h-12 items-center justify-center gap-2 rounded-xl bg-emerald-500 px-8 font-bold text-white shadow-xl shadow-emerald-500/20 transition-all hover:bg-emerald-400 hover:scale-105 active:scale-95 disabled:pointer-events-none disabled:bg-slate-800 disabled:text-slate-500"
               >
-                {loading ? <Loader2 className="animate-spin" size={16} /> : '分析'}
+                {loading ? <Loader2 className="animate-spin" size={20} /> : '智能研判'}
               </button>
             </form>
           </div>
         </header>
+
+        {/* Token Quota Dashboard */}
+        <div className="mb-12 flex flex-col md:flex-row items-start md:items-center justify-between glass-panel p-5 rounded-2xl border border-blue-500/20 bg-blue-500/5 shadow-lg shadow-blue-500/5">
+          <div className="flex items-center gap-4 mb-4 md:mb-0">
+            <div className="h-10 w-10 flex-shrink-0 rounded-full bg-blue-500/20 flex items-center justify-center border border-blue-500/30">
+              <Coins size={20} className="text-blue-400" />
+            </div>
+            <div>
+              <p className="text-xs font-black uppercase tracking-widest text-zinc-400">API 额度仪表盘</p>
+              <p className="text-sm font-medium text-zinc-300">当前会话 Token 实时监控与预估</p>
+            </div>
+          </div>
+
+          <div className="flex flex-wrap md:flex-nowrap items-center gap-x-6 gap-y-4 w-full md:w-auto mt-2 md:mt-0">
+            <div className="flex flex-col items-start md:items-end w-1/2 md:w-auto">
+              <span className="text-[10px] text-zinc-500 font-mono tracking-widest">PROMPT</span>
+              <span className="text-lg font-mono font-bold text-zinc-200">{tokenUsage.promptTokens.toLocaleString()}</span>
+            </div>
+            <div className="hidden md:block w-px h-8 bg-zinc-700/50" />
+            <div className="flex flex-col items-start md:items-end w-1/2 md:w-auto">
+              <span className="text-[10px] text-zinc-500 font-mono tracking-widest">RESPONSE</span>
+              <span className="text-lg font-mono font-bold text-zinc-200">{tokenUsage.candidatesTokens.toLocaleString()}</span>
+            </div>
+            <div className="hidden md:block w-px h-8 bg-zinc-700/50" />
+            <div className="flex flex-col items-start md:items-end w-1/2 md:w-auto">
+              <span className="text-[10px] text-blue-400 font-mono font-black tracking-widest">TOTAL USED</span>
+              <span className="text-lg font-mono font-black text-blue-400">{tokenUsage.totalTokens.toLocaleString()}</span>
+            </div>
+            <div className="hidden md:block w-px h-8 bg-zinc-700/50" />
+            <div className="flex flex-col items-start md:items-end w-1/2 md:w-auto bg-emerald-500/10 px-4 py-1.5 rounded-xl border border-emerald-500/20">
+              <span className="text-[10px] text-emerald-500 font-mono font-black tracking-widest">EST. REMAINING*</span>
+              <span className="text-xl font-mono font-black text-emerald-400">
+                {Math.max(0, 1000000 - tokenUsage.totalTokens).toLocaleString()}
+              </span>
+            </div>
+          </div>
+        </div>
 
         <AnimatePresence mode="wait">
           {analysisError && (
@@ -544,7 +603,7 @@ export default function App() {
                     disabled={isGeneratingReport || isSendingReport}
                     className={cn(
                       "flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all",
-                      reportStatus === 'success' 
+                      reportStatus === 'success'
                         ? "bg-emerald-500/20 text-emerald-400 border border-emerald-500/50"
                         : reportStatus === 'error'
                         ? "bg-rose-500/20 text-rose-400 border border-rose-500/50"
@@ -576,17 +635,11 @@ export default function App() {
                 </div>
               </div>
 
-              {/* Agent Discussion Section */}
-              {showDiscussion && (
-                <div className="flex flex-col gap-8">
-                  <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                    <div className="lg:col-span-1">
-                      <DiscussionPanel 
-                        onSendMessage={handleDiscussionQuestion}
-                      />
-                    </div>
-                    <div className="lg:col-span-2 space-y-6">
-                      <div className="p-8 rounded-[2.5rem] bg-zinc-900/50 border border-zinc-800 h-full shadow-2xl">
+              {/* Core Conclusions and Scenario Analysis - Main UI */}
+              {(isDiscussing || discussionMessages.length > 0) && (
+                <div className="flex flex-col gap-8 mt-4 pt-4 w-full">
+                  <div className="space-y-6 w-full">
+                    <div className="p-8 rounded-[2.5rem] bg-zinc-900/50 border border-zinc-800 shadow-2xl">
                         <h3 className="text-lg font-black uppercase tracking-[0.2em] text-zinc-400 mb-8 flex items-center justify-between gap-4">
                           <div className="flex items-center gap-3">
                             <div className="p-2 rounded-xl bg-emerald-500/10 border border-emerald-500/20">
@@ -677,6 +730,7 @@ export default function App() {
                                 <p className="text-[9px] text-zinc-500 uppercase font-black tracking-widest mb-1">核心策略</p>
                                 <p className="text-[11px] text-zinc-300 italic">{analysis.tradingPlan.strategy}</p>
                               </div>
+
 
                               {/* Trading Plan Version History */}
                               {tradingPlanHistory.length > 0 && (
@@ -1114,8 +1168,46 @@ export default function App() {
                     </div>
                   </div>
                 </div>
-              </div>
-            )}
+              )}
+
+              {/* Floating Discussion Panel Widget (Full Screen Modal) */}
+              <AnimatePresence>
+                {showDiscussion && (
+                  <motion.div
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.95 }}
+                    className="fixed inset-0 z-50 flex items-center justify-center p-4 md:p-8 bg-black/60 backdrop-blur-md"
+                  >
+                    <div className="w-full max-w-5xl h-[85vh] shadow-[0_0_80px_-15px_rgba(0,0,0,1)] border border-slate-700/50 rounded-[2rem] overflow-hidden flex flex-col">
+                      <DiscussionPanel 
+                        onSendMessage={handleDiscussionQuestion}
+                        onClose={() => setShowDiscussion(false)}
+                      />
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+
+              {/* Floating Chat Button */}
+              {(isDiscussing || discussionMessages.length > 0) && !showDiscussion && (
+                <button
+                  onClick={() => setShowDiscussion(true)}
+                  className="fixed bottom-8 right-8 p-4 rounded-2xl bg-emerald-600 text-white shadow-[0_0_30px_-5px_rgba(16,185,129,0.5)] hover:bg-emerald-500 hover:scale-105 transition-all z-40 group flex items-center justify-center border border-emerald-400/30"
+                >
+                  <MessageSquare size={24} />
+                  {isDiscussing && (
+                    <span className="absolute -top-1 -right-1 flex h-4 w-4">
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75"></span>
+                      <span className="relative inline-flex rounded-full h-4 w-4 bg-rose-500 border-2 border-zinc-900"></span>
+                    </span>
+                  )}
+                  {/* Tooltip */}
+                  <span className="absolute right-full mr-4 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap bg-zinc-800 text-zinc-300 text-xs px-3 py-1.5 rounded-lg border border-zinc-700 font-bold">
+                    展开专家联席会议
+                  </span>
+                </button>
+              )}
 
               <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
                 <div className="space-y-8 lg:col-span-2">
@@ -1583,11 +1675,39 @@ export default function App() {
           ) : (
             <motion.div initial={{ opacity: 1 }} animate={{ opacity: 1 }} className="space-y-12">
               <section className="space-y-8">
-                <div className="flex items-center justify-between glass-panel px-8 py-6 rounded-3xl">
-                  <h2 className="flex items-center gap-3 text-2xl font-black tracking-tighter">
-                    <Globe size={28} className="text-emerald-500" />
-                    今日大盘概览
-                  </h2>
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between glass-panel px-8 py-6 rounded-3xl gap-4">
+                  <div className="flex items-center gap-3">
+                    <h2 className="flex items-center gap-3 text-2xl font-black tracking-tighter">
+                      <Globe size={28} className="text-emerald-500" />
+                      今日大盘概览
+                    </h2>
+                    
+                    {/* Auto-Refresh and Manual Refresh controls */}
+                    <div className="flex items-center gap-2 text-sm ml-4 border-l border-zinc-700/50 pl-4">
+                      {marketLastUpdated && (
+                        <span className="text-zinc-500 hidden sm:inline-block">更新: {new Date(marketLastUpdated).toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' })}</span>
+                      )}
+                      <select
+                        value={autoRefreshInterval}
+                        onChange={(e) => setAutoRefreshInterval(Number(e.target.value))}
+                        className="bg-zinc-800 text-zinc-300 border border-zinc-700/80 rounded-lg px-2 py-1.5 text-xs focus:ring-1 focus:ring-emerald-500/50 outline-none hover:bg-zinc-700/80 transition-colors cursor-pointer"
+                      >
+                        <option value={0}>不自动刷新</option>
+                        <option value={5}>每 5 分钟</option>
+                        <option value={15}>每 15 分钟</option>
+                        <option value={30}>每 30 分钟</option>
+                        <option value={60}>每 60 分钟</option>
+                      </select>
+                      <button
+                        onClick={() => fetchMarketOverview(true)}
+                        disabled={overviewLoading}
+                        className="p-1.5 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-400 hover:text-white ring-1 ring-white/10 transition-colors disabled:opacity-50"
+                        title="手动刷新大盘数据"
+                      >
+                        <RefreshCw className={`w-4 h-4 ${overviewLoading ? 'animate-spin' : ''}`} />
+                      </button>
+                    </div>
+                  </div>
                   <div className="flex items-center gap-4">
                     <div className="flex items-center gap-1 rounded-2xl bg-zinc-800 p-1 border border-zinc-700">
                       {(['A-Share', 'HK-Share', 'US-Share'] as Market[]).map((m) => (

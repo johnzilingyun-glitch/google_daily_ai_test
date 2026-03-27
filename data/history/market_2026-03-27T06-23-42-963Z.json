@@ -1,0 +1,143 @@
+{
+  "indices": [
+    {
+      "name": "上证指数",
+      "symbol": "000001.SH",
+      "price": 3955.51,
+      "change": 66.43,
+      "changePercent": 1.71,
+      "previousClose": 3889.08
+    },
+    {
+      "name": "深证成指",
+      "symbol": "399001.SZ",
+      "price": 13732.81,
+      "change": 126.37,
+      "changePercent": 0.93,
+      "previousClose": 13606.44
+    },
+    {
+      "name": "创业板指",
+      "symbol": "399006.SZ",
+      "price": 3299.68,
+      "change": 27.19,
+      "changePercent": 0.83,
+      "previousClose": 3272.49
+    },
+    {
+      "name": "沪深300",
+      "symbol": "000300.SH",
+      "price": 4477.53,
+      "change": 0,
+      "changePercent": 0,
+      "previousClose": 4477.53
+    },
+    {
+      "name": "恒生指数",
+      "symbol": "HSI",
+      "price": 25378.85,
+      "change": 522.61,
+      "changePercent": 2.1,
+      "previousClose": 24856.24
+    }
+  ],
+  "topNews": [
+    {
+      "title": "海尔智家拟回购30亿至60亿元的A股用于实施公司员工持股计划",
+      "source": "新浪财经",
+      "time": "2026-03-27 09:00 CST",
+      "url": "http://finance.sina.com.cn/stock/hkstock/ggscyd/2026-03-27/doc-inhskrwf8461383.shtml",
+      "summary": "海尔智家（06690）公布，拟使用30亿至60亿元人民币回购部分A股社会公众股股份，用于实施公司员工持股计划，以完善公司治理结构，确保长期经营目标实现，并提升公司整体价值。"
+    },
+    {
+      "title": "A股年报盘点丨517家上市公司已披露120家公司净利润增幅超50%",
+      "source": "新浪网",
+      "time": "2026-03-27 09:00 CST",
+      "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQFf3Vv7fcRndJV736koePRtY6Gf0JyhBPuYVORS4esuK9xt7111f4fG5FGuZu_hpIJIg-WyXlzCCzfl1YMkw3FwHRwN5cYdQAziGOABslaw4q7R1s1Neo4zmvMs9t-alXEmtY7aFuwIvinIGIn2qtq0LfgEoNj3qBSofw==",
+      "summary": "截至3月27日，A股累计有517家上市公司披露2025年年报，其中449家盈利，合计营收17.65万亿元，同比增长4.82%，合计净利润1.61万亿元，同比增长11.46%。"
+    },
+    {
+      "title": "锂电板块，大爆发",
+      "source": "财联社 via 21经济网",
+      "time": "2026-03-27 11:56 CST",
+      "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQFncE30Xj16gFBmb3REL7FFZZQA_Kj_jPjNRzeFvOssMwx97E0OhxnUqkWCPjhi_bhhXPKQvstzBMiw8_WQwm5KwL3Ub2V0TQDguZ47rnuR_GsVnY7OzzaL02ZWfZme3oo7rAAU_5taoaEaWOQYo7E4YiTpjvioKn3ZaUY3gGJeipFaamMNOCGfH0cjRouHbCA",
+      "summary": "今日A股市场早盘低开高走，三大指数翻红。锂矿概念爆发，融捷股份、江特电机等涨停。医药板块走强，化工板块表现活跃。"
+    },
+    {
+      "title": "全国社保基金多次在A股大幅下跌时果断加仓",
+      "source": "上海证券报 via 21经济网",
+      "time": "2026-03-27 10:55 CST",
+      "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQFiu0m2OtMDxNYEcdGmCdj_u3qQszwOSoIY2ZfRdwvTQVcUhOzhcH86IDL7h3Dz4zAS6u0FE4AjQy3CiMUgVs83evPiduSOViYUigwLzAksBzb0esfF6LeAATc1QtIomOH6nCEQ6PNbcFW9yo4zmvMs9t-alXEmtY7aFuwIvinIGIn2qtq0LfgEoNj3qBSofw==",
+      "summary": "全国社会保障基金理事会副理事长金荦在博鳌亚洲论坛2026年年会上表示，全国社保基金能够在短期波动中保持战略定力，多次在A股大幅下跌时果断加仓，践行长期投资、价值投资和责任投资的理念。"
+    },
+    {
+      "title": "沪指震荡翻红，医药生物板块大爆发；农业、电力股持续活跃",
+      "source": "中国基金报",
+      "time": "2026-03-27 CST",
+      "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQFRbZ22ragNkXNDWtp1wdG6S8F-33eYQrm0G7to6otJ4UHVVftoaeOtCM4ziQe3dmpLDVWCpyHmai-dhVCNTo3TdS-tC9Scpkmggpq7KO2j2oCXC5Z6e-ZDRzD_tQfBqqObWKGtH2loLQoxV8AZcZmoKySb7gGJeipFaamMNOCGfH0cjRouHbCA",
+      "summary": "3月27日上午，A股市场开盘走低后震荡上行，上证指数、深证成指、科创综指纷纷翻红。盘面上，医药生物、农林牧渔、基础化工、食品饮料等板块走强，CRO、创新药、生物育种等概念股活跃。"
+    }
+  ],
+  "sectorAnalysis": [
+    {
+      "name": "锂矿/能源金属",
+      "trend": "上涨",
+      "conclusion": "受津巴布韦锂矿出口禁令升级和能源金属需求预期提振，板块表现强劲，融捷股份、盛新锂能等多股涨停。"
+    },
+    {
+      "name": "医药/创新药",
+      "trend": "上涨",
+      "conclusion": "医药生物板块大爆发，创新药概念股表现活跃，多只个股涨停，受政策支持和国产创新药竞争力提升逻辑强化影响。"
+    },
+    {
+      "name": "基础化工",
+      "trend": "上涨",
+      "conclusion": "基础化工板块盘初走强，苏利股份、鲁北化工等涨停，受国际原油价格攀升和中东冲突对全球供应链影响带动。"
+    },
+    {
+      "name": "电力",
+      "trend": "局部活跃/上涨",
+      "conclusion": "电力板块持续活跃，晋控电力、广西能源涨停，主要受“AI的尽头是电力”概念和国家能源局发布1-2月份全国电力统计数据利好提振。"
+    },
+    {
+      "name": "绿色电力/光伏/风电",
+      "trend": "下跌",
+      "conclusion": "绿色电力、光伏、风电等方向多股下挫，板块表现低迷，与上涨的电力板块形成对比，可能受市场轮动或特定因素影响。"
+    }
+  ],
+  "commodityAnalysis": [
+    {
+      "name": "原油",
+      "trend": "上涨，短期波动",
+      "expectation": "受中东地缘政治紧张局势影响，国际油价持续攀升。短期内价格面临下行压力以缓解超买状况，但主要短期趋势仍看涨，长期受地缘阴影笼罩，存在快速回吐风险。"
+    },
+    {
+      "name": "黄金",
+      "trend": "震荡，短期承压",
+      "expectation": "短期受高油价引发的通胀担忧和美联储货币政策转向预期压制，出现大幅跳水。中期若冲突持续，滞胀组合下金价上涨空间将打开，长期看好其在全球货币体系重构下的表现。"
+    },
+    {
+      "name": "铜",
+      "trend": "震荡",
+      "expectation": "铜价受美元走强和市场悲观情绪打压，但中国宏观政策预期乐观和国内精炼铜去库加速提供支撑。预计短期铜价将维持在91000-96000元/吨区间震荡。"
+    }
+  ],
+  "recommendations": [
+    {
+      "type": "Sector",
+      "name": "创新药",
+      "reason": "创新药概念板块表现强劲，受政策支持、国产创新药竞争力提升及海外BD进展等多重利好驱动，具备持续增长潜力。"
+    },
+    {
+      "type": "Sector",
+      "name": "锂矿/能源金属",
+      "reason": "全球锂矿出口禁令升级和能源转型对金属需求提振，使得锂矿及能源金属板块表现活跃，预计景气度将维持高位。"
+    },
+    {
+      "type": "Sector",
+      "name": "基础化工",
+      "reason": "受国际原油价格上涨和中东冲突影响，化工行业景气度回升，部分产品价格上涨，补库周期开启，看好其中细分龙头的表现。"
+    }
+  ],
+  "marketSummary": "2026年3月27日A股市场呈现震荡反弹态势，主要指数午后普遍上涨。其中，上证指数涨幅扩大至1.71%，深证成指上涨0.93%，创业板指上涨0.83%。恒生指数在港股市场也录得逾2%的涨幅。今日市场亮点主要集中在锂矿/能源金属、医药/创新药和基础化工等热门板块，这些板块内多只个股表现活跃。相比之下，绿色电力、光伏和银行等板块表现低迷。大宗商品方面，原油受地缘政治影响维持高位，黄金、白银、铜则呈现震荡走势，其中黄金中长期看涨逻辑不变。今日A股成交额有所缩量，市场情绪在经历昨日普跌后有所修复，但仍需关注量能能否持续温和放大。沪深300指数今日盘中实时数据未能找到明确来源，故以昨日收盘价4477.53点计算，涨跌幅为0%。所有指数数据更新至北京时间2026年3月27日约14:30 CST。数据来源：证券时报, 每日经济新闻, 中新经纬微信公众号, 实时盯盘, Markets Insider, 英为财情, 新浪财经."
+}

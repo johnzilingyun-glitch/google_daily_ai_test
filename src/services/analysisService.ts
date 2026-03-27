@@ -1,5 +1,5 @@
 import { GoogleGenAI } from "@google/genai";
-import { createAI, withRetry, parseJsonResponse } from "./geminiService";
+import { createAI, withRetry, parseJsonResponse, generateContentWithUsage, GEMINI_MODEL } from "./geminiService";
 import { getAnalyzeStockPrompt, getChatMessagePrompt, getStockReportPrompt, getDiscussionReportPrompt } from "./prompts";
 import { Market, StockAnalysis, AgentMessage, Scenario, AgentDiscussion, GeminiConfig } from "../types";
 import { getHistoryContext, saveAnalysisToHistory } from "./adminService";
@@ -24,12 +24,9 @@ export async function analyzeStock(symbol: string, market: Market, config?: Gemi
   const prompt = getAnalyzeStockPrompt(symbol, market, realtimeData, history, beijingDate, beijingShortDate, now);
 
   const response = await withRetry(async () => {
-    const result = await ai.models.generateContent({
-      model: "gemini-3-flash-preview",
-      contents: prompt,
-      config: {
-        tools: [{ googleSearch: {} }]
-      }
+    const result = await generateContentWithUsage(ai, {
+      model: config?.model || GEMINI_MODEL,
+      contents: prompt
     });
     return result.text;
   });
@@ -48,8 +45,8 @@ export async function sendChatMessage(userMessage: string, analysis: StockAnalys
   const prompt = getChatMessagePrompt(userMessage, analysis);
 
   const response = await withRetry(async () => {
-    const result = await ai.models.generateContent({
-      model: "gemini-3-flash-preview",
+    const result = await generateContentWithUsage(ai, {
+      model: config?.model || GEMINI_MODEL,
       contents: prompt
     });
     return result.text;
@@ -63,8 +60,8 @@ export async function getStockReport(analysis: StockAnalysis, config?: GeminiCon
   const prompt = getStockReportPrompt(analysis);
 
   const response = await withRetry(async () => {
-    const result = await ai.models.generateContent({
-      model: "gemini-3-flash-preview",
+    const result = await generateContentWithUsage(ai, {
+      model: config?.model || GEMINI_MODEL,
       contents: prompt
     });
     return result.text;
@@ -85,8 +82,8 @@ export async function getChatReport(stockName: string, chatHistory: { role: stri
   `.trim();
 
   const response = await withRetry(async () => {
-    const result = await ai.models.generateContent({
-      model: "gemini-3-flash-preview",
+    const result = await generateContentWithUsage(ai, {
+      model: config?.model || GEMINI_MODEL,
       contents: prompt
     });
     return result.text;
@@ -106,8 +103,8 @@ export async function getDiscussionReport(
   const prompt = getDiscussionReportPrompt(analysis, discussion, scenarios, backtestResult);
 
   const response = await withRetry(async () => {
-    const result = await ai.models.generateContent({
-      model: "gemini-3-flash-preview",
+    const result = await generateContentWithUsage(ai, {
+      model: config?.model || GEMINI_MODEL,
       contents: prompt
     });
     return result.text;

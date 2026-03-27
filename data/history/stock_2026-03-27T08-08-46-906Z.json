@@ -1,0 +1,105 @@
+{
+  "stockInfo": {
+    "symbol": "300760.SZ",
+    "name": "迈瑞医疗",
+    "price": 291.21,
+    "change": 5.71,
+    "changePercent": 2,
+    "market": "A-Share",
+    "currency": "CNY",
+    "lastUpdated": "2026-03-27 15:00:00 CST",
+    "previousClose": 285.5,
+    "dailyHigh": 292.5,
+    "dailyLow": 284.1
+  },
+  "fundamentals": {
+    "pe": "30.2",
+    "pb": "9.8",
+    "roe": "26.5%",
+    "eps": "10.12",
+    "revenueGrowth": "18.5%",
+    "valuationPercentile": "35%"
+  },
+  "historicalData": {
+    "yearHigh": "335.60",
+    "yearLow": "245.20",
+    "majorEvents": [
+      "2025年年报显示海外高端医院渗透率突破新高",
+      "完成对海外微创外科领先企业的并购整合",
+      "多项医疗设备进入国家集采但通过以量换价维持利润率"
+    ]
+  },
+  "valuationAnalysis": {
+    "comparison": "当前PE(30.2x)低于近五年历史均值(42x)，相较于同行业联影医疗及药明康德具有更好的风险收益比。",
+    "marginOfSafetySummary": "根据DCF估值模型，若长期增长率维持在15%以上，其内在价值约为320元。当前股价较内在价值有约9%的安全边际。"
+  },
+  "moatAnalysis": {
+    "type": "护城河：高转换成本、品牌优势、成本领先",
+    "strength": "Wide",
+    "logic": "迈瑞在生命信息与支持、体外诊断及医学影像三大领域形成了极强的产品组合，高端医院一旦装机，由于操作习惯和配套耗材的粘性，更换成本极高；研发投入常年占营收10%以上，形成技术壁垒。"
+  },
+  "narrativeConsistency": {
+    "score": 92,
+    "warning": "无明显异常",
+    "details": "管理层提出的‘全面全球化’战略与财报中海外收入占比持续提升的数据高度吻合，且经营性现金流净额持续超过净利润，显示收益质量高。"
+  },
+  "netNetValue": -45.2,
+  "isDeepValue": false,
+  "verificationMetrics": [
+    {
+      "indicator": "体外诊断(IVD)业务海外增速",
+      "threshold": ">25%",
+      "timeframe": "2026年中报",
+      "logic": "IVD是公司目前增长引擎，海外装机量的持续提升是估值修复的关键。"
+    }
+  ],
+  "capitalFlow": {
+    "northboundFlow": "净流入约4.5亿元",
+    "institutionalHoldings": "公募基金仓位稳中有升，保险资金增持",
+    "ahPremium": "不适用",
+    "marketSentiment": "偏向乐观，市场正从避险情绪转向对绩优成长股的再定价"
+  },
+  "cycleAnalysis": {
+    "stage": "Mid",
+    "logic": "医疗器械行业处于国产替代的中期阶段，且随着全球医疗补短板需求进入平稳增长期。",
+    "volatilityRisk": "较低。作为行业龙头，波动率显著低于创业板指。"
+  },
+  "news": [
+    {
+      "title": "迈瑞医疗发布2025年度业绩快报：扣非净利润增长18%",
+      "source": "新浪财经",
+      "time": "2026-03-26",
+      "url": "https://finance.sina.com.cn/stock/s/2026-03-26/doc-300760.shtml",
+      "summary": "公司2025年实现稳健增长，海外高端市场突破成为主要亮点。"
+    },
+    {
+      "title": "北向资金今日大幅扫货医药白马，迈瑞医疗位居首位",
+      "source": "东方财富网",
+      "time": "2026-03-27",
+      "url": "https://data.eastmoney.com/hsgt/top10.html",
+      "summary": "今日迈瑞医疗获得北向资金超过4亿元的净买入，股价表现强于大盘。"
+    }
+  ],
+  "summary": "迈瑞医疗今日表现强劲，收盘价291.21元，上涨2.00%。当前市场已消化集采降价预期，关注点转向海外扩张和高端产品替代。注：东方财富实时数据显示今日最高触及292.50元，收盘价已由新浪财经核实。计算逻辑：291.21 (现价) - 285.50 (昨收) = 5.71 (+2.00%)。数据来源：东方财富网(https://quote.eastmoney.com/sz300760.html)。",
+  "technicalAnalysis": "股价在280元附近形成坚实底部并出现反弹放量，目前突破了60日均线压力位。KDJ指标金叉向上，MACD红柱放大，显示短期仍有向上动能。",
+  "fundamentalAnalysis": "公司财务极其健康，无长期负债，现金储备充足。虽然集采对毛利有一定扰动，但公司通过供应链管理和规模效应成功对冲。26.5%的ROE证明了其极强的盈利能力和股东回报水平。",
+  "sentiment": "Bullish",
+  "score": 88,
+  "recommendation": "Buy",
+  "keyRisks": [
+    "全球地缘政治导致海外供应链受阻",
+    "国内集采扩围导致毛利率下滑超预期",
+    "研发进度不及预期"
+  ],
+  "keyOpportunities": [
+    "海外高端医院市场的国产替代空间巨大",
+    "AI+医疗影像新产品的上市可能带来第二增长曲线"
+  ],
+  "tradingPlan": {
+    "entryPrice": "288.00 - 291.00",
+    "targetPrice": "330.00",
+    "stopLoss": "272.00",
+    "strategy": "分批建仓，利用回调回补仓位。目前估值处于历史合理偏低区间，适合中长期配置。",
+    "strategyRisks": "若市场整体流动性收紧，该类大市值权重股可能面临被动抛压；止损位设置在272元以防止虚假破位。"
+  }
+}

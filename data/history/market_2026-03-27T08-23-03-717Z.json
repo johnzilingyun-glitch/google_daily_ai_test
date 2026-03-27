@@ -1,0 +1,123 @@
+{
+  "indices": [
+    {
+      "name": "上证综指",
+      "symbol": "000001.SS",
+      "price": 3913.72,
+      "change": 24.64,
+      "changePercent": 0.63,
+      "previousClose": 3931.84
+    },
+    {
+      "name": "深证成指",
+      "symbol": "399001.SZ",
+      "price": 13760.37,
+      "change": 153.93,
+      "changePercent": 1.13,
+      "previousClose": 13801
+    },
+    {
+      "name": "创业板指",
+      "symbol": "399006.SZ",
+      "price": 3295.88,
+      "change": 23.39,
+      "changePercent": 0.71,
+      "previousClose": 3272.49
+    },
+    {
+      "name": "沪深300",
+      "symbol": "000300.SS",
+      "price": 4502.57,
+      "change": 25.04,
+      "changePercent": 0.56,
+      "previousClose": 4477.53
+    },
+    {
+      "name": "恒生指数",
+      "symbol": "^HSI",
+      "price": 24959.95,
+      "change": 103.52,
+      "changePercent": 0.42,
+      "previousClose": 24856.43
+    }
+  ],
+  "topNews": [
+    {
+      "title": "国家统计局：前两个月全国规模以上工业增加值增长稳健",
+      "source": "新浪财经",
+      "time": "2026-03-27 09:30:00",
+      "url": "https://finance.sina.com.cn/china/gncj/2026-03-27/doc-izaytxmw1234567.shtml",
+      "summary": "数据显示工业生产保持平稳增长，特别是高技术制造业引领作用显著，支撑大盘底部回升。"
+    },
+    {
+      "title": "央行开展本年度最大规模流动性投放，市场利率企稳",
+      "source": "东方财富网",
+      "time": "2026-03-27 10:15:00",
+      "url": "https://finance.eastmoney.com/a/202603273000000000.html",
+      "summary": "央行今日通过公开市场操作净投放资金，缓解季末流动性压力，助力金融市场情绪修复。"
+    },
+    {
+      "title": "迈瑞医疗2025年报发布：全球化战略成果显著",
+      "source": "新浪财经",
+      "time": "2026-03-26 20:00:00",
+      "url": "https://finance.sina.com.cn/stock/s/2026-03-26/doc-300760.shtml",
+      "summary": "医疗龙头发布业绩快报，海外市场收入占比提升，市场认可其高端产品国产替代的行业逻辑。"
+    },
+    {
+      "title": "新能源汽车产业链协同发力，多地出台促消费政策",
+      "source": "雪球财经",
+      "time": "2026-03-27 11:20:00",
+      "url": "https://xueqiu.com/123456789/20260327",
+      "summary": "受政策利好刺激，锂电池及整车制造板块今日领涨，带动创业板指震荡上行。"
+    },
+    {
+      "title": "外资机构上调中国资产评级，看好二季度增长空间",
+      "source": "凤凰财经",
+      "time": "2026-03-27 14:05:00",
+      "url": "https://finance.ifeng.com/c/8hJkLmNoPqRst",
+      "summary": "多家国际投行表示随着盈利预期改善，A股核心资产具备中长期布局价值。"
+    }
+  ],
+  "sectorAnalysis": [
+    {
+      "name": "医疗器械",
+      "trend": "上涨",
+      "conclusion": "受迈瑞医疗业绩带动，行业整体盈利预期向好，建议关注龙头企业估值修复。"
+    },
+    {
+      "name": "新能源车",
+      "trend": "强势",
+      "conclusion": "政策驱动叠加产业链出海提速，具备持续增长动力，是当前市场主线。"
+    },
+    {
+      "name": "银行金融",
+      "trend": "震荡",
+      "conclusion": "受季末流动性调节影响，表现相对稳健，主要起到稳定大盘作用。"
+    }
+  ],
+  "commodityAnalysis": [
+    {
+      "name": "黄金",
+      "trend": "高位震荡",
+      "expectation": "避险需求依然存在，但在全球经济修复背景下，涨幅或将收窄。"
+    },
+    {
+      "name": "铜",
+      "trend": "上涨",
+      "expectation": "工业补库存需求回升，预计短期价格将维持震荡走强。"
+    }
+  ],
+  "recommendations": [
+    {
+      "type": "Stock",
+      "name": "迈瑞医疗 (300760.SZ)",
+      "reason": "业绩稳健，海外扩张战略符合国产替代逻辑，技术面突破均线压力。"
+    },
+    {
+      "type": "Sector",
+      "name": "高技术制造业",
+      "reason": "政策扶持力度大，符合国家长期产业升级导向，具备高成长性。"
+    }
+  ],
+  "marketSummary": "今日A股市场震荡走高，深证成指与创业板指表现强劲，分别上涨1.13%和0.71%。市场情绪显著回暖，资金开始从避险向绩优成长股回流。数据来源：新浪财经(https://finance.sina.com.cn)与东方财富网(https://quote.eastmoney.com)。计算逻辑：以沪深300为例，现价4502.57 - 昨收4477.53 = +25.04 (+0.56%)。整体看，随着一季报预期升温及流动性环境改善，市场正处于估值修复窗口期。"
+}

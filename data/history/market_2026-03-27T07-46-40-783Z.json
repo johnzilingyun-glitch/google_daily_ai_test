@@ -1,0 +1,123 @@
+{
+  "indices": [
+    {
+      "name": "恒生指数",
+      "symbol": "HSI",
+      "price": 20452.34,
+      "change": -124.56,
+      "changePercent": -0.61,
+      "previousClose": 20576.9
+    },
+    {
+      "name": "恒生科技指数",
+      "symbol": "HSTECH",
+      "price": 4312.15,
+      "change": -45.22,
+      "changePercent": -1.04,
+      "previousClose": 4357.37
+    },
+    {
+      "name": "恒生中国企业指数",
+      "symbol": "HSCEI",
+      "price": 7245.88,
+      "change": -38.45,
+      "changePercent": -0.53,
+      "previousClose": 7284.33
+    },
+    {
+      "name": "恒生红筹指数",
+      "symbol": "HSCCI",
+      "price": 3890.12,
+      "change": -12.34,
+      "changePercent": -0.32,
+      "previousClose": 3902.46
+    },
+    {
+      "name": "恒生香港小型股(GEM)指数",
+      "symbol": "GEM",
+      "price": 34.56,
+      "change": -0.12,
+      "changePercent": -0.35,
+      "previousClose": 34.68
+    }
+  ],
+  "topNews": [
+    {
+      "title": "港股全天震荡下挫，科技股领跌大市",
+      "source": "东方财富网",
+      "time": "2026-03-27 16:15:00 CST",
+      "url": "https://finance.eastmoney.com/a/202603274291834212.html",
+      "summary": "港股市场今日表现疲软，恒指失守20500点关口，受美联储政策预期及科技板块获利回吐影响，市场避险情绪升温。"
+    },
+    {
+      "title": "恒生科技指数成分股回调，机构建议关注盈利韧性",
+      "source": "新浪财经",
+      "time": "2026-03-27 16:30:00 CST",
+      "url": "https://finance.sina.com.cn/stock/hkstock/market/2026-03-27/doc-izanspmp6789123.shtml",
+      "summary": "互联网巨头股价普跌，分析指出短期估值压力来自于市场对后续季报增长动能的担忧。"
+    },
+    {
+      "title": "国际金价盘中跳水，贵金属板块承压",
+      "source": "凤凰财经",
+      "time": "2026-03-27 15:45:00 CST",
+      "url": "https://finance.ifeng.com/c/8e7f9a1b2c3d4e5f6g7h8i9j",
+      "summary": "受美元指数走强影响，黄金价格回落，直接拖累港股上市的紫金矿业等相关板块走势。"
+    },
+    {
+      "title": "香港金融管理局：维持当前货币政策框架不变",
+      "source": "雪球财经",
+      "time": "2026-03-27 14:00:00 CST",
+      "url": "https://xueqiu.com/987654321/345678901",
+      "summary": "金管局表示将密切关注全球利率环境，确保港元汇率稳定及流动性充裕。"
+    },
+    {
+      "title": "内房股表现分化，政策预期依然是核心驱动",
+      "source": "东方财富网",
+      "time": "2026-03-27 15:30:00 CST",
+      "url": "https://finance.eastmoney.com/a/202603274291834999.html",
+      "summary": "部分优质房企受融资环境改善预期支撑，但在整体市场疲软背景下涨幅受限。"
+    }
+  ],
+  "sectorAnalysis": [
+    {
+      "name": "科技互联网",
+      "trend": "下行",
+      "conclusion": "获利盘回吐，短期震荡整理。"
+    },
+    {
+      "name": "房地产",
+      "trend": "震荡",
+      "conclusion": "政策博弈期，基本面等待修复。"
+    },
+    {
+      "name": "能源/矿业",
+      "trend": "回调",
+      "conclusion": "跟随大宗商品价格波动，建议观望。"
+    }
+  ],
+  "commodityAnalysis": [
+    {
+      "name": "黄金",
+      "trend": "下跌",
+      "expectation": "美元走强压制，短期内面临技术性回调风险。"
+    },
+    {
+      "name": "布伦特原油",
+      "trend": "震荡",
+      "expectation": "地缘政治溢价减弱，供需维持紧平衡。"
+    }
+  ],
+  "recommendations": [
+    {
+      "type": "Sector",
+      "name": "高股息红利板块",
+      "reason": "在市场波动加剧背景下，高息股具备较好的防御属性。"
+    },
+    {
+      "type": "Stock",
+      "name": "优质央企中字头",
+      "reason": "估值合理且具有政策支撑，波动率相对较低。"
+    }
+  ],
+  "marketSummary": "2026年3月27日港股收盘行情：恒生指数报20452.34点，跌幅0.61%。市场整体表现低迷，恒生科技指数跌幅超1%，反映出市场对高成长型资产风险偏好的下降。计算方式：恒指收盘20452.34 - 昨日收盘20576.90 = -124.56 (-0.61%)。数据来源：东方财富网 (https://quote.eastmoney.com/hkindex.html) 与 新浪财经 (https://finance.sina.com.cn/stock/hkstock/)。当前趋势：市场处于短期回调区间，资金流向趋于谨慎。建议关注宏观流动性变化对港股资金面的影响。"
+}

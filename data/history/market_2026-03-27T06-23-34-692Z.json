@@ -1,0 +1,143 @@
+{
+  "indices": [
+    {
+      "name": "上证指数",
+      "symbol": "000001.SS",
+      "price": 3902.3,
+      "change": 13.22,
+      "changePercent": 0.34,
+      "previousClose": 3889.08
+    },
+    {
+      "name": "深圳成指",
+      "symbol": "399001.SZ",
+      "price": 13758.46,
+      "change": 152.02,
+      "changePercent": 1.12,
+      "previousClose": 13606.44
+    },
+    {
+      "name": "创业板指",
+      "symbol": "399006.SZ",
+      "price": 3305.21,
+      "change": 32.72,
+      "changePercent": 1,
+      "previousClose": 3272.49
+    },
+    {
+      "name": "沪深300",
+      "symbol": "000300.SS",
+      "price": 4495.89,
+      "change": 18.36,
+      "changePercent": 0.41,
+      "previousClose": 4477.53
+    },
+    {
+      "name": "恒生指数",
+      "symbol": "HSI",
+      "price": 24993,
+      "change": 136.57,
+      "changePercent": 0.55,
+      "previousClose": 24856.43
+    }
+  ],
+  "topNews": [
+    {
+      "title": "海尔智家拟回购30亿至60亿元A股用于实施员工持股计划",
+      "source": "新浪财经",
+      "time": "2026-03-27 09:00 CST",
+      "url": "http://finance.sina.com.cn/stock/hkstock/ggscyd/2026-03-27/doc-inhskrwf8461383.shtml",
+      "summary": "海尔智家（06690）公布，基于对公司未来发展前景的信心和对公司价值的高度认可，拟使用自有资金和/或自筹资金回购部分A股社会公众股股份，用于实施公司员工持股计划，回购金额不超过60亿元且不低于30亿元，回购价格上限35元/股。"
+    },
+    {
+      "title": "证监会：2025年中长期资金新增入市规模超一万亿",
+      "source": "人民财讯 (新浪财经)",
+      "time": "2026-03-27 12:00 CST",
+      "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQHB7icaNFqbJQYr0b7ZIECspF04FqTi6pIWzT2yJqccjS8UwDPBwVZw55SyLw6_LZ7_efk7OYDV2Ivue1MjLDME3Em5_POD-q-5UEq32MKPo5HbzCBhJxqmM-2xc-wHcM2qcmtpi_B7nVzL-sCI7Tb2KdYgfPtUkYpqNH0",
+      "summary": "3月27日，证监会首席律师程合红在博鳌亚洲论坛2026年年会上表示，2025年各类中长期资金显著加大入市力度，社保资金、保险基金、年金基金、公募基金、券商自营合计净买入A股超过8000亿元，加上相关资金购买权益类基金、央企上市公司回购增持等，中长期资金实际新增入市规模超过一万亿元。"
+    },
+    {
+      "title": "创新药板块集体飙升，诺和诺德司美格鲁肽专利到期引发市场关注",
+      "source": "证券时报",
+      "time": "2026-03-27 11:46 CST",
+      "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQH7zhDxhlHTFsJNtKafyI7W3kXmdPg4pXPh4eVZHTZ0p07NCn6tt3n84PcQEB3BTp3UJTh8HAV7nq55eqAfY6F77hEUI7nGSIrToK5MsaaHo4pX7IWmlX0qZU2L1XXlz925RfTetMddoXg8Eg==",
+      "summary": "3月27日早盘，创新药概念持续走高，多只个股涨停。港股方面，信达生物发布2025年年报首次实现全年盈利，股价大涨。此外，诺和诺德司美格鲁肽在中国的核心化合物专利到期，引发市场对中国减肥药概念股的追捧。"
+    },
+    {
+      "title": "A股成交额降至2万亿以下，缩量回调后何时企稳？",
+      "source": "澎湃新闻 (新浪财经)",
+      "time": "2026-03-27 10:00 CST",
+      "url": "http://news.sina.com.cn/c/2026-03-27/doc-inhskrwe2287642.shtml",
+      "summary": "连续两个交易日反弹后，周四A股缩量回调。3月26日，A股三大指数收盘均跌超1%，成交额合计1.96万亿元，创今年以来A股日成交额新低。分析人士认为，主要是海外地缘扰动反复、技术面市场需要消化压力、投资者避险动作提前等因素导致。"
+    },
+    {
+      "title": "高盛慕天辉：中国市场风险收益比具吸引力，维持对中国股票的高配建议",
+      "source": "界面新闻 (东方财富)",
+      "time": "2026-03-27 11:30 CST",
+      "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQGwpYE4meIDquLLl51OYAwsgSp2u65AxCMYciktJV_-G_hWzRamXRgNrpaH2cIApGw60IT4Y-LwpmTPL2D-J0OKrUp1dTEjDXumhocomZyjW5-aVhcA62NMEPmKwr2yGFutL2CHhthiJvYq8IToSBfEDvo=",
+      "summary": "高盛日前表示，国际投资者对中国股票的兴趣已攀升至近年高点，仅有约10%的受访客户认为中国股市“不可投资”，相比两年前的约40%已大为改观。高盛维持对中国股票（A股和港股）的高配建议，并认为短期内来自A股的夏普比率更高。"
+    }
+  ],
+  "sectorAnalysis": [
+    {
+      "name": "创新药",
+      "trend": "上涨",
+      "conclusion": "该板块表现活跃，多只个股涨停，受政策利好和市场创新药出海加速等因素驱动，景气度持续向上，估值修复空间大。"
+    },
+    {
+      "name": "能源金属（锂矿、稀有金属）",
+      "trend": "上涨",
+      "conclusion": "在新能源需求趋势性增长以及地缘冲突等事件性催化共振下，锂电材料和稀有金属板块反复走强，有望迎来戴维斯双击。"
+    },
+    {
+      "name": "化工",
+      "trend": "上涨",
+      "conclusion": "国际原油价格不断攀升带动化工板块整体上扬，部分化工产品价格创下新高，板块表现活跃。"
+    },
+    {
+      "name": "电力",
+      "trend": "局部活跃",
+      "conclusion": "电力板块局部反复活跃，部分个股涨停，受益于国家能源局发布的电力统计数据，发电装机容量同比增长。"
+    },
+    {
+      "name": "算力租赁",
+      "trend": "下跌/异动",
+      "conclusion": "算力硬件产业链下挫，存储器、CPO、高速铜连接方向领跌。尽管部分算力租赁概念股异动，但整体板块仍面临调整压力。"
+    }
+  ],
+  "commodityAnalysis": [
+    {
+      "name": "黄金",
+      "trend": "盘中小幅上涨，短期看跌",
+      "expectation": "近期金价盘中小幅上涨，试图缓解超卖状况，但主要短期趋势仍是看跌的，面临下行压力。若中东局势升级，可能推高通胀，美联储或维持紧缩，压制金属价格。"
+    },
+    {
+      "name": "原油",
+      "trend": "持续上涨，面临阻力",
+      "expectation": "国际原油价格持续上涨，突破阻力位，但日内波动剧烈，在50日均线附近遭遇阻力。主要短期趋势仍是看涨的，未来一段时间内再次上涨的可能性依然存在。"
+    },
+    {
+      "name": "白银",
+      "trend": "盘中小幅上涨，短期看跌",
+      "expectation": "白银价格在近期盘中交易中小幅上涨，获得暂时支撑，并试图缓解超卖状况。然而，主要的短期趋势仍然是看跌的，继续面临下行压力。"
+    }
+  ],
+  "recommendations": [
+    {
+      "type": "Sector",
+      "name": "创新药",
+      "reason": "受益于政策支持、创新药出海加速以及部分重磅药物专利到期等利好因素，行业景气度高，具有较大的估值修复和成长空间。"
+    },
+    {
+      "type": "Sector",
+      "name": "能源金属",
+      "reason": "在高油价引发的能源安全担忧以及新能源需求的持续增长背景下，锂矿、稀有金属等能源金属板块表现强势，具备长期投资价值。"
+    },
+    {
+      "type": "Stock",
+      "name": "海尔智家",
+      "reason": "公司拟进行大规模A股回购并用于员工持股计划，彰显管理层对公司未来发展前景的信心和对公司价值的高度认可，有望提振市场情绪。"
+    }
+  ],
+  "marketSummary": "2026年3月27日A股市场呈现低开高走的态势，主要指数午后普遍翻红。上海证券交易所综合指数上涨0.34%，深证成份指数上涨1.12%，创业板指数上涨1.00%。沪深300指数也上涨0.41%。香港恒生指数午间收盘上涨0.55%。市场情绪在经历昨日缩量调整后有所回暖，但整体成交额仍低于2万亿人民币，显示投资者观望情绪犹存。热点板块方面，创新药、能源金属、化工和电力板块表现活跃，特别是创新药板块受多重利好消息刺激，涨幅居前。与此同时，算力硬件产业链等板块则出现下挫。大宗商品方面，黄金和白银盘中小幅上涨，试图从超卖状态中恢复，但短期看跌趋势未改；原油价格持续上涨，面临阻力，但短期趋势仍为看涨。部分机构如高盛认为中国市场风险收益比具有吸引力，并维持对中国股票的高配建议。今日数据更新时间为北京时间2026年3月27日 14:00:00 CST (A股) / 12:04:00 CST (恒生指数)。所有指数的价格、涨跌幅均基于搜寻到的实时或午间数据及前一交易日收盘价手工计算。数据来源：新浪财经、东方财富、中国证券报、Investing.com。"
+}

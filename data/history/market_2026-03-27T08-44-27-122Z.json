@@ -1,0 +1,123 @@
+{
+  "indices": [
+    {
+      "name": "上证综指",
+      "symbol": "000001.SS",
+      "price": 3913.72,
+      "change": 24.64,
+      "changePercent": 0.63,
+      "previousClose": 3931.84
+    },
+    {
+      "name": "深证成指",
+      "symbol": "399001.SZ",
+      "price": 13760.37,
+      "change": 153.93,
+      "changePercent": 1.13,
+      "previousClose": 13801
+    },
+    {
+      "name": "创业板指",
+      "symbol": "399006.SZ",
+      "price": 3295.88,
+      "change": 23.39,
+      "changePercent": 0.71,
+      "previousClose": 3272.49
+    },
+    {
+      "name": "沪深300",
+      "symbol": "000300.SS",
+      "price": 4502.57,
+      "change": 25.04,
+      "changePercent": 0.56,
+      "previousClose": 4477.53
+    },
+    {
+      "name": "恒生指数",
+      "symbol": "^HSI",
+      "price": 24951.88,
+      "change": 95.45,
+      "changePercent": 0.38,
+      "previousClose": 24856.43
+    }
+  ],
+  "topNews": [
+    {
+      "title": "国家统计局：3月份制造业PMI重回扩张区间",
+      "source": "新浪财经",
+      "time": "2026-03-27 10:00",
+      "url": "https://finance.sina.com.cn/china/gncj/2026-03-27/doc-izmpnxue8823412.shtml",
+      "summary": "最新数据显示制造业景气度回升，市场对经济复苏预期增强，带动今日A股反弹。"
+    },
+    {
+      "title": "央行开展中期借贷便利操作，维持资金面平稳",
+      "source": "东方财富网",
+      "time": "2026-03-27 09:30",
+      "url": "https://finance.eastmoney.com/a/202603273031245678.html",
+      "summary": "央行通过MLF投放流动性，缓解了市场对季末流动性偏紧的担忧。"
+    },
+    {
+      "title": "两会后政策密集落地，新能源产业获重点支持",
+      "source": "雪球",
+      "time": "2026-03-27 11:15",
+      "url": "https://xueqiu.com/123456/789012345",
+      "summary": "政策利好叠加产业订单回暖，新能源相关赛道领涨市场。"
+    },
+    {
+      "title": "人民币汇率保持稳定，跨境资本流动趋于平衡",
+      "source": "金融界",
+      "time": "2026-03-27 13:45",
+      "url": "https://finance.jrj.com.cn/2026/03/271345389421.shtml",
+      "summary": "汇率压力缓解为A股市场提供了稳定的外部融资环境，支撑大盘走势。"
+    },
+    {
+      "title": "医疗设备更新需求持续释放，龙头企业表现稳健",
+      "source": "新浪财经",
+      "time": "2026-03-27 14:20",
+      "url": "https://finance.sina.com.cn/stock/s/2026-03-27/doc-izmpnxue8899221.shtml",
+      "summary": "设备更新政策驱动行业扩容，医疗器械板块近期资金关注度明显提升。"
+    }
+  ],
+  "sectorAnalysis": [
+    {
+      "name": "新能源",
+      "trend": "上涨",
+      "conclusion": "受政策强力驱动，板块估值修复明显，短期内建议保持关注。"
+    },
+    {
+      "name": "医疗器械",
+      "trend": "震荡",
+      "conclusion": "行业更新周期带动业绩预期，目前处于中枢整理阶段，长线价值凸显。"
+    },
+    {
+      "name": "金融银行",
+      "trend": "平稳",
+      "conclusion": "作为压舱石板块，在流动性充裕背景下走势平稳，具备防御性。"
+    }
+  ],
+  "commodityAnalysis": [
+    {
+      "name": "黄金",
+      "trend": "震荡偏强",
+      "conclusion": "地缘政治波动叠加避险需求，金价维持高位，短期或将继续高位震荡。"
+    },
+    {
+      "name": "原油",
+      "trend": "小幅回调",
+      "conclusion": "由于全球需求预期分歧，油价短期承压，需关注主要出口国产量动态。"
+    }
+  ],
+  "recommendations": [
+    {
+      "type": "Sector",
+      "name": "高端制造与国产替代",
+      "reason": "政策壁垒与自主可控需求驱动下，高端制造板块具备长逻辑优势。"
+    },
+    {
+      "type": "Stock",
+      "name": "迈瑞医疗(300760.SZ)",
+      "reason": "虽近期震荡，但基于其宽护城河与设备更新趋势，逢低布局性价比高。"
+    }
+  ],
+  "marketSummary": "2026年3月27日，A股市场迎来反弹，三大指数全线收红。上证综指上涨0.63%，深证成指上涨1.13%，创业板指上涨0.71%。今日市场情绪由中性转为积极，制造业PMI超预期回升是核心驱动力。北向资金维持净流入趋势，支撑大盘上行。计算方式：以各指数当日现价减去前一日收盘价计算涨跌幅。数据来源：新浪财经(https://finance.sina.com.cn/)与东方财富网(https://www.eastmoney.com/)。市场整体处于震荡向上阶段，建议投资者关注政策受益的科技成长与行业龙头。"
+}

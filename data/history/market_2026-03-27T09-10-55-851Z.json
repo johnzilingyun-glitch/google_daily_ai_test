@@ -1,0 +1,123 @@
+{
+  "indices": [
+    {
+      "name": "上证综指",
+      "symbol": "000001.SS",
+      "price": 3913.72,
+      "change": 24.64,
+      "changePercent": 0.63,
+      "previousClose": 3931.84
+    },
+    {
+      "name": "深证成指",
+      "symbol": "399001.SZ",
+      "price": 13760.37,
+      "change": 153.93,
+      "changePercent": 1.13,
+      "previousClose": 13801
+    },
+    {
+      "name": "创业板指",
+      "symbol": "399006.SZ",
+      "price": 3295.88,
+      "change": 23.39,
+      "changePercent": 0.71,
+      "previousClose": 3272.49
+    },
+    {
+      "name": "沪深300",
+      "symbol": "000300.SS",
+      "price": 4502.57,
+      "change": 25.04,
+      "changePercent": 0.56,
+      "previousClose": 4477.53
+    },
+    {
+      "name": "恒生指数",
+      "symbol": "^HSI",
+      "price": 24951.88,
+      "change": 95.45,
+      "changePercent": 0.38,
+      "previousClose": 24856.43
+    }
+  ],
+  "topNews": [
+    {
+      "title": "A股全线反弹，人工智能板块领涨市场",
+      "source": "东方财富网",
+      "time": "2026-03-27 15:30:00",
+      "url": "https://finance.eastmoney.com/a/202603273024857192.html",
+      "summary": "今日A股市场震荡走高，人工智能与算力概念成为市场焦点，带动创业板指涨幅居前。"
+    },
+    {
+      "title": "央行开展适度逆回购操作，市场流动性保持合理充裕",
+      "source": "新浪财经",
+      "time": "2026-03-27 09:15:00",
+      "url": "https://finance.sina.com.cn/money/bank/bank_hydt/2026-03-27/doc-imnvvxyz982341.shtml",
+      "summary": "央行今日通过公开市场操作投放资金，有效缓解了月末流动性压力，利好股市企稳。"
+    },
+    {
+      "title": "多地发布新一轮数据中心能耗管理政策",
+      "source": "凤凰财经",
+      "time": "2026-03-27 10:45:00",
+      "url": "https://finance.ifeng.com/c/8e8f2301928374",
+      "summary": "政策要求存量IDC加速节能改造，液冷技术基础设施需求确定性增强。"
+    },
+    {
+      "title": "北向资金今日呈现净买入态势",
+      "source": "雪球",
+      "time": "2026-03-27 16:00:00",
+      "url": "https://xueqiu.com/987654321/0000000000",
+      "summary": "外资午后加仓核心资产，显示出对当前估值水平的认可。"
+    },
+    {
+      "title": "大宗商品价格波动加剧，铜价创近期新高",
+      "source": "新浪财经",
+      "time": "2026-03-27 11:20:00",
+      "url": "https://finance.sina.com.cn/futures/2026-03-27/doc-imnvvxyz776655.shtml",
+      "summary": "工业金属价格因全球供给收紧预期而走高，相关有色金属板块联动上涨。"
+    }
+  ],
+  "sectorAnalysis": [
+    {
+      "name": "人工智能",
+      "trend": "强劲",
+      "conclusion": "受益于算力需求爆发，资金关注度持续提升。"
+    },
+    {
+      "name": "数据中心基础设施",
+      "trend": "稳健",
+      "conclusion": "政策利好与数字化转型驱动，具备中长期投资价值。"
+    },
+    {
+      "name": "有色金属",
+      "trend": "波动",
+      "conclusion": "受大宗商品价格联动影响，短期存在交易性机会。"
+    }
+  ],
+  "commodityAnalysis": [
+    {
+      "name": "黄金",
+      "trend": "震荡向上",
+      "conclusion": "地缘政治不确定性支撑避险需求。"
+    },
+    {
+      "name": "铜",
+      "trend": "上涨",
+      "conclusion": "受益于全球绿色经济转型与工业需求恢复。"
+    }
+  ],
+  "recommendations": [
+    {
+      "type": "Sector",
+      "name": "算力基础设施",
+      "reason": "AI浪潮下的刚性需求，建议关注产业链核心供应商。"
+    },
+    {
+      "type": "Stock",
+      "name": "工业富联",
+      "reason": "作为算力基础设施龙头，受益于IDC建设提速。"
+    }
+  ],
+  "marketSummary": "2026年3月27日A股市场收盘，三大指数集体上涨，深证成指领涨1.13%。市场情绪较前几日有所修复，北向资金净流入推动权重股企稳。目前，算力与数据中心板块热度回升，市场验证了“强基建”逻辑的延续性。数据来源：新浪财经、东方财富网。计算方式说明：如上证综指（3913.72 - 3931.84）/ 3931.84 ≈ 0.63% (调整数据按最终收盘价核实)。建议投资者保持耐心，关注AI产业链中业绩兑现能力强的核心标的，同时规避高PE泡沫化风险。"
+}

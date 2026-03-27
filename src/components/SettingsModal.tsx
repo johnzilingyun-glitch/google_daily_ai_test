@@ -3,6 +3,8 @@ import { X, Settings, ShieldCheck, Cpu } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { useConfigStore } from '../stores/useConfigStore';
 import { useUIStore } from '../stores/useUIStore';
+import { fetchAvailableModelsList } from '../services/geminiService';
+import { useState } from 'react';
 
 const AVAILABLE_MODELS = [
   { id: 'gemini-3-flash-preview', name: 'Gemini 3 Flash (Fast & Balanced)', description: 'Best for general analysis and quick summaries.' },
@@ -11,8 +13,30 @@ const AVAILABLE_MODELS = [
 ];
 
 export function SettingsModal() {
-  const { config, setConfig } = useConfigStore();
+  const { config, setConfig, tokenUsage, availableModels, setAvailableModels } = useConfigStore();
   const { isSettingsOpen, setIsSettingsOpen } = useUIStore();
+  const [isFetchingModels, setIsFetchingModels] = useState(false);
+  const [fetchMessage, setFetchMessage] = useState<{type: 'error' | 'success', text: string} | null>(null);
+
+  const displayModels = availableModels.length > 0 ? availableModels : AVAILABLE_MODELS;
+
+  const handleFetchModels = async () => {
+    setIsFetchingModels(true);
+    setFetchMessage(null);
+    try {
+      const models = await fetchAvailableModelsList(config);
+      if (models.length > 0) {
+        setAvailableModels(models);
+        setFetchMessage({ type: 'success', text: `成功接入：找到 ${models.length} 个当前配额可用的模型。` });
+      } else {
+        setFetchMessage({ type: 'error', text: '未能提取到可用模型。' });
+      }
+    } catch (e: any) {
+      setFetchMessage({ type: 'error', text: e.message || '查询模型失败' });
+    } finally {
+      setIsFetchingModels(false);
+    }
+  };
 
   const handleOpenKeySelector = async () => {
     const aiStudio = (window as any).aistudio;
@@ -70,15 +94,26 @@ export function SettingsModal() {
                   <span>API 密钥管理</span>
                 </div>
                 <div className="rounded-2xl border border-white/5 bg-white/5 p-4">
-                  <p className="text-sm text-white/70 leading-relaxed">
-                    为了安全起见，我们使用平台提供的密钥管理系统。您可以点击下方按钮来选择或更新您的 Gemini API Key。
+                  <p className="text-sm text-white/70 leading-relaxed mb-4">
+                    自定义配置您的专属 Gemini API Key。考虑到您的数据安全，密钥仅保存在本地浏览器缓存中，不会被上传。
                   </p>
-                  <button
-                    onClick={handleOpenKeySelector}
-                    className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl bg-blue-600 px-4 py-3 text-sm font-medium text-white transition-all hover:bg-blue-500 active:scale-[0.98]"
-                  >
-                    配置 API Key
-                  </button>
+                  <div className="space-y-3">
+                    <input
+                      type="password"
+                      placeholder="AIzaSy... (输入您的 API Key)"
+                      value={config.apiKey || ''}
+                      onChange={(e) => setConfig({ ...config, apiKey: e.target.value })}
+                      className="w-full rounded-xl border border-white/10 bg-black/50 px-4 py-3 text-sm text-white placeholder-white/30 focus:border-blue-500/50 focus:outline-none focus:ring-1 focus:ring-blue-500/50 transition-all font-mono"
+                    />
+                    {(window as any).aistudio?.openSelectKey && (
+                      <button
+                        onClick={handleOpenKeySelector}
+                        className="flex w-full items-center justify-center gap-2 rounded-xl bg-blue-600/20 border border-blue-500/30 px-4 py-2 text-sm font-medium text-blue-400 transition-all hover:bg-blue-600/30 active:scale-[0.98]"
+                      >
+                        从 Google AI Studio 同步配置
+                      </button>
+                    )}
+                  </div>
                   <p className="mt-3 text-[10px] text-center text-white/30">
                     提示：请确保选择一个已启用计费的 Google Cloud 项目。
                     <a href="https://ai.google.dev/gemini-api/docs/billing" target="_blank" rel="noopener noreferrer" className="ml-1 text-blue-400 hover:underline">
@@ -90,12 +125,27 @@ export function SettingsModal() {
 
               {/* Model Selection Section */}
               <section className="space-y-4">
-                <div className="flex items-center gap-2 text-sm font-medium text-white/60">
-                  <Cpu size={16} />
-                  <span>模型选择</span>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2 text-sm font-medium text-white/60">
+                    <Cpu size={16} />
+                    <span>模型选择</span>
+                  </div>
+                  <button 
+                    onClick={handleFetchModels}
+                    disabled={isFetchingModels}
+                    className="text-xs bg-white/10 hover:bg-white/20 px-3 py-1.5 rounded-lg text-white transition-colors"
+                  >
+                    {isFetchingModels ? '查询中...' : '查询可用模型'}
+                  </button>
                 </div>
-                <div className="grid gap-3">
-                  {AVAILABLE_MODELS.map((model) => (
+                {fetchMessage && (
+                  <p className={`text-xs ${fetchMessage.type === 'error' ? 'text-rose-400' : 'text-emerald-400'}`}>
+                    {fetchMessage.text}
+                  </p>
+                )}
+                
+                <div className="grid gap-3 max-h-64 overflow-y-auto pr-2 custom-scrollbar">
+                  {displayModels.map((model) => (
                     <button
                       key={model.id}
                       onClick={() => setConfig({ ...config, model: model.id })}
@@ -114,7 +164,7 @@ export function SettingsModal() {
                         )}
                       </div>
                       <p className="text-xs text-white/40 leading-relaxed">
-                        {model.description}
+                        {model.description || model.id}
                       </p>
                     </button>
                   ))}

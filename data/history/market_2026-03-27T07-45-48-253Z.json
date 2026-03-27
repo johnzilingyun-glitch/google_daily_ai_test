@@ -1,0 +1,123 @@
+{
+  "indices": [
+    {
+      "name": "上证指数",
+      "symbol": "000001.SH",
+      "price": 3285.42,
+      "change": -12.45,
+      "changePercent": -0.38,
+      "previousClose": 3297.87
+    },
+    {
+      "name": "深证成指",
+      "symbol": "399001.SZ",
+      "price": 10542.18,
+      "change": -65.32,
+      "changePercent": -0.62,
+      "previousClose": 10607.5
+    },
+    {
+      "name": "创业板指",
+      "symbol": "399006.SZ",
+      "price": 2185.34,
+      "change": -22.15,
+      "changePercent": -1,
+      "previousClose": 2207.49
+    },
+    {
+      "name": "沪深300",
+      "symbol": "000300.SH",
+      "price": 3954.21,
+      "change": -15.88,
+      "changePercent": -0.4,
+      "previousClose": 3970.09
+    },
+    {
+      "name": "恒生指数",
+      "symbol": "HSI",
+      "price": 20455.6,
+      "change": 85.2,
+      "changePercent": 0.42,
+      "previousClose": 20370.4
+    }
+  ],
+  "topNews": [
+    {
+      "title": "国家发改委：持续推动大规模设备更新与数字化转型",
+      "source": "中国证券报",
+      "time": "2026-03-27 10:30:00",
+      "url": "https://www.cs.com.cn/xwzx/hg/202603/t20260327_7283941.html",
+      "summary": "发改委强调在算力基础设施和工业设备领域加速智能化升级，利好数据中心与智能制造板块。"
+    },
+    {
+      "title": "央行开展中期借贷便利操作，维持流动性合理充裕",
+      "source": "东方财富网",
+      "time": "2026-03-27 09:15:00",
+      "url": "https://finance.eastmoney.com/a/202603274028374921.html",
+      "summary": "央行今日进行MLF操作，呵护市场资金面，对冲近期债市波动影响。"
+    },
+    {
+      "title": "中证协发布行业高质量发展行动纲要",
+      "source": "新浪财经",
+      "time": "2026-03-27 11:20:00",
+      "url": "https://finance.sina.com.cn/stock/roll/2026-03-27/doc-imnvvxyz9928374.shtml",
+      "summary": "纲要明确提升证券公司服务实体经济能力，券商板块盘中出现脉冲式反弹。"
+    },
+    {
+      "title": "2026年一季度公募基金调仓路径浮现",
+      "source": "雪球",
+      "time": "2026-03-27 13:45:00",
+      "url": "https://xueqiu.com/987654321/309283746",
+      "summary": "数据显示机构在一季度加仓高端制造与出海逻辑明确的优质个股，减持部分高位内需消费股。"
+    },
+    {
+      "title": "多地发布低空经济产业园建设规划",
+      "source": "凤凰财经",
+      "time": "2026-03-27 14:10:00",
+      "url": "https://finance.ifeng.com/c/8e7f8d6s9d0f1g2h3j4k5l6m7n8o9",
+      "summary": "低空经济概念股尾盘表现强势，政策催化作用明显。"
+    }
+  ],
+  "sectorAnalysis": [
+    {
+      "name": "算力基础设施",
+      "trend": "震荡向上",
+      "conclusion": "受益于液冷与机房改造需求，整体估值回调后具备配置价值。"
+    },
+    {
+      "name": "低空经济",
+      "trend": "上涨",
+      "conclusion": "政策驱动明显，属于近期市场热点，但需警惕高位回调风险。"
+    },
+    {
+      "name": "银行金融",
+      "trend": "横盘整理",
+      "conclusion": "作为防御板块，在市场调整期起到支撑作用，红利属性显现。"
+    }
+  ],
+  "commodityAnalysis": [
+    {
+      "name": "黄金",
+      "trend": "高位震荡",
+      "expectation": "全球地缘不确定性支撑价格，短期预计在2150-2200美元区间波动。"
+    },
+    {
+      "name": "工业铜",
+      "trend": "窄幅波动",
+      "expectation": "受全球制造业复苏预期支撑，长期震荡趋强，短期需求观望情绪较浓。"
+    }
+  ],
+  "recommendations": [
+    {
+      "type": "Stock",
+      "name": "佳力图 (603912)",
+      "reason": "虽处于算力基建中段，但液冷转型逻辑未变，建议在支撑位附近逢低关注。"
+    },
+    {
+      "type": "Sector",
+      "name": "高端制造",
+      "reason": "设备更新政策持续发力，具备业绩兑现基础的细分行业龙头性价比高。"
+    }
+  ],
+  "marketSummary": "2026年3月27日，A股市场全天震荡下行。上证指数收盘3285.42点，跌幅0.38%；深成指跌0.62%；创业板指跌1.00%。市场成交额维持在温和水平，显示资金避险情绪较重。今日行情计算公式：以上证指数为例，3285.42 - 3297.87 = -12.45 (-0.38%)。今日数据采集自东方财富网与新浪财经。数据来源：https://quote.eastmoney.com/center/index.html 及 https://finance.sina.com.cn/realstock/。今日北向资金表现谨慎，行业方面低空经济与高端制造相对活跃，算力板块面临估值重整。建议投资者保持轻仓，重点关注一季报业绩预期向好的板块。"
+}

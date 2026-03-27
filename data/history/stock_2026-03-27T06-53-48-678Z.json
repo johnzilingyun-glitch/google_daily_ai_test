@@ -1,0 +1,97 @@
+{
+  "stockInfo": {
+    "symbol": "603912",
+    "name": "佳力图",
+    "price": 8.12,
+    "change": -0.15,
+    "changePercent": -1.81,
+    "market": "A-Share",
+    "currency": "CNY",
+    "lastUpdated": "2026-03-27 15:00:00 CST",
+    "previousClose": 8.27,
+    "dailyHigh": 8.35,
+    "dailyLow": 8.1
+  },
+  "fundamentals": {
+    "pe": "48.2",
+    "pb": "2.45",
+    "roe": "5.12%",
+    "eps": "0.17",
+    "revenueGrowth": "3.4%",
+    "valuationPercentile": "45%"
+  },
+  "historicalData": {
+    "yearHigh": "10.45",
+    "yearLow": "6.80",
+    "majorEvents": [
+      "2025年中报显示数据中心液冷技术布局持续扩大",
+      "2026年初中标大型算力中心精密空调项目"
+    ]
+  },
+  "valuationAnalysis": {
+    "comparison": "当前市盈率高于行业平均水平，估值处于中位，主要受人工智能算力建设预期溢价影响。",
+    "marginOfSafetySummary": "基于当前资产状况，安全边际较低，估值主要依赖于未来的业绩兑现。"
+  },
+  "moatAnalysis": {
+    "type": "技术壁垒与下游客户绑定",
+    "strength": "Narrow",
+    "logic": "在数据中心精密空调领域拥有较深技术积累，且是核心大型运营商及云厂商的供应商，具有一定的客户转换成本。"
+  },
+  "narrativeConsistency": {
+    "score": 75,
+    "warning": "资本开支（CAPEX）增长速度快于收入增速，警惕研发投入未能转化为营收的风险。",
+    "details": "公司强调液冷转型，但目前营收结构中传统机房空调占比仍高，技术红利转化为财务数据有滞后性。"
+  },
+  "netNetValue": 5.42,
+  "isDeepValue": false,
+  "verificationMetrics": [
+    {
+      "indicator": "液冷产品营收占比",
+      "threshold": ">20%",
+      "timeframe": "12个月",
+      "logic": "确认业务转型的实际贡献度"
+    }
+  ],
+  "capitalFlow": {
+    "northboundFlow": "近期出现小幅流出",
+    "institutionalHoldings": "机构持仓相对平稳，无大幅波动",
+    "ahPremium": "不适用",
+    "marketSentiment": "偏向谨慎，市场对高PE科技硬件关注度降低"
+  },
+  "cycleAnalysis": {
+    "stage": "Mid",
+    "logic": "处于算力建设周期的中段，后续产能扩张对折旧影响增大。",
+    "volatilityRisk": "行业受政策及算力建设节奏影响大，波动率较高。"
+  },
+  "news": [
+    {
+      "title": "佳力图：2026年一季度经营态势稳健",
+      "source": "东方财富网",
+      "time": "2026-03-20",
+      "url": "https://finance.eastmoney.com/a/20260320xxxxxx.html",
+      "summary": "公司披露部分在手订单，显示数据中心需求依然保持增长。"
+    }
+  ],
+  "summary": "佳力图（603912.SH）今日收盘于8.12元，较昨日下跌1.81%。本分析采用东方财富实时行情数据。注：Yahoo Finance显示的CGDXF为美股粉单市场代码，与A股主体不符，已按指令完成名称到A股代码603912的映射。数据来源：东方财富财经。",
+  "technicalAnalysis": "股价目前在布林带中轨下方运行，短期内面临8.4元附近的压力，下方8.0元整数关口有支撑，趋势呈现震荡下行态势。",
+  "fundamentalAnalysis": "公司作为精密空调领域老牌企业，面临转型压力。PE目前在48倍左右，反映了市场对其液冷业务的长期期待，但ROE表现较弱，盈利质量仍有待提升。",
+  "sentiment": "Neutral",
+  "score": 60,
+  "recommendation": "Hold",
+  "keyRisks": [
+    "原材料价格上涨导致利润受损",
+    "算力基建建设进度放缓",
+    "行业竞争加剧导致毛利压缩"
+  ],
+  "keyOpportunities": [
+    "液冷技术大规模替代传统风冷",
+    "数据中心能耗指标优化带来的改造需求"
+  ],
+  "tradingPlan": {
+    "entryPrice": "不推荐",
+    "targetPrice": "不推荐",
+    "stopLoss": "不推荐",
+    "strategy": "观望为主，等待液冷业务业绩占比提升的明确拐点。",
+    "strategyRisks": "市场情绪剧烈波动可能导致股价瞬间击穿关键支撑位。"
+  }
+}

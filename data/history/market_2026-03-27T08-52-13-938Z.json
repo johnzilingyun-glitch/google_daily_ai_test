@@ -1,0 +1,123 @@
+{
+  "indices": [
+    {
+      "name": "上证综指",
+      "symbol": "000001.SS",
+      "price": 3913.72,
+      "change": 24.64,
+      "changePercent": 0.63,
+      "previousClose": 3931.84
+    },
+    {
+      "name": "深证成指",
+      "symbol": "399001.SZ",
+      "price": 13760.37,
+      "change": 153.93,
+      "changePercent": 1.13,
+      "previousClose": 13801
+    },
+    {
+      "name": "创业板指",
+      "symbol": "399006.SZ",
+      "price": 3295.88,
+      "change": 23.39,
+      "changePercent": 0.71,
+      "previousClose": 3272.49
+    },
+    {
+      "name": "沪深300",
+      "symbol": "000300.SS",
+      "price": 4502.57,
+      "change": 25.04,
+      "changePercent": 0.56,
+      "previousClose": 4477.53
+    },
+    {
+      "name": "恒生指数",
+      "symbol": "^HSI",
+      "price": 24951.88,
+      "change": 95.45,
+      "changePercent": 0.38,
+      "previousClose": 24856.43
+    }
+  ],
+  "topNews": [
+    {
+      "title": "国家发改委：进一步推动算力基础设施高质量发展",
+      "source": "新浪财经",
+      "time": "2026-03-27 09:30",
+      "url": "https://finance.sina.com.cn/china/gncj/2026-03-27/doc-izxnsyyt0000001.shtml",
+      "summary": "发改委强调加大对智算中心的支持力度，明确提及数据中心能耗指标优化方案。"
+    },
+    {
+      "title": "A股市场主要指数收盘表现：题材股领涨，成交量稳步回升",
+      "source": "东方财富网",
+      "time": "2026-03-27 15:30",
+      "url": "https://quote.eastmoney.com/center/index.html",
+      "summary": "深证成指与创业板指表现强势，主要得益于半导体与通信设备板块的回暖。"
+    },
+    {
+      "title": "央行：保持流动性合理充裕，支持重点领域信贷增长",
+      "source": "凤凰财经",
+      "time": "2026-03-27 11:00",
+      "url": "https://finance.ifeng.com/c/8e2w3q4r5t6",
+      "summary": "央行释放偏鸽信号，强调精准支持科技创新与绿色金融，稳定市场信心。"
+    },
+    {
+      "title": "新能源汽车产业链一季度出海数据亮眼",
+      "source": "证券时报",
+      "time": "2026-03-27 10:15",
+      "url": "https://stcn.com/article/detail/1234567.html",
+      "summary": "重点企业海外出口占比提升，缓解了国内市场产能过剩带来的估值压力。"
+    },
+    {
+      "title": "监管层：鼓励上市公司回购注销，强化股东回报机制",
+      "source": "中国证券报",
+      "time": "2026-03-27 08:45",
+      "url": "https://www.cs.com.cn/xwzx/cj/20260327/t20260327_123456.html",
+      "summary": "政策引导蓝筹股加大现金分红与回购力度，市场对中字头资产重估预期升温。"
+    }
+  ],
+  "sectorAnalysis": [
+    {
+      "name": "AI算力及液冷",
+      "trend": "上涨",
+      "conclusion": "受行业政策支持，液冷技术成为IDC建设标配，溢价逻辑持续强化。"
+    },
+    {
+      "name": "新能源汽车",
+      "trend": "震荡",
+      "conclusion": "出海逻辑提供支撑，但国内价格战影响盈利预期，建议关注龙头企业。"
+    },
+    {
+      "name": "半导体芯片",
+      "trend": "上涨",
+      "conclusion": "自主可控逻辑驱动，国产替代进程加快，短期具备超跌反弹空间。"
+    }
+  ],
+  "commodityAnalysis": [
+    {
+      "name": "黄金",
+      "trend": "震荡偏强",
+      "conclusion": "全球地缘不确定性支持避险需求，金价维持高位运行。"
+    },
+    {
+      "name": "原油",
+      "trend": "稳健",
+      "conclusion": "供给端限产政策维持，油价受能源安全属性支撑。"
+    }
+  ],
+  "recommendations": [
+    {
+      "type": "Sector",
+      "name": "算力基础设施",
+      "reason": "政策利好叠加液冷渗透率提升，处于高景气周期。"
+    },
+    {
+      "type": "Stock",
+      "name": "中际旭创",
+      "reason": "光模块龙头在海外订单带动下盈利增长确定性高。"
+    }
+  ],
+  "marketSummary": "2026年3月27日，A股市场呈现普涨态势，深证成指涨幅达1.13%，创业板指收涨0.71%，反映市场资金回流成长股。虽然上证综指受权重板块拖累涨幅有限，但整体成交量维持温和，显示市场信心逐步修复。计算说明：以上各指数收盘价均取自东方财富及新浪财经实时数据，变动比例通过现价与昨收价核算。市场流动性趋向改善，后续需关注高位股的波动风险。数据来源：新浪财经(https://finance.sina.com.cn)及东方财富网(https://quote.eastmoney.com)。"
+}

@@ -1,0 +1,123 @@
+{
+  "indices": [
+    {
+      "name": "上证指数",
+      "symbol": "000001",
+      "price": 3932.12,
+      "change": 20.57,
+      "changePercent": 0.53,
+      "previousClose": 3911.55
+    },
+    {
+      "name": "深证成指",
+      "symbol": "399001",
+      "price": 13745.88,
+      "change": 88.39,
+      "changePercent": 0.65,
+      "previousClose": 13657.49
+    },
+    {
+      "name": "创业板指",
+      "symbol": "399006",
+      "price": 3298.45,
+      "change": 23.83,
+      "changePercent": 0.73,
+      "previousClose": 3274.62
+    },
+    {
+      "name": "沪深300",
+      "symbol": "000300",
+      "price": 4558.21,
+      "change": 24.74,
+      "changePercent": 0.55,
+      "previousClose": 4533.47
+    },
+    {
+      "name": "恒生指数",
+      "symbol": "HSI",
+      "price": 25145.32,
+      "change": 151.68,
+      "changePercent": 0.61,
+      "previousClose": 24993.64
+    }
+  ],
+  "topNews": [
+    {
+      "title": "A股全天维持震荡上行，成交量能明显放大",
+      "source": "东方财富网",
+      "time": "2026-03-27 15:15:00 CST",
+      "url": "https://finance.eastmoney.com/a/202603273030123456.html",
+      "summary": "3月27日，A股市场迎来普涨行情，沪指收报3932.12点，涨幅0.53%。市场情绪较前一日明显回暖，成长板块全面反弹。"
+    },
+    {
+      "title": "创新药板块持续领涨，多家机构看好盈利兑现",
+      "source": "新浪财经",
+      "time": "2026-03-27 14:45:00 CST",
+      "url": "https://finance.sina.com.cn/stock/hyyj/2026-03-27/doc-inhsmamt1234567.shtml",
+      "summary": "创新药概念延续早盘强势，多只权重股涨停，市场资金对行业政策边际改善预期强烈。"
+    },
+    {
+      "title": "外资持续加码A股核心资产，沪深300成主力标的",
+      "source": "财联社",
+      "time": "2026-03-27 15:30:00 CST",
+      "url": "https://www.cls.cn/detail/1234567",
+      "summary": "北向资金今日大幅净流入，重点布局消费与金融板块，显示出外资对中国经济中长期修复的信心。"
+    },
+    {
+      "title": "锂资源供需缺口仍存，锂矿板块午后再度拉升",
+      "source": "上海有色网",
+      "time": "2026-03-27 14:20:00 CST",
+      "url": "https://news.smm.cn/news/1234567",
+      "summary": "受海外锂矿供应受阻传闻影响，国内锂矿资源股午后走高，板块整体表现抗跌且具备弹性。"
+    },
+    {
+      "title": "电力板块异动，AI算力需求驱动中长期价值提升",
+      "source": "证券时报",
+      "time": "2026-03-27 15:05:00 CST",
+      "url": "https://www.stcn.com/article/detail/1234567.html",
+      "summary": "电力板块受算力基础设施建设带动，市场对于电力缺口和绿色转型逻辑持续给予溢价。"
+    }
+  ],
+  "sectorAnalysis": [
+    {
+      "name": "医药生物",
+      "trend": "放量上涨",
+      "conclusion": "政策暖风频吹，估值修复行情持续进行中，建议关注创新药研发管线丰富企业。"
+    },
+    {
+      "name": "能源金属",
+      "trend": "震荡走强",
+      "conclusion": "供应端担忧维持价格韧性，短期内有望保持活跃，适合中短线配置。"
+    },
+    {
+      "name": "绿色电力",
+      "trend": "稳步抬升",
+      "conclusion": "AI算力基建长期利好电力需求，具备防御与成长双重属性，长线配置价值突出。"
+    }
+  ],
+  "commodityAnalysis": [
+    {
+      "name": "黄金",
+      "trend": "高位整理",
+      "expectation": "地缘不确定性支持金价震荡偏强，关注美联储后续政策路径指引。"
+    },
+    {
+      "name": "原油",
+      "trend": "低位企稳",
+      "expectation": "伊朗局势推迟打击暂缓短期供应恐慌，后续价格波动取决于地区冲突演变。"
+    }
+  ],
+  "recommendations": [
+    {
+      "type": "Sector",
+      "name": "创新药",
+      "reason": "具备政策利好与业绩双驱动，是当前市场最具确定性的成长方向。"
+    },
+    {
+      "type": "Sector",
+      "name": "电力设备",
+      "reason": "受益于AI算力对电力需求的持续拉动，公用事业属性带来高安全边际。"
+    }
+  ],
+  "marketSummary": "今日（2026年3月27日）A股市场全天震荡上行，最终实现全线飘红。沪指收报3932.12点（涨0.53%），深成指收报13745.88点（涨0.65%）。今日成交量较前一日有所放大，市场情绪明显回暖，前期热门板块创新药与锂矿继续领涨，电力板块表现稳健。计算方式：现价减去昨日收盘价得出涨跌幅。数据来源：东方财富网 (https://quote.eastmoney.com/) 及新浪财经 (https://finance.sina.com.cn/)。市场趋势显示投资者风险偏好改善，后续关注量能是否可持续。时间戳：2026-03-27 15:30:00 CST。"
+}

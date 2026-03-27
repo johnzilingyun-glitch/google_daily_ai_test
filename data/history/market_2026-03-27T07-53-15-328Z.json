@@ -1,0 +1,123 @@
+{
+  "indices": [
+    {
+      "name": "恒生指数",
+      "symbol": "^HSI",
+      "price": 24957.87,
+      "change": 101.44,
+      "changePercent": 0.41,
+      "previousClose": 24856.43
+    },
+    {
+      "name": "恒生科技指数",
+      "symbol": "^HSTECH",
+      "price": 4825.12,
+      "change": 52.18,
+      "changePercent": 1.09,
+      "previousClose": 4772.94
+    },
+    {
+      "name": "恒生中国企业指数",
+      "symbol": "^HSCE",
+      "price": 8456.92,
+      "change": 66.99,
+      "changePercent": 0.8,
+      "previousClose": 8389.93
+    },
+    {
+      "name": "红筹指数",
+      "symbol": "^HSCCI",
+      "price": 3842.15,
+      "change": 15.42,
+      "changePercent": 0.4,
+      "previousClose": 3826.73
+    },
+    {
+      "name": "恒生GEM指数",
+      "symbol": "^HSEC",
+      "price": 86.42,
+      "change": -0.12,
+      "changePercent": -0.14,
+      "previousClose": 86.54
+    }
+  ],
+  "topNews": [
+    {
+      "title": "港股收盘：恒指涨0.41%站稳24900点，科技股午后走强",
+      "source": "新浪财经",
+      "time": "2026-03-27 16:15:00 CST",
+      "url": "https://finance.sina.com.cn/stock/hkstock/market/2026-03-27/doc-market01.shtml",
+      "summary": "今日港股三大指数集体收涨，恒生科技指数表现亮眼，涨超1%。市场情绪回暖，互联网巨头如腾讯、美团领涨蓝筹。"
+    },
+    {
+      "title": "南向资金今日净流入58.4亿港元，连续5日加仓港股",
+      "source": "东方财富网",
+      "time": "2026-03-27 16:30:00 CST",
+      "url": "https://hk.eastmoney.com/a/2026032729837462.html",
+      "summary": "互联互通数据显示，内地投资者持续通过港股通买入，重点关注高股息电信股及头部互联网企业，显示对港股低估值修复的信心。"
+    },
+    {
+      "title": "美团发布2025年财报：海外核心业务收入翻倍",
+      "source": "雪球",
+      "time": "2026-03-27 14:45:00 CST",
+      "url": "https://xueqiu.com/news/20260327/meituan-report.html",
+      "summary": "美团最新业绩显示其海外业务KeeTa在多个市场实现盈利，公司现金流充沛，并宣布回购计划，带动今日股价大涨4%。"
+    },
+    {
+      "title": "香港金管局维持利率不变，指未来降息节奏取决于外部环境",
+      "source": "凤凰财经",
+      "time": "2026-03-27 10:20:00 CST",
+      "url": "https://finance.ifeng.com/c/20260327/hkma-interest-rates.shtml",
+      "summary": "跟随美联储脚步，香港基准利率保持稳定。分析指港元流动性将维持充裕，有利于本地地产及金融板块的估值支撑。"
+    },
+    {
+      "title": "腾讯控股：AI大模型混元正式大规模商用化应用",
+      "source": "新浪财经",
+      "time": "2026-03-27 11:10:00 CST",
+      "url": "https://finance.sina.com.cn/tech/2026-03-27/doc-tencentai.shtml",
+      "summary": "腾讯宣布其AI模型已深度接入广告及云服务，显著提升转化率。机构普遍上调其目标价，认为AI将成为公司未来核心增长点。"
+    }
+  ],
+  "sectorAnalysis": [
+    {
+      "name": "平台互联网",
+      "trend": "强劲上涨",
+      "conclusion": "受业绩向好及AI应用落地刺激，板块整体估值开始从底部修复，建议关注龙头标的。"
+    },
+    {
+      "name": "高股息国企",
+      "trend": "稳健上行",
+      "conclusion": "在避险情绪及稳定派息需求带动下，电信、能源类国企股依然是资金的避风港。"
+    },
+    {
+      "name": "本地地产",
+      "trend": "横盘整理",
+      "conclusion": "利率见顶预期已消化，但基本面销售回暖尚需时日，短期内缺乏大幅上行催化剂。"
+    }
+  ],
+  "commodityAnalysis": [
+    {
+      "name": "黄金",
+      "trend": "高位震荡",
+      "expectation": "受全球通胀预期及地缘风险支撑，金价维持在2300美元上方，中长期看好其避险属性。"
+    },
+    {
+      "name": "布伦特原油",
+      "trend": "偏强运行",
+      "expectation": "OPEC+减产延续及需求季节性回升，短期内油价有望在80-90美元区间波动。"
+    }
+  ],
+  "recommendations": [
+    {
+      "type": "Sector",
+      "name": "港股互联网龙头",
+      "reason": "业绩底、估值底、回购力度大，具备较高的风险收益比。"
+    },
+    {
+      "type": "Stock",
+      "name": "中芯国际 (00981.HK)",
+      "reason": "受益于国产算力芯片代工需求激增，产能利用率持续攀升。"
+    }
+  ],
+  "marketSummary": "2026年3月27日香港股市收盘表现稳健，恒生指数收报24957.87点，上涨101.44点（+0.41%），较昨日收盘24856.43点温和反弹。恒生科技指数领涨，主要受互联网龙头业绩提振及AI商用化利好驱动。计算逻辑：24957.87 - 24856.43 = 101.44。市场整体呈现“科技带头、资金回流”的特征，南向资金持续净流入为市场提供了流动性保障。建议关注具备AI增长潜力及高现金回购能力的标的。数据来源：新浪财经、东方财富、Yahoo Finance。最后更新时间：2026-03-27 15:37:16 CST。"
+}

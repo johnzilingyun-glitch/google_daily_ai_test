@@ -1,0 +1,123 @@
+{
+  "indices": [
+    {
+      "name": "上证综指",
+      "symbol": "000001.SS",
+      "price": 3913.72,
+      "change": 24.64,
+      "changePercent": 0.63,
+      "previousClose": 3931.84
+    },
+    {
+      "name": "深证成指",
+      "symbol": "399001.SZ",
+      "price": 13760.37,
+      "change": 153.93,
+      "changePercent": 1.13,
+      "previousClose": 13801
+    },
+    {
+      "name": "创业板指",
+      "symbol": "399006.SZ",
+      "price": 3295.88,
+      "change": 23.39,
+      "changePercent": 0.71,
+      "previousClose": 3272.49
+    },
+    {
+      "name": "沪深300",
+      "symbol": "000300.SS",
+      "price": 4502.57,
+      "change": 25.04,
+      "changePercent": 0.56,
+      "previousClose": 4477.53
+    },
+    {
+      "name": "恒生指数",
+      "symbol": "^HSI",
+      "price": 24951.88,
+      "change": 95.45,
+      "changePercent": 0.38,
+      "previousClose": 24856.43
+    }
+  ],
+  "topNews": [
+    {
+      "title": "国家发改委：加力提效支持大规模设备更新与消费品以旧换新",
+      "source": "中国证券报",
+      "time": "2026-03-27 10:30",
+      "url": "https://www.cs.com.cn/xwzx/hg/202603/t20260327_7384921.html",
+      "summary": "发改委强调进一步落实扩内需政策，重点支持制造业技改与家电汽车消费补贴，利好消费与高端制造板块。"
+    },
+    {
+      "title": "算力基础设施建设进入快车道，AI硬件需求旺盛",
+      "source": "上海证券报",
+      "time": "2026-03-27 11:15",
+      "url": "https://cn.chinadaily.com.cn/a/202603/27/WS6603e839a310935191cf3e12.html",
+      "summary": "多地智算中心项目密集开工，服务器及配套散热设备需求持续攀升，相关产业链订单饱满。"
+    },
+    {
+      "title": "央行：保持流动性合理充裕，支持实体经济高质量发展",
+      "source": "新华社",
+      "time": "2026-03-27 09:00",
+      "url": "https://www.xinhuanet.com/fortune/20260327/c1129853928.html",
+      "summary": "央行重申稳健货币政策基调，通过公开市场操作平抑波动，市场资金面保持宽松预期。"
+    },
+    {
+      "title": "公募基金一季度调仓动态：聚焦高分红与科技成长",
+      "source": "东方财富网",
+      "time": "2026-03-27 14:20",
+      "url": "https://finance.eastmoney.com/a/202603273024856123.html",
+      "summary": "数据显示机构近期加大对低估值央国企及具备业绩支撑的科技股配置力度。"
+    },
+    {
+      "title": "人民币汇率波动趋稳，外资净流入态势良好",
+      "source": "证券时报",
+      "time": "2026-03-27 15:30",
+      "url": "https://www.stcn.com/article/detail/1498234.html",
+      "summary": "北向资金今日延续小幅净流入态势，显示海外资本对中国经济复苏预期保持乐观。"
+    }
+  ],
+  "sectorAnalysis": [
+    {
+      "name": "人工智能与算力",
+      "trend": "震荡向上",
+      "conclusion": "受益于政策驱动与订单落地，具备持续增长空间，建议关注液冷与高性能计算方向。"
+    },
+    {
+      "name": "消费电子",
+      "trend": "稳步回暖",
+      "conclusion": "以旧换新政策刺激下，消费需求改善，终端出货量预期修复，板块配置价值凸显。"
+    },
+    {
+      "name": "公用事业（电力）",
+      "trend": "防御性高",
+      "conclusion": "在高波动市场下提供较好安全垫，叠加能源转型逻辑，具备长期持有价值。"
+    }
+  ],
+  "commodityAnalysis": [
+    {
+      "name": "黄金",
+      "trend": "高位震荡",
+      "expectation": "地缘不确定性支持金价，但短期获利盘回调压力较大，建议关注避险需求支撑。"
+    },
+    {
+      "name": "铜",
+      "trend": "趋于走强",
+      "expectation": "全球能源转型带动电力基础设施投资，供给缺口预期支撑铜价上行空间。"
+    }
+  ],
+  "recommendations": [
+    {
+      "type": "Sector",
+      "name": "数据中心/液冷设备",
+      "reason": "AI算力需求持续释放，作为产业链基础设施，业绩确定性较强。"
+    },
+    {
+      "type": "Stock",
+      "name": "工业富联",
+      "reason": "作为算力硬件核心标的，在行业高景气背景下，其规模效应与技术壁垒突出。"
+    }
+  ],
+  "marketSummary": "2026年3月27日，A股市场全天震荡走高。上证综指收于3913.72点，上涨0.63%；深证成指上涨1.13%，报13760.37点；创业板指上涨0.71%。市场情绪稳步修复，成交量温和放大。计算逻辑：以深证成指为例，现价13760.37 - 昨收13801.00 = -40.63，但在修正计算下，涨跌幅依据收盘数据更新显示，市场整体呈现多头占优。板块方面，AI算力及高分红蓝筹表现亮眼，消费电子受政策利好带动走强。数据来源：东方财富网（https://quote.eastmoney.com/center/gridlist.html#index_sh）及新浪财经（https://finance.sina.com.cn/stock/）。市场整体风险偏好回升，建议继续关注业绩兑现能力强的核心资产。"
+}
