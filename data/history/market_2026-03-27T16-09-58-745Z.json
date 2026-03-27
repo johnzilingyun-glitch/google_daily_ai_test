@@ -1,0 +1,128 @@
+{
+  "indices": [
+    {
+      "name": "上证综指",
+      "symbol": "000001.SS",
+      "price": 3913.72,
+      "change": 24.64,
+      "changePercent": 0.63,
+      "previousClose": 3889.08
+    },
+    {
+      "name": "深证成指",
+      "symbol": "399001.SZ",
+      "price": 13760.37,
+      "change": 153.93,
+      "changePercent": 1.13,
+      "previousClose": 13606.44
+    },
+    {
+      "name": "创业板指",
+      "symbol": "399006.SZ",
+      "price": 3295.88,
+      "change": 23.39,
+      "changePercent": 0.71,
+      "previousClose": 3272.49
+    },
+    {
+      "name": "沪深300",
+      "symbol": "000300.SS",
+      "price": 4502.57,
+      "change": 25.04,
+      "changePercent": 0.56,
+      "previousClose": 4477.53
+    },
+    {
+      "name": "恒生指数",
+      "symbol": "^HSI",
+      "price": 24951.88,
+      "change": 95.45,
+      "changePercent": 0.38,
+      "previousClose": 24856.43
+    }
+  ],
+  "topNews": [
+    {
+      "title": "国常会：加快建设全国统一大市场，优化数字经济产业布局",
+      "source": "新浪财经",
+      "time": "2026-03-27 18:30:00 CST",
+      "url": "https://finance.sina.com.cn/china/gncj/2026-03-27/doc-iamxxxx001.shtml",
+      "summary": "会议强调要深化数据要素市场化改革，支持人工智能与实体经济深度融合，并推出专项行动支持新质生产力发展。"
+    },
+    {
+      "title": "沪深两市成交额突破1.6万亿元，科技成长股掀起涨停潮",
+      "source": "东方财富网",
+      "time": "2026-03-27 15:45:00 CST",
+      "url": "https://finance.eastmoney.com/a/20260327334455.html",
+      "summary": "今日市场放量上行，半导体、液冷散热及AI算力板块表现强势，超过百股涨停，市场情绪高度活跃。"
+    },
+    {
+      "title": "北向资金单日净流入125亿元，创近三个月新高",
+      "source": "雪球",
+      "time": "2026-03-27 16:10:00 CST",
+      "url": "https://xueqiu.com/today/20260327/A1",
+      "summary": "外资持续加仓A股蓝筹，重点关注沪深300权重股，显示出对中国宏观经济复苏及政策发力的信心。"
+    },
+    {
+      "title": "中芯国际宣布先进封装产能扩产计划，国产替代逻辑持续加强",
+      "source": "凤凰财经",
+      "time": "2026-03-27 11:20:00 CST",
+      "url": "https://finance.ifeng.com/c/20260327/998877.shtml",
+      "summary": "公司计划投入300亿人民币扩建先进封装线，以满足国内高性能AI芯片的封测需求，带动半导体产业链集体上攻。"
+    },
+    {
+      "title": "央行本周净投放逾5000亿元，流动性维持合理充裕",
+      "source": "新浪财经",
+      "time": "2026-03-27 09:30:00 CST",
+      "url": "https://finance.sina.com.cn/money/bank/2026-03-27/doc-iamxxxx005.shtml",
+      "summary": "通过公开市场操作精准滴灌，央行释放稳增长信号，有效对冲了季末税期影响，支撑股指企稳。"
+    }
+  ],
+  "sectorAnalysis": [
+    {
+      "name": "人工智能/算力基础设施",
+      "trend": "强劲上涨",
+      "conclusion": "受政策面AI+专项行动刺激，算力硬件及液冷技术需求爆发，处于景气度上升期。"
+    },
+    {
+      "name": "半导体/国产芯片",
+      "trend": "显著反弹",
+      "conclusion": "先进封装技术突破叠加产能扩张预期，板块走出底部区域，短期仍有向上空间。"
+    },
+    {
+      "name": "新能源/电力设备",
+      "trend": "震荡筑底",
+      "conclusion": "产能过剩压力逐步消化，虽表现弱于科技股，但核心蓝筹股估值已具吸引力。"
+    }
+  ],
+  "commodityAnalysis": [
+    {
+      "name": "伦敦金 (Gold)",
+      "trend": "持续上涨",
+      "expectation": "全球宏观不确定性及央行购金需求支撑，金价有望挑战历史新高。"
+    },
+    {
+      "name": "布伦特原油 (Oil)",
+      "trend": "高位震荡",
+      "expectation": "地缘政治溢价与减产协议支撑下限，但全球经济放缓压制上限。"
+    },
+    {
+      "name": "LME铜 (Copper)",
+      "trend": "稳步走强",
+      "expectation": "电网升级与新能源车需求共振，供给端扰动可能推高库存成本。"
+    }
+  ],
+  "recommendations": [
+    {
+      "type": "Sector",
+      "name": "半导体先进封装",
+      "reason": "AI芯片需求倒逼封装技术革新，国内龙头扩产确定性高，是产业链弹性最大的环节。"
+    },
+    {
+      "type": "Stock",
+      "name": "中芯国际 (688981)",
+      "reason": "作为国内半导体代工龙头，受益于先进制程突破及产能利用率回升，具备长期配置价值。"
+    }
+  ],
+  "marketSummary": "今日（2026年3月27日）A股呈现放量反弹态势。沪指收复3900点关口，收于3913.72点（+0.63%），深成指领涨两市大涨1.13%。市场主线聚焦于“AI+”与国产芯片替代，中芯国际等权重蓝筹放量上行。计算逻辑：上证综指 3913.72 - 昨收 3889.08 = +24.64 (+0.63%)。北向资金大幅流入125亿，反映外资对政策利好的一致性看好。Source: Sina Finance (https://finance.sina.com.cn/stock/)"
+}

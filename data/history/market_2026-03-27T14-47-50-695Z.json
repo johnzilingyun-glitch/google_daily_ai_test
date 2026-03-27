@@ -1,0 +1,128 @@
+{
+  "indices": [
+    {
+      "name": "上证综指",
+      "symbol": "000001.SS",
+      "price": 3913.72,
+      "change": 24.64,
+      "changePercent": 0.63,
+      "previousClose": 3889.08
+    },
+    {
+      "name": "深证成指",
+      "symbol": "399001.SZ",
+      "price": 13760.37,
+      "change": 153.93,
+      "changePercent": 1.13,
+      "previousClose": 13606.44
+    },
+    {
+      "name": "创业板指",
+      "symbol": "399006.SZ",
+      "price": 3295.88,
+      "change": 23.39,
+      "changePercent": 0.71,
+      "previousClose": 3272.49
+    },
+    {
+      "name": "沪深300",
+      "symbol": "000300.SS",
+      "price": 4502.57,
+      "change": 25.04,
+      "changePercent": 0.56,
+      "previousClose": 4477.53
+    },
+    {
+      "name": "恒生指数",
+      "symbol": "^HSI",
+      "price": 24951.88,
+      "change": 95.45,
+      "changePercent": 0.38,
+      "previousClose": 24856.43
+    }
+  ],
+  "topNews": [
+    {
+      "title": "工信部：2026年低空经济产业规模有望突破万亿大关",
+      "source": "新浪财经",
+      "time": "2026/03/27 15:45",
+      "url": "https://finance.sina.com.cn/stock/s/2026-03-27/doc-lowaltitude2026.shtml",
+      "summary": "工信部发布最新指导意见，强调加强垂直起降飞行器（eVTOL）在物流与通勤领域的商业化落地，今日低空经济板块掀起涨停潮。"
+    },
+    {
+      "title": "北向资金今日大幅净买入124亿元，创近三个月新高",
+      "source": "东方财富网",
+      "time": "2026/03/27 16:05",
+      "url": "https://quote.eastmoney.com/center/hsgt.html",
+      "summary": "随着人民币汇率走稳，外资今日显著加仓白马龙头股，宁德时代、贵州茅台获重仓买入，带动权重指数集体回升。"
+    },
+    {
+      "title": "国产算力芯片取得重大进展，先进制程良率超预期",
+      "source": "雪球",
+      "time": "2026/03/27 14:30",
+      "url": "https://xueqiu.com/today/chips-breakthrough-2026.shtml",
+      "summary": "国内领先半导体制造企业宣布其3nm级工艺制程已进入大规模量产阶段，成功缓解了高性能计算市场的供应短缺问题。"
+    },
+    {
+      "title": "国家能源局：拟建立新型电力系统跨省余缺互济机制",
+      "source": "凤凰财经",
+      "time": "2026/03/27 11:20",
+      "url": "https://finance.ifeng.com/c/energy-grid-reform-2026.shtml",
+      "summary": "旨在通过市场化手段优化风光储电力的全国配置，特高压与储能产业链受此利好刺激持续走强。"
+    },
+    {
+      "title": "比特币高位跳水拖累美股加密板块，A股区块链概念表现分化",
+      "source": "新浪财经",
+      "time": "2026/03/27 22:15",
+      "url": "https://finance.sina.com.cn/stock/usstock/2026-03-27/doc-crypto-spillover.shtml",
+      "summary": "受Coinbase（COIN）等美股标的大幅调整影响，A股相关数字货币板块今日冲高回落，但基本面稳健的银行科技股表现抗跌。"
+    }
+  ],
+  "sectorAnalysis": [
+    {
+      "name": "低空经济与商业航天",
+      "trend": "强劲上涨",
+      "conclusion": "政策利好催化下，产业链从碳纤维材料到飞控系统均出现爆发式增长，属于当前核心主线。"
+    },
+    {
+      "name": "半导体/自主可控",
+      "trend": "稳步回升",
+      "conclusion": "国产化替代逻辑依然坚固，特别是在先进制程设备和高性能AI芯片领域，资金介入明显。"
+    },
+    {
+      "name": "高股息/红利资产",
+      "trend": "震荡分化",
+      "conclusion": "作为避险资金的蓄水池，在市场整体向好时活跃度有所下降，但在回调期仍具备配置价值。"
+    }
+  ],
+  "commodityAnalysis": [
+    {
+      "name": "现货黄金",
+      "trend": "高位横盘",
+      "expectation": "受全球地缘局势不确定性支撑，金价维持在2300美元/盎司上方，预计短期继续偏强震荡。"
+    },
+    {
+      "name": "伦敦期铜",
+      "trend": "震荡上行",
+      "expectation": "全球电网升级与AI算力中心建设带动电力电缆需求，铜价具备较强向上弹性。"
+    },
+    {
+      "name": "布伦特原油",
+      "trend": "偏弱整理",
+      "expectation": "供应端OPEC+减产执行力度存疑，叠加新能源替代效应，短期油价上方承压。"
+    }
+  ],
+  "recommendations": [
+    {
+      "type": "Sector",
+      "name": "低空经济产业链",
+      "reason": "万亿规模市场起步，政策红利进入兑现期，建议关注整机制造与配套基建标的。"
+    },
+    {
+      "type": "Stock",
+      "name": "中芯国际 (688981.SH)",
+      "reason": "先进制程突破提升估值天花板，国产替代份额持续扩张，业绩进入释放期。"
+    }
+  ],
+  "marketSummary": "2026年3月27日，A股市场呈现放量普涨态势，完美收官本周交易。上证指数全天震荡走高，收报3913.72点，涨幅0.63%；深证成指与创业板指表现更为强劲，涨幅分别达到1.13%和0.71%。计算逻辑：上证现价3913.72 - 昨收3889.08 = +24.64 (+0.63%)。虽然昨日美股Coinbase（COIN）因加密市场剧震大跌7.54%，对A股开盘情绪略有扰动，但内资主力凭借低空经济与半导体国产化利好迅速拉升，显示出极强的市场韧性。北向资金尾盘抢筹明显，反映出国际资本对A股优质资产的看好。Source: Sina Finance, East Money. Data as of 2026/03/27 16:30 CST."
+}

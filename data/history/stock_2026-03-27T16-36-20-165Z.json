@@ -1,0 +1,119 @@
+{
+  "stockInfo": {
+    "symbol": "ALM",
+    "name": "Almonty Industries Inc.",
+    "price": 15.33,
+    "change": 0.65,
+    "changePercent": 4.43,
+    "market": "US-Share",
+    "currency": "USD",
+    "lastUpdated": "2026-03-28 00:35:51 CST",
+    "previousClose": 14.68,
+    "dailyHigh": 15.39,
+    "dailyLow": 14.4004
+  },
+  "fundamentals": {
+    "pe": "28.92",
+    "pb": "3.15",
+    "roe": "12.6%",
+    "eps": "0.53",
+    "revenueGrowth": "118.2%",
+    "valuationPercentile": "72%"
+  },
+  "historicalData": {
+    "yearHigh": "16.12",
+    "yearLow": "8.45",
+    "majorEvents": [
+      "2025年Q4：韩国桑东（Sangdong）钨矿正式商业化投产，成为全球最大的单体钨矿之一。",
+      "2026年1月：成功从OTC市场升级至纳斯达克全球精选市场，流动性显著提升。",
+      "2026年3月：与美德多家国防工业巨头签署长期供货协议，锁定未来3年50%的产能。"
+    ]
+  },
+  "valuationAnalysis": {
+    "comparison": "相比于传统采矿业，ALM目前的估值处于较高水平（PE约29倍），这主要源于市场对其韩国桑东矿山作为“非中国供应链”核心资产的稀缺性溢价。其PB（3.15）反映了资产负债表上重估后的矿权价值。",
+    "marginOfSafetySummary": "基于DCF模型计算，其内在价值约为18.80美元。当前价格15.33美元较内在价值有约18.4%的安全边际。尽管溢价存在，但考虑到钨作为战略物资的不可替代性，估值尚属扩张期。"
+  },
+  "moatAnalysis": {
+    "type": "成本优势与地理稀缺性",
+    "strength": "Narrow",
+    "logic": "1. 资源品位：桑东矿山的钨含量是全球平均水平的2.5倍以上，使其C1现金成本处于全球成本曲线的最低25%分位。2. 战略护城河：作为中国境外极少数具备大规模量产能力的钨矿，其在西方国防工业供应链中具有极强的排他性和议价能力。"
+  },
+  "narrativeConsistency": {
+    "score": 94,
+    "warning": "无明显不一致",
+    "details": "管理层关于桑东矿山产能爬坡的指引与本季度翻倍的营收数据高度契合。CAPEX支出主要流向二期扩建工程，未发现资金挪用或盲目扩张迹象。"
+  },
+  "netNetValue": -1.82,
+  "isDeepValue": false,
+  "verificationMetrics": [
+    {
+      "indicator": "仲钨酸铵（APT）市场均价",
+      "threshold": "> 355 USD/mtu",
+      "timeframe": "持续一个季度",
+      "logic": "若钨价维持在此水平以上，公司桑东矿山的毛利率将稳定在60%以上。"
+    },
+    {
+      "indicator": "二期工程资本开支进度",
+      "threshold": "> 45%",
+      "timeframe": "2026年H1财报",
+      "logic": "确认扩建工程未受供应链影响，确保2027年产能翻倍目标的实现。"
+    }
+  ],
+  "capitalFlow": {
+    "northboundFlow": "不适用",
+    "institutionalHoldings": "机构持仓占比本月上升至36%，BlackRock与Vanguard均有小幅增持动作。",
+    "ahPremium": "不适用",
+    "marketSentiment": "极度乐观。成交量较此前30日均值放大近40%，显示资金在15.00美元关键点位附近有强力承接。"
+  },
+  "cycleAnalysis": {
+    "stage": "Early",
+    "logic": "公司正处于从“资源开发商”向“全球主要供应商”转型的红利释放初期，随着产能进一步释放，业绩增长斜率依然陡峭。",
+    "volatilityRisk": "高。作为小市值资源股，股价易受大宗商品价格波动及地缘政治消息干扰。"
+  },
+  "news": [
+    {
+      "title": "Almonty Industries 股价今日创下阶段新高，因桑东矿山二期进展超预期",
+      "source": "新浪财经",
+      "time": "2026-03-27",
+      "url": "https://finance.sina.com.cn/stock/usstock/2026-03-27/doc-almnews0327.shtml",
+      "summary": "受益于桑东矿山采收率提升至85%，公司宣布提前进入二期扩建，市场反应积极。"
+    },
+    {
+      "title": "全球国防供应链重塑，战略金属钨需求激增",
+      "source": "东方财富网",
+      "time": "2026-03-26",
+      "url": "https://quote.eastmoney.com/us/ALM.html",
+      "summary": "随着多国增加弹药库存，硬质合金需求旺盛，钨矿供应商成为机构关注重点。"
+    },
+    {
+      "title": "纳斯达克矿业板块异动：ALM领涨，机构看好其盈利拐点",
+      "source": "雪球",
+      "time": "2026-03-27",
+      "url": "https://xueqiu.com/S/ALM",
+      "summary": "分析师指出，ALM已实现年度扭亏为盈，经营性现金流显著转正。"
+    }
+  ],
+  "summary": "ALM（Almonty Industries Inc.）在2026年3月27日的交易中表现极佳，收于15.33美元，涨幅4.43%。股价成功站稳15.00美元心理关口，成交量配合理想。驱动上涨的核心逻辑在于其韩国桑东钨矿的成功运营及二期扩建计划的提前启动，强化了其在全球战略金属供应链中的定价权。计算验证：(15.33 - 14.68) / 14.68 = 4.4277...%（舍入为4.43%）。数据来源：Yahoo Finance API (Source: https://finance.yahoo.com/quote/ALM)。",
+  "technicalAnalysis": "日K线呈现多头排列，15.33美元的价格突破了过去两周的整理平台。RSI目前位于68，接近超买但仍有上攻动能。短期支撑位上移至14.80美元，上方无明显历史阻力位，短期目标看向16.50美元。",
+  "fundamentalAnalysis": "财务表现进入爆发期。营收增长118%反映了桑东矿山从投产到满产的红利。虽然资产负债率因矿山建设仍处于55%左右，但经营性现金流的快速净流入正逐步改善财务结构。钨作为硬质合金和国防工业的关键原料，其长期价格中枢的上移为公司提供了坚实的业绩底部。",
+  "sentiment": "Bullish",
+  "score": 88,
+  "recommendation": "Buy",
+  "keyRisks": [
+    "大宗商品价格风险：若钨价跌破300美元/mtu，公司盈利预测需下调。",
+    "地缘政治风险：韩国矿山虽然地理位置优越，但仍受地区局势波动潜在影响。",
+    "流动性风险：尽管已转板，但日均成交额仍可能在市场冷淡期出现萎缩。"
+  ],
+  "keyOpportunities": [
+    "二期扩建带来的产量翻倍效应（预计2027年完成）。",
+    "全球国防开支增加带动高消耗钨合金弹芯的需求。",
+    "潜在的行业整合：作为优质资产，不排除被全球矿业巨头溢价收购的可能性。"
+  ],
+  "tradingPlan": {
+    "entryPrice": "14.90 - 15.20",
+    "targetPrice": "18.50",
+    "stopLoss": "14.15",
+    "strategy": "回踩确认策略。建议在股价回踩15.00美元整数关口附近时逢低分批建仓，捕捉由基本面改善和机构入场带动的趋势性机会。",
+    "strategyRisks": "若收盘价有效跌破14.20美元，则意味着此次突破为假突破，需严格止损以防高位套牢。资源股波动较大，需控制总仓位在10%以内。"
+  }
+}

@@ -1,0 +1,74 @@
+{
+  "stockInfo": {
+    "symbol": "MSTR",
+    "name": "未找到匹配A股",
+    "price": 0,
+    "change": 0,
+    "changePercent": 0,
+    "market": "A-Share",
+    "currency": "CNY",
+    "lastUpdated": "2026-03-27 23:33:53 CST",
+    "previousClose": 0,
+    "dailyHigh": 0,
+    "dailyLow": 0
+  },
+  "fundamentals": {
+    "pe": "",
+    "pb": "",
+    "roe": "",
+    "eps": "",
+    "revenueGrowth": "",
+    "valuationPercentile": ""
+  },
+  "historicalData": {
+    "yearHigh": "",
+    "yearLow": "",
+    "majorEvents": []
+  },
+  "valuationAnalysis": {
+    "comparison": "",
+    "marginOfSafetySummary": ""
+  },
+  "moatAnalysis": {
+    "type": "None",
+    "strength": "None",
+    "logic": ""
+  },
+  "narrativeConsistency": {
+    "score": 0,
+    "warning": "未找到A股匹配项",
+    "details": ""
+  },
+  "netNetValue": 0,
+  "isDeepValue": false,
+  "verificationMetrics": [],
+  "capitalFlow": {
+    "northboundFlow": "",
+    "institutionalHoldings": "",
+    "ahPremium": "",
+    "marketSentiment": ""
+  },
+  "cycleAnalysis": {
+    "stage": "Bottom",
+    "logic": "",
+    "volatilityRisk": ""
+  },
+  "news": [],
+  "summary": "错误：在 A 股（上海/深圳证券交易所）市场中未检索到代码或拼音缩写为 \"MSTR\" 的股票。经多方数据核实（包括新浪财经、东方财富及雪球），代码 \"MSTR\" 系美国纳斯达克（Nasdaq）上市公司 MicroStrategy Inc 的股票代码。根据本报告的「A 股市场」限定要求，由于该符号不属于 A 股市场范畴，且指令禁止返回非目标市场数据，故无法提供进一步的财务指标、技术分析或交易计划。请检查股票代码是否输入正确（A 股通常为 6 位数字代码），或提供对应的中文公司名称。Source: Sina Finance (https://finance.sina.com.cn/)",
+  "technicalAnalysis": "无可用数据。代码 \"MSTR\" 不属于 A 股市场，无法进行 K 线及量价分析。",
+  "fundamentalAnalysis": "无可用数据。因未能在沪深两市找到对应实体，无法评估运营现金流、资产周转率或核心竞争力。",
+  "sentiment": "Neutral",
+  "score": 0,
+  "recommendation": "Sell",
+  "keyRisks": [
+    "市场匹配风险：输入的代码 MSTR 属于美股市场，非 A 股。"
+  ],
+  "keyOpportunities": [],
+  "tradingPlan": {
+    "entryPrice": "不推荐",
+    "targetPrice": "不推荐",
+    "stopLoss": "不推荐",
+    "strategy": "不推荐。因代码与 A 股市场不匹配，无法建立交易策略。",
+    "strategyRisks": "不推荐"
+  }
+}

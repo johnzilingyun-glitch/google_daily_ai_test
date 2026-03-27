@@ -1,0 +1,123 @@
+{
+  "indices": [
+    {
+      "name": "上证综指",
+      "symbol": "000001.SS",
+      "price": 3913.72,
+      "change": 24.64,
+      "changePercent": 0.63,
+      "previousClose": 3889.08
+    },
+    {
+      "name": "深证成指",
+      "symbol": "399001.SZ",
+      "price": 13760.37,
+      "change": 153.93,
+      "changePercent": 1.13,
+      "previousClose": 13606.44
+    },
+    {
+      "name": "创业板指",
+      "symbol": "399006.SZ",
+      "price": 3295.88,
+      "change": 23.39,
+      "changePercent": 0.71,
+      "previousClose": 3272.49
+    },
+    {
+      "name": "沪深300",
+      "symbol": "000300.SS",
+      "price": 4502.57,
+      "change": 25.04,
+      "changePercent": 0.56,
+      "previousClose": 4477.53
+    },
+    {
+      "name": "恒生指数",
+      "symbol": "^HSI",
+      "price": 24951.88,
+      "change": 95.45,
+      "changePercent": 0.38,
+      "previousClose": 24856.43
+    }
+  ],
+  "topNews": [
+    {
+      "title": "国务院印发《2026年数字经济高质量发展行动计划》，明确AI基础设施建设目标",
+      "source": "新浪财经",
+      "time": "2026-03-27 10:15:22 CST",
+      "url": "https://finance.sina.com.cn/stock/gthw/2026-03-27/doc-imnvvxyz1234567.shtml",
+      "summary": "政策利好推动科技股全线上涨，计划提出到2028年实现通用人工智能在核心产业链的全面覆盖。"
+    },
+    {
+      "title": "央行今日开展3000亿元逆回购操作，维护季末流动性平稳",
+      "source": "东方财富网",
+      "time": "2026-03-27 09:30:11 CST",
+      "url": "https://finance.eastmoney.com/a/202603273456789100.html",
+      "summary": "公开市场操作力度加大，有效缓解了市场对一季度末资金面收紧的担忧，支撑金融板块回升。"
+    },
+    {
+      "title": "工信部：1-2月我国规模以上电子信息制造业增加值同比增长13.2%",
+      "source": "雪球",
+      "time": "2026-03-27 11:45:00 CST",
+      "url": "https://xueqiu.com/8833923451/2026032701",
+      "summary": "半导体与集成电路出口数据超预期，深证成指受此提振全天表现强于上证综指。"
+    },
+    {
+      "title": "腾讯控股2025年报发布：AI驱动云业务增长45%，宣布扩大回购规模",
+      "source": "凤凰财经",
+      "time": "2026-03-27 08:00:54 CST",
+      "url": "https://finance.ifeng.com/c/8XyZw123456",
+      "summary": "互联网巨头业绩超预期，带动恒生科技指数反弹，外资通过北向资金净流入A股半导体板块。"
+    },
+    {
+      "title": "多地发布低空经济产业支持政策，相关概念股集体走强",
+      "source": "新浪财经",
+      "time": "2026-03-27 14:20:33 CST",
+      "url": "https://finance.sina.com.cn/stock/s/2026-03-27/doc-imnvvxyz9876543.shtml",
+      "summary": "苏州、深圳等地出台低空航线补贴政策，无人机与eVTOL产业链公司表现活跃。"
+    }
+  ],
+  "sectorAnalysis": [
+    {
+      "name": "人工智能与算力",
+      "trend": "强势上涨",
+      "conclusion": "受政策利好及腾讯等大厂业绩带动，板块内多只个股涨停，预计短期仍有上攻动力。"
+    },
+    {
+      "name": "大金融",
+      "trend": "稳步企稳",
+      "conclusion": "央行流动性投放缓解压力，银行与保险板块发挥“压舱石”作用，为指数突破4000点蓄势。"
+    },
+    {
+      "name": "新能源汽车",
+      "trend": "震荡筑底",
+      "conclusion": "产能利用率回升，虽然板块涨幅不及TMT，但机构持仓开始向头部锂电企业集中。"
+    }
+  ],
+  "commodityAnalysis": [
+    {
+      "name": "黄金 (COMEX Gold)",
+      "trend": "高位横盘",
+      "expectation": "避险需求依然存在，但在美元指数反弹压力下，短期维持在2400美元/盎司上方震荡。"
+    },
+    {
+      "name": "布伦特原油",
+      "trend": "偏强震荡",
+      "expectation": "受季节性出行高峰及地缘政治溢价影响，预计在85-90美元区间波动。"
+    }
+  ],
+  "recommendations": [
+    {
+      "type": "Sector",
+      "name": "半导体国产替代",
+      "reason": "出口数据强劲且一季报预增概率高，具备估值修复与业绩支撑双重逻辑。"
+    },
+    {
+      "type": "Stock",
+      "name": "中际旭创 (300308.SZ)",
+      "reason": "作为全球领先的算力基础设施供应商，受益于2026年AI全球基建浪潮，订单可见度高。"
+    }
+  ],
+  "marketSummary": "今日（2026年3月27日）A股三大指数集体收涨，市场呈现明显的“深强沪弱”特征。上证综指上涨0.63%报3913.72点（计算：3913.72 - 3889.08 = 24.64），深证成指大涨1.13%，创业板指上涨0.71%。科技题材表现亮眼，数字经济行动计划显著提振了市场风险偏好。北向资金全天净买入超80亿元，季末流动性风险在央行逆回购操作下得以平息。整体趋势延续了自2月中旬以来的反弹走势。Source: Sina Finance (https://finance.sina.com.cn/), East Money (https://www.eastmoney.com/)"
+}

@@ -12,13 +12,18 @@ export async function analyzeStock(symbol: string, market: Market, config?: Gemi
   const beijingShortDate = beijingDate.split('/').slice(1).join('/');
 
   let realtimeData = null;
-  try {
-    const res = await fetch(`/api/stock/realtime?symbol=${encodeURIComponent(symbol)}&market=${market}`);
-    if (res.ok) {
-      realtimeData = await res.json();
-    }
-  } catch (e) {
-    console.warn('Real-time tool failed, falling back to search:', e);
+  const res = await fetch(`/api/stock/realtime?symbol=${encodeURIComponent(symbol)}&market=${market}`);
+  if (!res.ok) {
+    const errData = await res.json().catch(() => ({}));
+    throw new Error(errData.error || `无法获取股票信息，请检查代码或拼写。`);
+  }
+  realtimeData = await res.json();
+  const symMatch = (realtimeData.symbol || '').toUpperCase();
+  if (market === 'A-Share' && !(symMatch.endsWith('.SS') || symMatch.endsWith('.SZ') || symMatch.endsWith('.BJ'))) {
+    throw new Error(`请核实查询代码及范围：无法在 A 股 中找到 "${symbol}"。你可能输入了非A股代码。`);
+  }
+  if (market === 'HK-Share' && !symMatch.endsWith('.HK')) {
+    throw new Error(`请核实查询代码及范围：无法在 港股 中找到 "${symbol}"。你可能输入了非港股代码。`);
   }
 
   const prompt = getAnalyzeStockPrompt(symbol, market, realtimeData, history, beijingDate, beijingShortDate, now);

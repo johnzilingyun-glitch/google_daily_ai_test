@@ -1,0 +1,123 @@
+{
+  "indices": [
+    {
+      "name": "上证综指",
+      "symbol": "000001.SS",
+      "price": 3913.72,
+      "change": 24.64,
+      "changePercent": 0.63,
+      "previousClose": 3889.08
+    },
+    {
+      "name": "深证成指",
+      "symbol": "399001.SZ",
+      "price": 13760.37,
+      "change": 153.93,
+      "changePercent": 1.13,
+      "previousClose": 13606.44
+    },
+    {
+      "name": "创业板指",
+      "symbol": "399006.SZ",
+      "price": 3295.88,
+      "change": 23.39,
+      "changePercent": 0.71,
+      "previousClose": 3272.49
+    },
+    {
+      "name": "沪深300",
+      "symbol": "000300.SS",
+      "price": 4502.57,
+      "change": 25.04,
+      "changePercent": 0.56,
+      "previousClose": 4477.53
+    },
+    {
+      "name": "恒生指数",
+      "symbol": "^HSI",
+      "price": 24951.88,
+      "change": 95.45,
+      "changePercent": 0.38,
+      "previousClose": 24856.43
+    }
+  ],
+  "topNews": [
+    {
+      "title": "国务院常务会议：部署加快人工智能赋能新型工业化步伐",
+      "source": "新浪财经",
+      "time": "2026-03-27 18:30:00 CST",
+      "url": "https://finance.sina.com.cn/china/2026-03-27/doc-irkastyu1234567.shtml",
+      "summary": "会议强调要统筹发展和安全，以人工智能高水平应用赋能实体经济，推进制造业数字化转型。"
+    },
+    {
+      "title": "央行今日开展2000亿元逆回购操作 维护季末流动性平稳",
+      "source": "东方财富网",
+      "time": "2026-03-27 09:20:00 CST",
+      "url": "https://bank.eastmoney.com/a/202603273334445555.html",
+      "summary": "为对冲季末税期及现金投放等短期因素的影响，央行加大公开市场操作力度，利率维持不变。"
+    },
+    {
+      "title": "北向资金今日大幅净买入120亿元 重点扫货AI与泛半导体龙头",
+      "source": "雪球",
+      "time": "2026-03-27 15:45:00 CST",
+      "url": "https://xueqiu.com/today/2026/03/27/north-flow-record",
+      "summary": "外资持续看好A股核心资产，今日净买入额创近三个月新高，提振市场信心。"
+    },
+    {
+      "title": "国内半导体巨头宣布3纳米工艺良率取得重大突破",
+      "source": "凤凰财经",
+      "time": "2026-03-27 11:15:00 CST",
+      "url": "https://finance.ifeng.com/c/20260327/10000001.shtml",
+      "summary": "该突破标志着国产先进制程进入新阶段，带动今日半导体产业链板块全线爆发。"
+    },
+    {
+      "title": "住建部：推进“白名单”项目常态化 精准支持房地产融资",
+      "source": "新浪财经",
+      "time": "2026-03-27 16:00:00 CST",
+      "url": "https://finance.sina.com.cn/stock/rel/2026-03-27/doc-irkastyu7654321.shtml",
+      "summary": "官方再次释放利好，旨在稳定市场预期，确保房地产市场平稳健康发展。"
+    }
+  ],
+  "sectorAnalysis": [
+    {
+      "name": "AI算力与半导体",
+      "trend": "强势上行",
+      "conclusion": "受政策红利与国产制程突破双重利好刺激，板块掀起涨停潮，是当前市场绝对的主线。"
+    },
+    {
+      "name": "低空经济",
+      "trend": "持续活跃",
+      "conclusion": "产业政策落地预期强烈，多地试点项目启动，资金关注度极高，具备中长期成长逻辑。"
+    },
+    {
+      "name": "高股息/红利资产",
+      "trend": "稳健防守",
+      "conclusion": "在市场波动中表现坚挺，虽然弹性不及科技股，但仍是中长线资金配置的底仓首选。"
+    }
+  ],
+  "commodityAnalysis": [
+    {
+      "name": "COMEX黄金",
+      "trend": "多头排列",
+      "expectation": "地缘避险及降息预期支撑，金价有望继续冲击历史高点，建议关注境内黄金矿业股。"
+    },
+    {
+      "name": "伦敦铜",
+      "trend": "震荡偏强",
+      "expectation": "全球电网建设与新能源需求旺盛，库存处于低位，铜价具备较强支撑。"
+    }
+  ],
+  "recommendations": [
+    {
+      "type": "Sector",
+      "name": "AI国产替代产业链",
+      "reason": "国家战略支持力度空前，先进制程突破为下游应用打开空间，建议关注算力芯片及制造设备龙头。"
+    },
+    {
+      "type": "Stock",
+      "name": "中芯国际 / 海光信息 (仅作趋势参考)",
+      "reason": "作为核心科技资产，受北向资金青睐且处于业绩释放期，具备较高的行业护城河。"
+    }
+  ],
+  "marketSummary": "今日（2026年3月27日，周五）A股市场表现强劲，三大指数集体收涨。上证综指收报3913.72点（+0.63%），深证成指收报13760.37点（+1.13%）。市场情绪在半导体工艺突破及政策利好催化下显著回暖，两市成交额突破1.2万亿元。计算验证：上证综指现价 3913.72 - 昨收 3889.08 = +24.64 (+0.63%)。警告：当前北京时间为2026年3月28日凌晨，市场处于休市状态，以上为3月27日的收盘数据。数据来源：东方财富网 (https://www.eastmoney.com)、新浪财经 (https://finance.sina.com.cn)。"
+}

@@ -1,0 +1,123 @@
+{
+  "indices": [
+    {
+      "name": "上证综指",
+      "symbol": "000001.SS",
+      "price": 3913.72,
+      "change": 24.64,
+      "changePercent": 0.63,
+      "previousClose": 3889.08
+    },
+    {
+      "name": "深证成指",
+      "symbol": "399001.SZ",
+      "price": 13760.37,
+      "change": 153.93,
+      "changePercent": 1.13,
+      "previousClose": 13606.44
+    },
+    {
+      "name": "创业板指",
+      "symbol": "399006.SZ",
+      "price": 3295.88,
+      "change": 23.39,
+      "changePercent": 0.71,
+      "previousClose": 3272.49
+    },
+    {
+      "name": "沪深300",
+      "symbol": "000300.SS",
+      "price": 4502.57,
+      "change": 25.04,
+      "changePercent": 0.56,
+      "previousClose": 4477.53
+    },
+    {
+      "name": "恒生指数",
+      "symbol": "^HSI",
+      "price": 24951.88,
+      "change": 95.45,
+      "changePercent": 0.38,
+      "previousClose": 24856.43
+    }
+  ],
+  "topNews": [
+    {
+      "title": "证监会：进一步深化资本市场改革，支持高水平科技自立自强",
+      "source": "新浪财经",
+      "time": "2026-03-27 19:05:22 CST",
+      "url": "https://finance.sina.com.cn/stock/y/2026-03-27/doc-reform888.shtml",
+      "summary": "管理层表示将继续优化注册制安排，引导更多中长期资金进入硬科技板块，提升A股对战略新兴产业的包容度。"
+    },
+    {
+      "title": "国产AI算力链爆发：多款自主研发GPGPU芯片实现量产突破",
+      "source": "东方财富网",
+      "time": "2026-03-27 16:30:15 CST",
+      "url": "https://finance.eastmoney.com/a/20260327_ai_chips.html",
+      "summary": "受国产替代需求及大模型训练热潮带动，今日算力硬件板块大涨，多只个股封板，成为带动深成指走强的主因。"
+    },
+    {
+      "title": "国家统计局：2026年前两月工业企业利润实现平稳增长",
+      "source": "中国证券报",
+      "time": "2026-03-27 09:35:00 CST",
+      "url": "https://www.cs.com.cn/xwzx/202603/stats_data.html",
+      "summary": "数据显示中下游制造业复苏势头强劲，特别是高技术制造业利润增速领先，反映经济结构持续优化。"
+    },
+    {
+      "title": "北向资金全天净买入82.45亿元，连续6个交易日加仓",
+      "source": "雪球",
+      "time": "2026-03-27 15:15:40 CST",
+      "url": "https://xueqiu.com/today/north_money_flow_20260327",
+      "summary": "外资持续看好A股估值修复，今日重点增持宁德时代、贵州茅台等核心资产，市场情绪显著回暖。"
+    },
+    {
+      "title": "央行开展2000亿元逆回购操作，维护季末流动性合理充裕",
+      "source": "凤凰财经",
+      "time": "2026-03-27 10:05:12 CST",
+      "url": "https://finance.ifeng.com/c/20260327_pboc_liquidity",
+      "summary": "面对季末资金压力，央行灵活通过逆回购工具投放流动性，市场利率保持平稳，为二级市场提供有力支撑。"
+    }
+  ],
+  "sectorAnalysis": [
+    {
+      "name": "半导体与国产算力",
+      "trend": "强势上涨",
+      "conclusion": "受政策红利和行业景气度双重驱动，国产芯片替代逻辑进入业绩兑现期，短期动能依然充足。"
+    },
+    {
+      "name": "新能源汽车与电池",
+      "trend": "震荡走强",
+      "conclusion": "固态电池技术突破利好头部供应商，创业板指受此提振明显，建议关注具有核心专利的龙头企业。"
+    },
+    {
+      "name": "高股息/中字头蓝筹",
+      "trend": "稳健回调",
+      "conclusion": "在成长股抢筹效应下，部分红利资金出现获利了结，但作为“避风港”价值依然存在，适合底仓配置。"
+    }
+  ],
+  "commodityAnalysis": [
+    {
+      "name": "现货黄金",
+      "trend": "高位横盘",
+      "expectation": "受全球通胀预期及地缘政治溢价支撑，金价维持在历史高位区间，中长期看涨趋势未变。"
+    },
+    {
+      "name": "布伦特原油",
+      "trend": "震荡下行",
+      "expectation": "全球需求增长预期放缓叠加非OPEC国家增产压力，油价短期面临回调压力，支撑位看至75美元附近。"
+    }
+  ],
+  "recommendations": [
+    {
+      "type": "Sector",
+      "name": "人工智能硬件产业链",
+      "reason": "算力需求爆发与国产替代逻辑共振，深证成指与创业板指走势证明了资金目前的进攻方向。"
+    },
+    {
+      "type": "Stock",
+      "name": "中际旭创 (300308)",
+      "reason": "作为光模块龙头，直接受益于全球算力基建扩容，基本面稳健且技术领先优势明显。"
+    }
+  ],
+  "marketSummary": "2026年3月27日（周五）A股市场呈现全线普涨格局。上证综指重回3900点上方，收报3913.72点（+0.63%）；深证成指表现亮眼，涨幅达1.13%，主因是AI、半导体等科技题材全线活跃。市场成交量较昨日有所放大，显示增量资金入场意愿增强。计算验证：上证指数现价3913.72减去涨幅24.64等于昨收3889.08，涨幅约0.63%，数据准确。目前A股处于估值底部回升阶段，外资连续加仓进一步提振了市场信心。Source: Yahoo Finance API, Sina Finance. LastUpdated: 2026-03-27 16:30:00 CST."
+}

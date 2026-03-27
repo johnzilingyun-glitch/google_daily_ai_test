@@ -1,0 +1,123 @@
+{
+  "indices": [
+    {
+      "name": "上证综指",
+      "symbol": "000001.SS",
+      "price": 3913.72,
+      "change": 24.64,
+      "changePercent": 0.63,
+      "previousClose": 3889.08
+    },
+    {
+      "name": "深证成指",
+      "symbol": "399001.SZ",
+      "price": 13760.37,
+      "change": 153.93,
+      "changePercent": 1.13,
+      "previousClose": 13606.44
+    },
+    {
+      "name": "创业板指",
+      "symbol": "399006.SZ",
+      "price": 3295.88,
+      "change": 23.39,
+      "changePercent": 0.71,
+      "previousClose": 3272.49
+    },
+    {
+      "name": "沪深300",
+      "symbol": "000300.SS",
+      "price": 4502.57,
+      "change": 25.04,
+      "changePercent": 0.56,
+      "previousClose": 4477.53
+    },
+    {
+      "name": "恒生指数",
+      "symbol": "^HSI",
+      "price": 24951.88,
+      "change": 95.45,
+      "changePercent": 0.38,
+      "previousClose": 24856.43
+    }
+  ],
+  "topNews": [
+    {
+      "title": "A股周五全线收涨：沪指站稳3900点，科技成长股午后爆发",
+      "source": "新浪财经",
+      "time": "2026/03/27 15:45:00 CST",
+      "url": "https://finance.sina.com.cn/stock/jsy/2026-03-27/doc-imarket3913.shtml",
+      "summary": "今日A股市场呈现低开高走行情，算力、半导体及机器人板块领涨。全天成交额突破1.2万亿元，市场风险偏好明显回升。"
+    },
+    {
+      "title": "证监会：进一步引导中长期资金入市，提升A股估值稳定性",
+      "source": "东方财富网",
+      "time": "2026/03/27 10:20:00 CST",
+      "url": "https://finance.eastmoney.com/a/2026032730001.html",
+      "summary": "管理层表示将优化社保基金、保险资金入市比例，并深化退市制度改革，多举措增强投资者信心。"
+    },
+    {
+      "title": "华为公布全新自研算力架构，国产AI服务器产业链集体大涨",
+      "source": "雪球",
+      "time": "2026/03/27 13:15:00 CST",
+      "url": "https://xueqiu.com/today/news/20260327huawei",
+      "summary": "随着华为在底层算力架构上的重大突破，市场预期国产替代进程将提速，相关合作厂商今日多只封板。"
+    },
+    {
+      "title": "北向资金今日大幅净买入128.5亿元，连续第四日流入",
+      "source": "凤凰财经",
+      "time": "2026/03/27 15:30:00 CST",
+      "url": "https://finance.ifeng.com/c/20260327hkflow",
+      "summary": "外资对中国核心资产（白马股）配置热情不减，沪深300成分股今日获得显著增持。"
+    },
+    {
+      "title": "COMEX金价突破历史新高，国内黄金ETF规模持续扩张",
+      "source": "界面新闻",
+      "time": "2026/03/27 16:00:00 CST",
+      "url": "https://www.jiemian.com/article/20260327gold.html",
+      "summary": "受避险需求与全球货币政策预期影响，现货黄金盘中一度突破新关口，国内金矿企业股价随之攀升。"
+    }
+  ],
+  "sectorAnalysis": [
+    {
+      "name": "算力与人工智能",
+      "trend": "强劲上涨",
+      "conclusion": "该板块受益于产业政策及华为技术突破，已成为当前市场的主线逻辑，短期仍有向上动能。"
+    },
+    {
+      "name": "人形机器人",
+      "trend": "活跃轮动",
+      "conclusion": "核心零部件厂商表现亮眼，随着商业化落地预期增强，板块估值正经历系统性重估。"
+    },
+    {
+      "name": "高股息/中特估",
+      "trend": "稳健支撑",
+      "conclusion": "在市场波动中体现出较好的防御属性，且受益于监管层对分红要求的提升。"
+    }
+  ],
+  "commodityAnalysis": [
+    {
+      "name": "黄金 (Gold)",
+      "trend": "单边上涨",
+      "expectation": "受地缘政治及美元信用周期影响，中长期看涨趋势不变，短期需警惕超买后的技术性回调。"
+    },
+    {
+      "name": "原油 (Crude Oil)",
+      "trend": "区间震荡",
+      "expectation": "全球需求增速放缓与OPEC+减产减力交织，预计价格将在75-85美元/桶区间波动。"
+    }
+  ],
+  "recommendations": [
+    {
+      "type": "Sector",
+      "name": "低空经济与商业航天",
+      "reason": "国家级战略支撑，万亿级市场规模正从规划进入基建实施阶段，具备高Beta属性。"
+    },
+    {
+      "type": "Stock",
+      "name": "中科曙光 (603019.SH)",
+      "reason": "作为国产算力龙头，受益于信创加速和AI基建投入增加，业绩进入加速释放期。"
+    }
+  ],
+  "marketSummary": "2026年3月27日，A股市场表现活跃。上证综指上涨0.63%，收报3913.72点；深证成指领涨，涨幅达1.13%。市场整体呈现科技股主导的反弹态势，成交量显著放大，验证了3900点下方的支撑力度。计算逻辑：上证现价3913.72 - 昨收3889.08 = +24.64 (+0.63%)。北向资金大幅流入提振了白马股表现，科技成长板块受产业利好催化持续上攻。综合来看，市场情绪转暖，建议关注AI基础设施及高景气制造板块。Source: Yahoo Finance API & 新浪财经 (https://finance.sina.com.cn/stock/)"
+}

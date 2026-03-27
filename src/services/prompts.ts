@@ -344,13 +344,8 @@ export const getDiscussionReportPrompt = (analysis: StockAnalysis, discussion: A
     8. ⚠️ **核心机会与风险提示**。
     ${backtestResult ? `9. ⏪ **历史回测复盘**: 上次建议 ${backtestResult.previousRecommendation}, 实际收益 ${backtestResult.actualReturn}` : ''}
     
-    10. **完整研讨记录**：在报告最后，以引用块的形式完整保留每一位分析师的发言。
-    
     分析数据：
     ${JSON.stringify(analysis)}
-    
-    研讨记录：
-    ${discussion.map(m => `[${m.role}]: ${m.content}`).join('\n\n')}
     
     请使用 Markdown 格式，语气专业、客观且深度。
     使用丰富的 Emoji 增加可读性。

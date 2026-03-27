@@ -36,7 +36,7 @@ import {
   Clock,
   Layers
 } from 'lucide-react';
-import { motion, AnimatePresence } from 'motion/react';
+import { motion, AnimatePresence, useDragControls } from 'motion/react';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import { Market, MarketOverview, StockAnalysis, AgentMessage, GeminiConfig, Scenario, Catalyst, SensitivityFactor, ExpectationGap, AnalystWeight, CalculationResult, TradingPlanVersion, AgentDiscussion } from './types';
@@ -74,6 +74,8 @@ const chatPrompts = [
 
 export default function App() {
   console.log('App is rendering');
+  const [isDiscussionFullscreen, setIsDiscussionFullscreen] = useState(false);
+  const dragControls = useDragControls();
 
   // Stores
   const { config: geminiConfig, setConfig: setGeminiConfig, tokenUsage } = useConfigStore();
@@ -100,7 +102,7 @@ export default function App() {
   } = useUIStore();
 
   const {
-    marketOverview, setMarketOverview, marketLastUpdated, setMarketLastUpdated, // Added marketLastUpdated
+    marketOverviews, setMarketOverview, marketLastUpdatedTimes, setMarketLastUpdated, // Enhanced for per-market stats
     dailyReport, setDailyReport,
     historyItems, setHistoryItems,
     optimizationLogs, setOptimizationLogs
@@ -142,7 +144,12 @@ export default function App() {
       const response = await fetch('/api/feishu/send-report', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ content: report, type, data })
+        body: JSON.stringify({ 
+          content: report, 
+          type, 
+          data,
+          feishuWebhookUrl: geminiConfig.feishuWebhookUrl 
+        })
       });
 
       if (!response.ok) throw new Error('Failed to send report');
@@ -207,22 +214,33 @@ export default function App() {
   };
 
   const fetchMarketOverview = useCallback(async (forceRefresh = false) => {
-    // Only show full loading state if we don't have existing data
-    if (!marketOverview || forceRefresh) {
-      setOverviewLoading(true);
+    const currentCache = marketOverviews[overviewMarket];
+    const lastUpdate = marketLastUpdatedTimes[overviewMarket];
+    
+    // isToday check helper
+    const isToday = lastUpdate && new Date(lastUpdate).toDateString() === new Date().toDateString();
+
+    // Skip network request if we have today's valid cache and not forcing a refresh
+    if (!forceRefresh && currentCache && isToday) {
+      return;
     }
+
+    setOverviewLoading(true);
     setOverviewError(null);
     try {
       const data = await getMarketOverview(geminiConfig, overviewMarket, forceRefresh);
-      setMarketOverview(data);
-      setMarketLastUpdated(Date.now());
+      setMarketOverview(overviewMarket, data);
+      setMarketLastUpdated(overviewMarket, Date.now());
     } catch (err) {
       console.error('Failed to fetch market overview:', err);
       setOverviewError(err instanceof Error ? err.message : '无法加载市场概览。');
     } finally {
       setOverviewLoading(false);
     }
-  }, [geminiConfig, overviewMarket, setMarketOverview, setMarketLastUpdated, setOverviewError, setOverviewLoading, marketOverview]);
+  }, [geminiConfig, overviewMarket, setMarketOverview, setMarketLastUpdated, setOverviewError, setOverviewLoading, marketOverviews, marketLastUpdatedTimes]);
+
+  const marketOverview = marketOverviews[overviewMarket];
+  const marketLastUpdated = marketLastUpdatedTimes[overviewMarket];
 
   const fetchAdminData = useCallback(async () => {
     try {
@@ -404,6 +422,74 @@ export default function App() {
     }
   };
 
+  const handleExportFullReport = () => {
+    if (!analysis) return;
+    
+    const date = new Date().toLocaleString('zh-CN', { timeZone: 'Asia/Shanghai' });
+    const md = [];
+    
+    md.push(`# 📊 ${analysis.stockInfo?.name} (${analysis.stockInfo?.symbol}) 深度研报`);
+    md.push(`**生成时间**: ${date} | **市场**: ${analysis.stockInfo?.market} | **现价**: ${analysis.stockInfo?.price} ${analysis.stockInfo?.currency}`);
+    md.push(`**评级**: ${analysis.recommendation || '暂无'} | **得分**: ${analysis.score || 0}/100\n`);
+    
+    // 核心结论
+    md.push(`## 🎯 核心结论`);
+    md.push(`> ${analysis.finalConclusion || analysis.summary}\n`);
+    
+    // 交易计划
+    if (analysis.tradingPlan) {
+      md.push(`### 📈 交易计划`);
+      md.push(`- **买入区间**: ${analysis.tradingPlan.entryPrice}`);
+      md.push(`- **目标价**: ${analysis.tradingPlan.targetPrice}`);
+      md.push(`- **止损位**: ${analysis.tradingPlan.stopLoss}`);
+      md.push(`- **策略**: ${analysis.tradingPlan.strategy}\n`);
+    }
+
+    // 护城河分析
+    if (analysis.moatAnalysis && analysis.moatAnalysis.strength !== 'None') {
+      md.push(`### 🛡️ 护城河分析`);
+      md.push(`- **类型**: ${analysis.moatAnalysis.type}`);
+      md.push(`- **强度**: ${analysis.moatAnalysis.strength === 'Wide' ? '宽阔' : '狭窄'}`);
+      md.push(`- **逻辑**: ${analysis.moatAnalysis.logic}\n`);
+    }
+
+    // 基本面 & 技术面
+    md.push(`## 📖 维度分析`);
+    md.push(`### 基本面\n${analysis.fundamentalAnalysis}\n`);
+    md.push(`### 技术面\n${analysis.technicalAnalysis}\n`);
+
+    // 研讨会记录
+    if (discussionMessages && discussionMessages.length > 0) {
+      md.push(`---\n## 🎙️ AI 专家组研讨记录`);
+      discussionMessages.forEach(msg => {
+        md.push(`\n### 🧔 ${msg.role}`);
+        md.push(`${msg.content}`);
+      });
+      md.push(`\n`);
+    }
+
+    // 追问历史
+    const userChats = chatHistory;
+    if (userChats.length > 0) {
+      md.push(`---\n## 💬 深度追问会话 (Q&A)`);
+      userChats.forEach(c => {
+        if (c.role === 'user') md.push(`\n**🙋 投资人**: ${c.content}`);
+        if (c.role === 'ai') md.push(`**🤖 分析师**: ${c.content}`);
+      });
+      md.push(`\n`);
+    }
+
+    const blob = new Blob([md.join('\n')], { type: 'text/markdown' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `DeepResearch_${analysis.stockInfo?.symbol}_${new Date().toISOString().split('T')[0]}.md`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
+
   const resetToHome = () => {
     resetAnalysis();
   };
@@ -580,23 +666,11 @@ export default function App() {
 
                 <div className="flex items-center gap-2">
                   <button
-                    onClick={async () => {
-                      if (!analysis) return;
-                      const report = await getStockReport(analysis, geminiConfig);
-                      const blob = new Blob([report], { type: 'text/markdown' });
-                      const url = URL.createObjectURL(blob);
-                      const a = document.createElement('a');
-                      a.href = url;
-                      a.download = `Analysis_${analysis.stockInfo?.symbol}_${new Date().toISOString().split('T')[0]}.md`;
-                      document.body.appendChild(a);
-                      a.click();
-                      document.body.removeChild(a);
-                      URL.revokeObjectURL(url);
-                    }}
+                    onClick={handleExportFullReport}
                     className="flex items-center gap-2 px-4 py-2 rounded-xl bg-zinc-900 border border-white/10 hover:bg-zinc-800 text-zinc-300 text-sm font-medium transition-all"
                   >
                     <Download size={16} />
-                    下载报告
+                    导出全维度报告
                   </button>
                   <button
                     onClick={handleSendStockReport}
@@ -1170,22 +1244,48 @@ export default function App() {
                 </div>
               )}
 
-              {/* Floating Discussion Panel Widget (Full Screen Modal) */}
+              {/* Floating Discussion Panel Widget (Full Screen / Draggable Modal) */}
               <AnimatePresence>
                 {showDiscussion && (
-                  <motion.div
-                    initial={{ opacity: 0, scale: 0.95 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0, scale: 0.95 }}
-                    className="fixed inset-0 z-50 flex items-center justify-center p-4 md:p-8 bg-black/60 backdrop-blur-md"
-                  >
-                    <div className="w-full max-w-5xl h-[85vh] shadow-[0_0_80px_-15px_rgba(0,0,0,1)] border border-slate-700/50 rounded-[2rem] overflow-hidden flex flex-col">
+                  <div className={`fixed inset-0 z-50 flex items-center justify-center pointer-events-none ${isDiscussionFullscreen ? 'p-0' : 'p-4 md:p-8'}`}>
+                    {/* Backdrop */}
+                    {!isDiscussionFullscreen && (
+                      <motion.div 
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        className="absolute inset-0 bg-black/40 backdrop-blur-sm pointer-events-auto" 
+                        onClick={() => setShowDiscussion(false)} 
+                      />
+                    )}
+                    
+                    <motion.div
+                      drag={!isDiscussionFullscreen}
+                      dragMomentum={false}
+                      dragListener={false}
+                      dragControls={dragControls}
+                      initial={{ opacity: 0, scale: 0.95, y: 20 }}
+                      animate={{ 
+                        opacity: 1, 
+                        scale: 1, 
+                        y: 0,
+                        width: isDiscussionFullscreen ? '100%' : '100%',
+                        height: isDiscussionFullscreen ? '100%' : '85vh',
+                      }}
+                      exit={{ opacity: 0, scale: 0.95, y: 20 }}
+                      className={`relative z-10 flex flex-col overflow-hidden pointer-events-auto shadow-[0_0_80px_-15px_rgba(0,0,0,1)] bg-slate-900 border-slate-700/50 ${
+                        isDiscussionFullscreen ? 'rounded-none border-0 max-w-none' : 'rounded-[2rem] border max-w-5xl'
+                      }`}
+                    >
                       <DiscussionPanel 
                         onSendMessage={handleDiscussionQuestion}
                         onClose={() => setShowDiscussion(false)}
+                        isFullscreen={isDiscussionFullscreen}
+                        onToggleFullscreen={() => setIsDiscussionFullscreen(!isDiscussionFullscreen)}
+                        onPointerDownDrag={(e) => dragControls.start(e)}
                       />
-                    </div>
-                  </motion.div>
+                    </motion.div>
+                  </div>
                 )}
               </AnimatePresence>
 
@@ -1685,7 +1785,10 @@ export default function App() {
                     {/* Auto-Refresh and Manual Refresh controls */}
                     <div className="flex items-center gap-2 text-sm ml-4 border-l border-zinc-700/50 pl-4">
                       {marketLastUpdated && (
-                        <span className="text-zinc-500 hidden sm:inline-block">更新: {new Date(marketLastUpdated).toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' })}</span>
+                        <span className="text-zinc-500 hidden sm:inline-block">
+                          数据时间: {new Date(marketLastUpdated).toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' })}
+                          {new Date(marketLastUpdated).toDateString() === new Date().toDateString() ? ' (今日)' : ''}
+                        </span>
                       )}
                       <select
                         value={autoRefreshInterval}
@@ -1779,9 +1882,9 @@ export default function App() {
                         setOverviewLoading(true);
                         setOverviewError(null);
                         // The useEffect will handle the fetch if we trigger a state change or just call it directly
-                        getMarketOverview(geminiConfig)
+                        getMarketOverview(geminiConfig, overviewMarket)
                           .then(data => {
-                            setMarketOverview(data);
+                            setMarketOverview(overviewMarket, data);
                             setOverviewError(null);
                           })
                           .catch(err => {

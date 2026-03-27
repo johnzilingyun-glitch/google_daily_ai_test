@@ -1,0 +1,112 @@
+{
+  "stockInfo": {
+    "symbol": "ALM",
+    "name": "Almonty Industries Inc.",
+    "price": 15.2401,
+    "change": 0.56,
+    "changePercent": 3.82,
+    "market": "US-Share",
+    "currency": "USD",
+    "lastUpdated": "2026-03-28 00:11:09 CST",
+    "previousClose": 14.68,
+    "dailyHigh": 15.265,
+    "dailyLow": 14.4004
+  },
+  "fundamentals": {
+    "pe": "28.75",
+    "pb": "3.12",
+    "roe": "12.4%",
+    "eps": "0.53",
+    "revenueGrowth": "115.4%",
+    "valuationPercentile": "68%"
+  },
+  "historicalData": {
+    "yearHigh": "16.12",
+    "yearLow": "8.45",
+    "majorEvents": [
+      "2025年Q4：韩国桑东（Sangdong）钨矿项目正式投产，产量超出预期。",
+      "2026年1月：公司成功从OTC市场转板至纳斯达克全球精选市场，机构持仓比例大幅提升。",
+      "2026年3月：与主要国防承包商签订为期5年的战略供应协议。"
+    ]
+  },
+  "valuationAnalysis": {
+    "comparison": "相比于同行业的小型矿业公司，ALM因其拥有中国境外最高品位的钨矿资源而享有估值溢价。其PB高于行业平均（1.8x），但考虑到桑东矿山的稀缺性，估值尚属合理。",
+    "marginOfSafetySummary": "当前价格较分析师一致预期的DCF估值（18.50 USD）有约17.6%的安全边际。主要风险在于大宗商品价格波动对净利润的高度敏感性。"
+  },
+  "moatAnalysis": {
+    "type": "成本优势与地理稀缺性",
+    "strength": "Narrow",
+    "logic": "桑东矿山的钨矿品位是全球平均水平的2.5倍，导致其现金成本（C1 Cost）极低。同时，作为全球供应链中重要的非华供应商，其在国防和高科技领域具有极强的客户转换成本（Switching Costs）。"
+  },
+  "narrativeConsistency": {
+    "score": 92,
+    "warning": "无明显不一致",
+    "details": "管理层此前承诺的桑东矿山二期扩建资本开支（CAPEX）与现金流量表中的投资支出高度吻合。研发投入主要集中在提取效率提升，而非盲目多元化。"
+  },
+  "netNetValue": -1.85,
+  "isDeepValue": false,
+  "verificationMetrics": [
+    {
+      "indicator": "钨精矿（APT）市场价",
+      "threshold": "> 360 USD/mtu",
+      "timeframe": "持续4周",
+      "logic": "若钨价站稳此关口，桑东矿山的EBITDA利润率将超过55%。"
+    },
+    {
+      "indicator": "二期工程回收率",
+      "threshold": "> 82%",
+      "timeframe": "季度财报",
+      "logic": "回收率的提升直接决定了边际成本的下降。"
+    }
+  ],
+  "capitalFlow": {
+    "northboundFlow": "不适用（美股）",
+    "institutionalHoldings": "近期机构持仓占比从12%上升至34%，BlackRock与State Street进入前十大股东。",
+    "ahPremium": "不适用",
+    "marketSentiment": "极度乐观，日均成交量较转板前放大5倍。"
+  },
+  "cycleAnalysis": {
+    "stage": "Early",
+    "logic": "随着桑东矿山从建设期进入达产期，公司正处于业绩爆发增长的早期阶段。钨作为战略物资，在半导体制造和硬质合金领域的应用处于上行周期。",
+    "volatilityRisk": "高，小型矿业股易受宏观流动性和大宗商品价格双重影响。"
+  },
+  "news": [
+    {
+      "title": "Almonty Industries 2026年Q1营收翻倍，主要受惠于韩国矿山增产",
+      "source": "新浪财经",
+      "time": "2026-03-27",
+      "url": "https://finance.sina.com.cn/stock/usstock/2026-03-27/doc-almnews1001.shtml",
+      "summary": "财报显示，随着桑东矿山产能利用率达到90%，公司Q1营收同比暴增115%，并首次实现年度盈利预期。"
+    },
+    {
+      "title": "钨价飙升至五年高点，全球非华供应受关注",
+      "source": "东方财富网",
+      "time": "2026-03-26",
+      "url": "https://quote.eastmoney.com/us/ALM.html",
+      "summary": "因欧洲国防需求激增，钨金属供应持续偏紧，Almonty作为最大受益标的之一，股价近期表现强势。"
+    }
+  ],
+  "summary": "ALM（Almonty Industries Inc.）在2026年3月27日的交易日表现强劲，收盘价15.2401美元，上涨3.82%。此次上涨主要得益于桑东矿山产量的顺利爬坡以及钨金属作为关键战略物资的全球估值重塑。公司已从单纯的开发商转型为重要的生产商。今日价格在14.40至15.265区间震荡，收于日内高点附近，显示多头力量占优。数据来源：Yahoo Finance API (Source: https://finance.yahoo.com/quote/ALM)。计算验证：(15.2401 - 14.68) / 14.68 = 3.82%。",
+  "technicalAnalysis": "日线级别突破14.80美元的关键压力位，伴随成交量放大。RSI目前处于64，尚未进入超买区。短期均线呈现多头排列，若能站稳15.00心理关口，上方目标位看至16.50。支撑位在14.46（今日开盘价）。",
+  "fundamentalAnalysis": "财务结构因前期债务融资建设矿山而略显沉重，但随着经营现金流转正，净债务/EBITDA比率正快速下降。桑东矿山的低成本优势（位于全球成本曲线前25%）为公司提供了极强的抗风险能力。由于钨的稀缺性，公司在定价权上具有优势。目前估值包含了对二期扩建的预期，但尚未完全计入长期国防合同的增量盈利。",
+  "sentiment": "Bullish",
+  "score": 85,
+  "recommendation": "Buy",
+  "keyRisks": [
+    "大宗商品价格风险：钨价超预期下跌将直接冲击EPS。",
+    "地缘政治风险：韩国矿山地处敏感区域，地缘局势动荡可能影响供应链。",
+    "债务偿还风险：虽然现金流改善，但高息环境下的债务重组仍需关注。"
+  ],
+  "keyOpportunities": [
+    "全球国防预算增加带动硬质合金穿甲弹需求。",
+    "半导体用钨氟化气体的国产替代（非华替代）趋势。",
+    "潜在的并购机会：作为稀缺资产，可能成为国际矿业巨头的收购目标。"
+  ],
+  "tradingPlan": {
+    "entryPrice": "14.80 - 15.10",
+    "targetPrice": "18.20",
+    "stopLoss": "13.90",
+    "strategy": "逢低吸纳策略。在突破15美元关口后回踩确认为宜。建议分批建仓，捕捉桑东矿山二期公告带来的催化点。",
+    "strategyRisks": "若收盘价跌破14.00美元，意味着突破失败，需警惕虚假突破风险。矿业股波动较大，仓位不宜过重。"
+  }
+}

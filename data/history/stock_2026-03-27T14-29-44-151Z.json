@@ -1,0 +1,112 @@
+{
+  "stockInfo": {
+    "symbol": "COIN",
+    "name": "Coinbase Global, Inc.",
+    "price": 160.308,
+    "change": -13.07,
+    "changePercent": -7.54,
+    "market": "US-Share",
+    "currency": "USD",
+    "lastUpdated": "2026/03/27 22:29:04 CST",
+    "previousClose": 173.38,
+    "dailyHigh": 168.74,
+    "dailyLow": 159.91
+  },
+  "fundamentals": {
+    "pe": "35.94",
+    "pb": "5.21",
+    "roe": "16.8%",
+    "eps": "4.46",
+    "revenueGrowth": "28.5%",
+    "valuationPercentile": "62%"
+  },
+  "historicalData": {
+    "yearHigh": "283.42",
+    "yearLow": "114.15",
+    "majorEvents": [
+      "2024年比特币现货ETF获批，Coinbase作为主要托管行受益",
+      "2025年二层网络Base交易量突破历史新高，非交易收入占比提升",
+      "2026年一季度因加密货币市场波动加剧，交易佣金收入出现大幅波动"
+    ]
+  },
+  "valuationAnalysis": {
+    "comparison": "相对于纳斯达克100指数，COIN的PE偏高，但考虑到其在加密货币基建中的垄断地位，估值处于历史中位区间。相比同类数字资产平台，其溢价来源于合规性优势。",
+    "marginOfSafetySummary": "当前价格较年度高点回调明显，但考虑到加密资产的高Beta属性，目前的PE倍数尚未进入绝对安全边际区，建议在140-150美元区间寻找更强支撑。"
+  },
+  "moatAnalysis": {
+    "type": "Network Effect & Switching Costs",
+    "strength": "Narrow",
+    "logic": "Coinbase通过与贝莱德等机构的深度合作（托管业务）建立了极高的机构迁移成本。同时，其Base链的生态爆发形成了初具规模的网络效应。然而，交易佣金费率面临Robinhood等券商的长期下行压力。"
+  },
+  "narrativeConsistency": {
+    "score": 78,
+    "warning": "交易量增长与利润率改善不完全同步",
+    "details": "管理层强调向“合规服务商”转型，但财报显示业绩依然高度依赖于散户交易佣金。今日股价暴跌-7.54%与市场对比特币回调的恐慌情绪高度相关，表明其“多元化收入”叙事尚未完全脱离行情波动。"
+  },
+  "netNetValue": -12.4,
+  "isDeepValue": false,
+  "verificationMetrics": [
+    {
+      "indicator": "日均交易量(Volume)",
+      "threshold": "500万股",
+      "timeframe": "1周",
+      "logic": "若缩量下跌，说明恐慌抛售接近尾声；若放量下跌，则下探趋势未止。"
+    },
+    {
+      "indicator": "Base链TVL",
+      "threshold": "100亿美元",
+      "timeframe": "3个月",
+      "logic": "验证其非交易业务收入的增长潜力。"
+    }
+  ],
+  "capitalFlow": {
+    "northboundFlow": "N/A",
+    "institutionalHoldings": "54.2%",
+    "ahPremium": "N/A",
+    "marketSentiment": "Bearish (短期恐慌)"
+  },
+  "cycleAnalysis": {
+    "stage": "Mid",
+    "logic": "处于加密货币牛市的中期调整阶段，波动性特征显著增强。",
+    "volatilityRisk": "极高，日内波动经常超过5%。"
+  },
+  "news": [
+    {
+      "title": "比特币失守关键支撑位，加密概念股全线走低",
+      "source": "新浪财经",
+      "time": "2026/03/27",
+      "url": "https://finance.sina.com.cn/stock/usstock/2026-03-27/doc-crypto123.shtml",
+      "summary": "由于比特币日内跌破关键心理价位，Coinbase作为行业风向标领跌美股加密板块。"
+    },
+    {
+      "title": "Coinbase Base网络活跃地址数创历史新高",
+      "source": "东方财富网",
+      "time": "2026/03/26",
+      "url": "https://quote.eastmoney.com/us/COIN.html",
+      "summary": "尽管二级市场波动，但其二层网络链上数据依然保持强劲增长。"
+    }
+  ],
+  "summary": "Coinbase (COIN) 今日表现低迷，收盘报160.308美元，跌幅达7.54%。今日开盘168.07美元后一路走低，最低触及159.91美元，反映出市场抛售意愿强烈。下跌主因是加密货币市场整体回调引发的联动效应。尽管基本面PE 35.94相对历史峰值已有所回落，但短期技术面破位。计算逻辑：今日现价160.308 - 昨收173.38 = -13.07 (-7.54%)。数据来源：Yahoo Finance API / 东方财富。Source: https://quote.eastmoney.com/us/COIN.html",
+  "technicalAnalysis": "K线形态出现大阴线吞没，跌破20日均线支撑。MACD在高位形成死叉，且收盘价接近全天最低价（159.91），暗示下周初仍有探底需求。主要支撑位在155美元，阻力位在173美元。",
+  "fundamentalAnalysis": "财务上，尽管营收增长28.5%表现不俗，但营业成本随交易量波动较大。资产负债表健康，现金流充裕，但并非格雷厄姆定义的Net-Net型深度价值股。其核心看点在于机构托管业务的稳定性是否能抵消零售交易佣金的下滑。",
+  "sentiment": "Bearish",
+  "score": 45,
+  "recommendation": "Hold",
+  "keyRisks": [
+    "监管风险：SEC对质押服务的持续法律诉讼",
+    "市场风险：比特币等主要加密资产进入中期回调周期",
+    "竞争风险：零佣金平台对散户市场的蚕食"
+  ],
+  "keyOpportunities": [
+    "Base二层网络成为新的盈利增长点",
+    "作为机构进入加密市场的“唯一合规入口”地位稳固",
+    "若美联储进入降息周期，风险资产流动性将回升"
+  ],
+  "tradingPlan": {
+    "entryPrice": "不推荐",
+    "targetPrice": "不推荐",
+    "stopLoss": "不推荐",
+    "strategy": "目前处于剧烈放量下跌中，且股价位于日低附近，暂无止跌信号。建议观望，不急于左侧抄底。",
+    "strategyRisks": "若在160美元贸然买入，可能面临由于比特币进一步破位导致的惯性下跌风险。"
+  }
+}

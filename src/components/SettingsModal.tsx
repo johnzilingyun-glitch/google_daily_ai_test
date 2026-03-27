@@ -1,5 +1,5 @@
 import React from 'react';
-import { X, Settings, ShieldCheck, Cpu } from 'lucide-react';
+import { X, Settings, ShieldCheck, Cpu, Share2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { useConfigStore } from '../stores/useConfigStore';
 import { useUIStore } from '../stores/useUIStore';
@@ -87,6 +87,30 @@ export function SettingsModal() {
 
             {/* Content - Scrollable area */}
             <div className="max-h-[70vh] overflow-y-auto p-6 space-y-6 custom-scrollbar">
+              {/* Feishu Notification Section */}
+              <section className="space-y-4">
+                <div className="flex items-center gap-2 text-sm font-medium text-white/60">
+                  <Share2 size={16} />
+                  <span>飞书研报推送配置</span>
+                </div>
+                <div className="rounded-2xl border border-white/5 bg-white/5 p-4">
+                  <p className="text-sm text-white/70 leading-relaxed mb-4">
+                    配置飞书群机器人 Webhook，自动将专家组研讨总结与每日早报推送至指定群聊。
+                  </p>
+                  <input
+                    type="password"
+                    placeholder="https://open.feishu.cn/open-apis/bot/v2/hook/..."
+                    id="feishu-webhook-input"
+                    value={config.feishuWebhookUrl || ''}
+                    onChange={(e) => setConfig({ ...config, feishuWebhookUrl: e.target.value })}
+                    className="w-full rounded-xl border border-white/10 bg-black/50 px-4 py-2.5 text-sm text-white placeholder-white/30 focus:border-emerald-500/50 focus:outline-none focus:ring-1 focus:ring-emerald-500/50 transition-all font-mono"
+                  />
+                  <p className="mt-2 text-[10px] text-white/30 italic">
+                    提示：在飞书群中添加“自定义机器人”并开启“Webhook”功能。
+                  </p>
+                </div>
+              </section>
+
               {/* API Key Section */}
               <section className="space-y-4">
                 <div className="flex items-center gap-2 text-sm font-medium text-white/60">

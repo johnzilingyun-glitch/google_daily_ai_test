@@ -107,41 +107,93 @@ async function startServer() {
 
   // Feishu Webhook endpoint
   app.post('/api/feishu/send-report', async (req, res) => {
-    const { content } = req.body;
-    const webhookUrl = process.env.FEISHU_WEBHOOK_URL;
+    const { content, feishuWebhookUrl } = req.body;
+    // Prioritize URL from client request, fallback to environment variable
+    const webhookUrl = feishuWebhookUrl || process.env.FEISHU_WEBHOOK_URL;
 
     if (!webhookUrl) {
-      return res.status(500).json({ error: 'FEISHU_WEBHOOK_URL is not configured' });
+      return res.status(500).json({ error: '飞书 Webhook 未配置。请在系统设置中填入 Webhook URL。' });
     }
 
     if (!content) {
-      return res.status(400).json({ error: 'Content is required' });
+      return res.status(400).json({ error: '内容不能为空' });
+    }
+
+    // Feishu character limit is around 30k chars. Truncate if necessary to avoid API failure.
+    const TRUNCATE_LIMIT = 28000;
+    let finalContent = content;
+    if (finalContent.length > TRUNCATE_LIMIT) {
+      finalContent = finalContent.substring(0, TRUNCATE_LIMIT) + '\n\n... (由于长度确认，已截断剩余内容)';
     }
 
     try {
+      // Determine card title and template based on report type
+      let title = 'AI 交易研报';
+      let template = 'blue';
+
+      if (req.body.type === 'daily') {
+        title = '📅 市场晨间内参';
+        template = 'orange';
+      } else if (req.body.type === 'discussion') {
+        title = '🚀 联席专家研报总结';
+        template = 'indigo';
+      } else if (req.body.type === 'chat') {
+        title = '🧠 深度追问解答';
+        template = 'turquoise';
+      } else if (req.body.type === 'stock') {
+        title = '🔍 个股速览报告';
+        template = 'green';
+      }
+
       const response = await fetch(webhookUrl, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          msg_type: 'text',
-          content: {
-            text: content,
+          msg_type: 'interactive',
+          card: {
+            header: {
+              title: {
+                tag: 'plain_text',
+                content: title,
+              },
+              template: template,
+            },
+            elements: [
+              {
+                tag: 'div',
+                text: {
+                  tag: 'lark_md',
+                  content: finalContent,
+                },
+              },
+              {
+                tag: 'hr',
+              },
+              {
+                tag: 'note',
+                elements: [
+                  {
+                    tag: 'plain_text',
+                    content: `由 TradingAgents AI 专家组生成 • ${new Date().toLocaleString()}`,
+                  },
+                ],
+              },
+            ],
           },
         }),
       });
 
       const data = await response.json();
-      // Feishu returns code 0 on success
       if (data.code !== 0) {
-        throw new Error(data.msg || 'Feishu API error');
+        throw new Error(data.msg || 'Feishu API 返回错误');
       }
 
       res.json({ success: true });
     } catch (error) {
       console.error('Feishu Webhook Error:', error);
-      res.status(500).json({ error: 'Failed to send report to Feishu' });
+      res.status(500).json({ error: '无法发送报告至飞书，请检查 Webhook URL 是否正确。' });
     }
   });
 
@@ -384,6 +436,18 @@ async function startServer() {
       let result: any;
       try {
         result = await yahooFinance.quote(yfSymbol);
+        
+        // Strict market validation
+        if (result && result.symbol) {
+          const symMatch = result.symbol.toUpperCase();
+          if (market === 'A-Share' && !(symMatch.endsWith('.SS') || symMatch.endsWith('.SZ') || symMatch.endsWith('.BJ'))) {
+            console.log(`Quote found ${symMatch} but it is not an A-Share. Discarding.`);
+            result = null;
+          } else if (market === 'HK-Share' && !symMatch.endsWith('.HK')) {
+            console.log(`Quote found ${symMatch} but it is not a HK-Share. Discarding.`);
+            result = null;
+          }
+        }
       } catch (e) {
         console.log(`Quote failed for ${yfSymbol}, trying search...`);
       }
@@ -399,20 +463,28 @@ async function startServer() {
         }
 
         if (searchResults.quotes && searchResults.quotes.length > 0) {
-          // Find the best match for the requested market
+          // Find the best match for the requested market strictly
           const bestMatch = searchResults.quotes.find((q: any) => {
-            if (market === 'A-Share') return q.symbol.endsWith('.SS') || q.symbol.endsWith('.SZ') || q.symbol.endsWith('.BJ');
-            if (market === 'HK-Share') return q.symbol.endsWith('.HK');
+            const symMatch = (q.symbol || '').toUpperCase();
+            if (market === 'A-Share') return symMatch.endsWith('.SS') || symMatch.endsWith('.SZ') || symMatch.endsWith('.BJ');
+            if (market === 'HK-Share') return symMatch.endsWith('.HK');
+            // If US or other, we don't strictly filter
+            if (market === 'US-Share') return !symMatch.endsWith('.SS') && !symMatch.endsWith('.SZ') && !symMatch.endsWith('.HK');
             return true;
-          }) || searchResults.quotes[0];
+          });
           
-          console.log(`Search found best match: ${bestMatch.symbol} for ${symbol}`);
-          result = await yahooFinance.quote(bestMatch.symbol as any);
+          if (bestMatch) {
+            console.log(`Search found best match: ${bestMatch.symbol} for ${symbol}`);
+            result = await yahooFinance.quote(bestMatch.symbol as any);
+          } else {
+            console.log(`Search yielded quotes but none matched the requested market (${market}).`);
+            result = null;
+          }
         }
       }
       
       if (!result) {
-        throw new Error(`No data returned from Yahoo Finance for ${yfSymbol} or search ${symbol}`);
+        return res.status(404).json({ error: `无法找到股票代码或简称 "${symbol}" 的相关数据，请检查后重试。` });
       }
 
       // Robustness check for changePercent (Yahoo sometimes returns decimal like 0.0118 instead of 1.18)

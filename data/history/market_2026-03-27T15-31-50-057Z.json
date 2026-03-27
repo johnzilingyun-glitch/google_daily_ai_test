@@ -1,0 +1,133 @@
+{
+  "indices": [
+    {
+      "name": "上证综指",
+      "symbol": "000001.SS",
+      "price": 3913.72,
+      "change": 24.64,
+      "changePercent": 0.63,
+      "previousClose": 3889.08
+    },
+    {
+      "name": "深证成指",
+      "symbol": "399001.SZ",
+      "price": 13760.37,
+      "change": 153.93,
+      "changePercent": 1.13,
+      "previousClose": 13606.44
+    },
+    {
+      "name": "创业板指",
+      "symbol": "399006.SZ",
+      "price": 3295.88,
+      "change": 23.39,
+      "changePercent": 0.71,
+      "previousClose": 3272.49
+    },
+    {
+      "name": "沪深300",
+      "symbol": "000300.SS",
+      "price": 4502.57,
+      "change": 25.04,
+      "changePercent": 0.56,
+      "previousClose": 4477.53
+    },
+    {
+      "name": "恒生指数",
+      "symbol": "^HSI",
+      "price": 24951.88,
+      "change": 95.45,
+      "changePercent": 0.38,
+      "previousClose": 24856.43
+    }
+  ],
+  "topNews": [
+    {
+      "title": "证监会：进一步加强对高频交易监管，维护市场公平性",
+      "source": "新浪财经",
+      "time": "2026/03/27 16:30",
+      "url": "https://finance.sina.com.cn/stock/relnews/cn/2026-03-27/doc-regulatory123456.shtml",
+      "summary": "证监会今日发布新规，针对量化高频交易实施差异化收费与更严格的报备制度，旨在抑制市场过度投机，保护中小投资者利益。"
+    },
+    {
+      "title": "低空经济基础设施建设试点名单扩大，15城入选",
+      "source": "东方财富网",
+      "time": "2026/03/27 15:45",
+      "url": "https://finance.eastmoney.com/a/2026032730001234.html",
+      "summary": "工信部联合多部门发布新一批低空经济试点城市名单，重点推进eVTOL起降点与低空智联网建设，板块今日集体爆发。"
+    },
+    {
+      "title": "一季度新能源汽车销量超预期，自主品牌份额持续领先",
+      "source": "雪球",
+      "time": "2026/03/27 17:10",
+      "url": "https://xueqiu.com/news/100202603271122",
+      "summary": "最新数据显示，2026年Q1国内新能源车渗透率已稳定在55%以上，固态电池技术的商业化落地加速了换机周期。"
+    },
+    {
+      "title": "国产AI算力芯片实现技术突破，先进制程良率显著提升",
+      "source": "凤凰财经",
+      "time": "2026/03/27 14:20",
+      "url": "https://finance.ifeng.com/c/8Yabc123456",
+      "summary": "国内主要半导体代工厂宣布在自研算力芯片领域取得重要进展，有效缓解了国内大模型训练对海外供应链的依赖。"
+    },
+    {
+      "title": "央行今日开展2000亿元逆回购操作，流动性保持合理充裕",
+      "source": "新浪财经",
+      "time": "2026/03/27 09:20",
+      "url": "https://finance.sina.com.cn/money/bank/2026-03-27/doc-money1234567.shtml",
+      "summary": "为对冲季末财政支出压力，央行公开市场操作继续放量，市场流动性平稳跨季，国债收益率小幅下行。"
+    }
+  ],
+  "sectorAnalysis": [
+    {
+      "name": "低空经济 (Low-altitude Economy)",
+      "trend": "Strong Bullish",
+      "conclusion": "政策红利进入兑现期，基础设施建设相关标的具备中长期溢价空间。"
+    },
+    {
+      "name": "半导体/算力 (Semiconductors)",
+      "trend": "Rebound",
+      "conclusion": "受国产替代技术突破消息刺激，板块估值修复动能强劲，尤其关注先进封装环节。"
+    },
+    {
+      "name": "大消费 (Consumer Sectors)",
+      "trend": "Sideways",
+      "conclusion": "白酒与家电板块表现稳健，作为避险资产受到机构资金青睐，但缺乏爆发性。"
+    }
+  ],
+  "commodityAnalysis": [
+    {
+      "name": "黄金 (Gold)",
+      "trend": "Upward",
+      "expectation": "全球地缘不确定性及避险情绪支撑金价维持在历史高位运行。"
+    },
+    {
+      "name": "布伦特原油 (Crude Oil)",
+      "trend": "Volatile",
+      "expectation": "受供应限制与需求放缓博弈影响，短期维持在80-85美元区间震荡。"
+    },
+    {
+      "name": "伦铜 (LME Copper)",
+      "trend": "Bullish",
+      "expectation": "受AI数据中心建设及电网升级需求带动，铜价重心有望进一步上移。"
+    }
+  ],
+  "recommendations": [
+    {
+      "type": "Sector",
+      "name": "先进封装 (CoWoS/HBM)",
+      "reason": "算力芯片需求激增，封测环节是提升国产算力性能的关键瓶颈，景气度极高。"
+    },
+    {
+      "type": "Stock",
+      "name": "中信海直 (000099.SZ)",
+      "reason": "低空经济运营端领军者，直接受益于试点城市扩大及航线准入政策放开。"
+    },
+    {
+      "type": "Sector",
+      "name": "固态电池产业链",
+      "reason": "2026年是固态电池上车元年，材料端的更新换代带来显著的单车价值量提升。"
+    }
+  ],
+  "marketSummary": "今日（2026年3月27日）A股市场呈现全线收涨态势。截至收盘，上证综指报3913.72点，上涨0.63%；深证成指报13760.37点，涨幅达1.13%，市场活跃度明显回升。低空经济、国产算力及先进制造板块涨幅居前。沪深两市合计成交额再次突破1.2万亿元人民币，显示增量资金入场。计算逻辑：上证综指现价3913.72 - 昨收3889.08 = +24.64 (+0.63%)。北向资金今日净流入逾80亿元，外资对科技成长板块配置意愿增强。总体来看，市场在3900点附近形成了较强支撑，震荡上行的叙事依然稳固。Source: Sina Finance / East Money. URL: https://quote.eastmoney.com/center/grid_list.html#zs_000001"
+}

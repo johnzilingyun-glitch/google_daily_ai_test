@@ -264,4 +264,5 @@ export interface AgentDiscussion {
 export interface GeminiConfig {
   model: string;
   apiKey?: string;
+  feishuWebhookUrl?: string;
 }

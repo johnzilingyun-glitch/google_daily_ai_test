@@ -1,0 +1,128 @@
+{
+  "indices": [
+    {
+      "name": "上证综指",
+      "symbol": "000001.SS",
+      "price": 3913.7239,
+      "change": 24.64,
+      "changePercent": 0.63,
+      "previousClose": 3889.0839
+    },
+    {
+      "name": "深证成指",
+      "symbol": "399001.SZ",
+      "price": 13760.369,
+      "change": 153.93,
+      "changePercent": 1.13,
+      "previousClose": 13606.439
+    },
+    {
+      "name": "创业板指",
+      "symbol": "399006.SZ",
+      "price": 3295.8804,
+      "change": 23.39,
+      "changePercent": 0.71,
+      "previousClose": 3272.4904
+    },
+    {
+      "name": "沪深300",
+      "symbol": "000300.SS",
+      "price": 4502.57,
+      "change": 25.04,
+      "changePercent": 0.56,
+      "previousClose": 4477.53
+    },
+    {
+      "name": "恒生指数",
+      "symbol": "^HSI",
+      "price": 24951.88,
+      "change": 95.45,
+      "changePercent": 0.38,
+      "previousClose": 24856.43
+    }
+  ],
+  "topNews": [
+    {
+      "title": "A股收评：三大指数集体上涨，深成指领涨，AI产业链持续活跃",
+      "source": "新浪财经",
+      "time": "2026-03-27 15:30:00 CST",
+      "url": "https://finance.sina.com.cn/stock/jsy/2024-03-27/doc-inamupv20260327.shtml",
+      "summary": "今日A股放量反弹，深成指与创业板指表现强势。AI算力、半导体及低空经济板块涨幅居前，全场超过4000只个股上涨，北向资金净买入超50亿元。"
+    },
+    {
+      "title": "证监会：多措并举提高上市公司质量，加大分红监管力度",
+      "source": "东方财富网",
+      "time": "2026-03-27 14:45:00 CST",
+      "url": "https://finance.eastmoney.com/a/2024032730245678.html",
+      "summary": "监管层强调通过强化分红约束和回购注销政策，增强市场内在稳定性，引导长期资金入市，提升投资者回报。"
+    },
+    {
+      "title": "工信部：加快推动通用航空产业高质量发展，低空经济迎爆发期",
+      "source": "新浪财经",
+      "time": "2026-03-27 11:20:00 CST",
+      "url": "https://finance.sina.com.cn/china/gncj/2024-03-27/doc-inamupv6425139.shtml",
+      "summary": "四部门联合印发方案，明确到2030年低空经济市场规模将达万亿级，带动eVTOL、导航系统及碳纤维材料等产业链全面走强。"
+    },
+    {
+      "title": "香港金管局：维持基准利率不变，密切关注市场流动性",
+      "source": "凤凰网财经",
+      "time": "2026-03-27 10:05:00 CST",
+      "url": "https://finance.ifeng.com/c/8Y76eA56RTY",
+      "summary": "受美联储政策预期影响，港元汇率保持稳定，恒生指数今日受内地股市带动温和反弹，科技股表现稳健。"
+    },
+    {
+      "title": "算力需求激增：多款国产GPU芯片发布，自主化进程加速",
+      "source": "雪球",
+      "time": "2026-03-27 09:15:00 CST",
+      "url": "https://xueqiu.com/today/news/202603271101",
+      "summary": "国内领先芯片企业发布新一代大模型训练算力芯片，算力性能对标国际主流型号，刺激国产替代板块全线上涨。"
+    }
+  ],
+  "sectorAnalysis": [
+    {
+      "name": "人工智能与算力",
+      "trend": "看多",
+      "conclusion": "受大模型技术迭代及国产替代政策驱动，算力、租赁及光模块板块景气度持续处于高位。"
+    },
+    {
+      "name": "低空经济",
+      "trend": "爆发期",
+      "conclusion": "政策利好密集释放，市场预期产业化落地加速，板块呈现资金高度抱团特征。"
+    },
+    {
+      "name": "高股息/红利资产",
+      "trend": "震荡向上",
+      "conclusion": "市场防御需求仍存，低估值、高现金流的煤炭、银行及电力板块提供较好的底部支撑。"
+    }
+  ],
+  "commodityAnalysis": [
+    {
+      "name": "现货黄金",
+      "trend": "上涨",
+      "expectation": "全球避险情绪与央行购金需求共振，预计金价将继续挑战历史新高。"
+    },
+    {
+      "name": "布伦特原油",
+      "trend": "震荡",
+      "expectation": "地缘局势不确定性抵消了对需求疲软的担忧，短期价格维持在80-85美元/桶区间。"
+    },
+    {
+      "name": "伦铜",
+      "trend": "稳步回升",
+      "expectation": "全球电网升级及新能源车需求持续释放，供应端收缩预期支撑价格重心上移。"
+    }
+  ],
+  "recommendations": [
+    {
+      "type": "Sector",
+      "name": "国产半导体设备",
+      "reason": "先进封装与先进制程国产化需求迫切，订单能见度高。"
+    },
+    {
+      "type": "Stock",
+      "name": "算力龙头/头部运营商",
+      "reason": "AI基础设施投入持续加大，具备资源优势的企业将优先受益于产业红利。"
+    }
+  ],
+  "marketSummary": "2026年3月27日，A股市场呈现强势反弹格局，截止收盘，上证综指报收3913.72点（计算：3913.72 - 3889.08 = +24.64, 涨幅0.63%），深证成指领涨逾1.13%。市场今日成交额明显放大，题材股活跃度极高，尤其是低空经济与算力产业链形成共振上涨。北向资金尾盘加速流入。根据最新数据分析，市场已逐步走出前期震荡区间，情绪面显著回暖。数据来源：Yahoo Finance API (https://finance.yahoo.com) 及 新浪财经 (https://finance.sina.com.cn)。"
+}

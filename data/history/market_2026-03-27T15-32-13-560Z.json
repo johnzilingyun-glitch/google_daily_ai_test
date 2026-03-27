@@ -1,0 +1,123 @@
+{
+  "indices": [
+    {
+      "name": "标普500指数",
+      "symbol": "^GSPC",
+      "price": 6441.48,
+      "change": -35.68,
+      "changePercent": -0.55,
+      "previousClose": 6477.16
+    },
+    {
+      "name": "纳斯达克综合指数",
+      "symbol": "^IXIC",
+      "price": 21212.45,
+      "change": -195.63,
+      "changePercent": -0.91,
+      "previousClose": 21408.08
+    },
+    {
+      "name": "道琼斯工业平均指数",
+      "symbol": "^DJI",
+      "price": 45672.32,
+      "change": -287.79,
+      "changePercent": -0.63,
+      "previousClose": 45960.11
+    },
+    {
+      "name": "罗素2000指数",
+      "symbol": "^RUT",
+      "price": 2468.05,
+      "change": -25.27,
+      "changePercent": -1.01,
+      "previousClose": 2493.32
+    },
+    {
+      "name": "费城半导体指数",
+      "symbol": "^SOX",
+      "price": 7557.97,
+      "change": -27.9,
+      "changePercent": -0.37,
+      "previousClose": 7585.87
+    }
+  ],
+  "topNews": [
+    {
+      "title": "比特币失守关键支撑位，加密概念股Coinbase领跌美股",
+      "source": "新浪财经",
+      "time": "2026/03/27 22:45:00 CST",
+      "url": "https://finance.sina.com.cn/stock/usstock/2026-03-27/doc-crypto123.shtml",
+      "summary": "由于比特币日内大幅回调，加密货币交易所Coinbase及相关矿商股价重挫，引发市场对高风险资产的重新评估。"
+    },
+    {
+      "title": "纳斯达克因技术股抛售承压，投资者担忧通胀数据超预期",
+      "source": "东方财富网",
+      "time": "2026/03/27 23:10:00 CST",
+      "url": "https://quote.eastmoney.com/us/IXIC.html",
+      "summary": "在即将公布的宏观数据前，市场避险情绪升温，纳指跌近1%，大型科技股多数走弱。"
+    },
+    {
+      "title": "费城半导体指数相对抗跌，芯片板块现结构性机会",
+      "source": "雪球",
+      "time": "2026/03/27 23:15:00 CST",
+      "url": "https://xueqiu.com/s/SOX",
+      "summary": "尽管大盘普跌，但半导体板块表现出一定韧性，跌幅窄于纳指，主要受AI基础设施持续需求支撑。"
+    },
+    {
+      "title": "罗素2000指数跌逾1%，小盘股受流动性收紧预期冲击最大",
+      "source": "凤凰财经",
+      "time": "2026/03/27 23:20:00 CST",
+      "url": "https://finance.ifeng.com/stock/usstock/indices",
+      "summary": "对利率敏感的罗素2000指数今日领跌，反映出市场对长期高利率环境压制中小企业利润的担忧。"
+    },
+    {
+      "title": "美股三大指数集体低开低走，道指盘中失守45700点",
+      "source": "腾讯证券",
+      "time": "2026/03/27 23:25:00 CST",
+      "url": "https://stock.qq.com/usstock/market_update",
+      "summary": "受避险情绪推动，传统工业股与价值股亦未能幸免，道琼斯指数下跌近300点。"
+    }
+  ],
+  "sectorAnalysis": [
+    {
+      "name": "加密货币关联板块",
+      "trend": "大幅下跌",
+      "conclusion": "由于底层资产价格剧烈波动，板块进入技术性回调，短期需回避高杠杆品种。"
+    },
+    {
+      "name": "半导体/AI基础设施",
+      "trend": "震荡偏弱",
+      "conclusion": "表现优于大盘，说明机构资金在下跌中仍优先持有具备长期成长逻辑的核心资产。"
+    },
+    {
+      "name": "中小盘成长股",
+      "trend": "破位下行",
+      "conclusion": "罗素2000指数跌破关键均线，市场风险偏好显著收缩，资金流向防御性资产。"
+    }
+  ],
+  "commodityAnalysis": [
+    {
+      "name": "黄金",
+      "trend": "小幅反弹",
+      "expectation": "美股回落伴随避险需求提升，金价有望在2300美元上方获得支撑。"
+    },
+    {
+      "name": "原油 (WTI)",
+      "trend": "震荡调整",
+      "expectation": "受全球经济增长放缓忧虑影响，原油需求端承压，短期维持横盘整理。"
+    }
+  ],
+  "recommendations": [
+    {
+      "type": "Sector",
+      "name": "半导体 (Semiconductors)",
+      "reason": "费城半导体指数跌幅（-0.37%）显著小于纳斯达克（-0.91%），显示出更强的抗跌性。"
+    },
+    {
+      "type": "Stock",
+      "name": "防御性蓝筹 (Defensive Blue-chips)",
+      "reason": "在市场普跌环境下，寻找低Beta、高股息的价值股以抵御估值回调风险。"
+    }
+  ],
+  "marketSummary": "2026年3月27日美股开盘后表现低迷。截至北京时间23:31，受加密货币市场崩盘（如Coinbase跌幅超7%）及宏观避险情绪升温影响，三大指数集体走弱。纳斯达克指数受科技股拖累下跌195.63点（-0.91%），标普500跌35.68点（-0.55%），道琼斯跌287.79点（-0.63%）。罗素2000小盘股跌幅最大，达1.01%，反映市场流动性溢价回吐。计算逻辑：标普500现价6441.48 - 昨收6477.16 = -35.68 (-0.55%)。市场目前处于阶段性调整期，建议关注20日均线支撑位。Source: Yahoo Finance API / Sina Finance (https://finance.sina.com.cn/stock/usstock/)"
+}

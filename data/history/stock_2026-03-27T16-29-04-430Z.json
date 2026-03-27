@@ -1,0 +1,79 @@
+{
+  "stockInfo": {
+    "symbol": "ALM",
+    "name": "未找到 (N/A)",
+    "price": 0,
+    "change": 0,
+    "changePercent": 0,
+    "market": "A-Share",
+    "currency": "CNY",
+    "lastUpdated": "2026-03-28 00:27:40 CST",
+    "previousClose": 0,
+    "dailyHigh": 0,
+    "dailyLow": 0
+  },
+  "fundamentals": {
+    "pe": "N/A",
+    "pb": "N/A",
+    "roe": "N/A",
+    "eps": "N/A",
+    "revenueGrowth": "N/A",
+    "valuationPercentile": "N/A"
+  },
+  "historicalData": {
+    "yearHigh": "N/A",
+    "yearLow": "N/A",
+    "majorEvents": [
+      "未能在 A 股市场（上证、深证、北证）中识别到代码或拼音缩写为 'ALM' 的上市公司。"
+    ]
+  },
+  "valuationAnalysis": {
+    "comparison": "N/A",
+    "marginOfSafetySummary": "N/A"
+  },
+  "moatAnalysis": {
+    "type": "N/A",
+    "strength": "None",
+    "logic": "由于标的在 A 股市场中不存在，无法进行护城河分析。"
+  },
+  "narrativeConsistency": {
+    "score": 0,
+    "warning": "市场代码不匹配",
+    "details": "实时工具提供的 'ALM' 数据属于纳斯达克上市的 Almonty Industries Inc. (美股)，而本报告被指令要求分析 A 股市场。A 股市场中无此代码。"
+  },
+  "netNetValue": 0,
+  "isDeepValue": false,
+  "verificationMetrics": [],
+  "capitalFlow": {
+    "northboundFlow": "N/A",
+    "institutionalHoldings": "N/A",
+    "ahPremium": "N/A",
+    "marketSentiment": "N/A"
+  },
+  "cycleAnalysis": {
+    "stage": "Bottom",
+    "logic": "N/A",
+    "volatilityRisk": "N/A"
+  },
+  "news": [],
+  "summary": "错误：在 A 股市场（上证、深证、北证）中未能识别出代码或拼音缩写为 'ALM' 的股票。虽然实时数据工具（REAL-TIME DATA TOOL OUTPUT）返回了 Almonty Industries Inc. 的数据，但其对应的交易市场为纳斯达克（NasdaqCM），货币为美元（USD），不属于指令明确要求的 'A-Share' 市场。根据 Requirement 1，若符号在 A 股市场中未找到，必须返回错误并提供空数据，严禁使用非目标市场（如美股）的数据进行填充。请核实股票代码是否正确（A 股代码通常为 6 位数字，如 60XXXX）。目前无法为您提供针对 'ALM' 的 A 股分析。数据来源验证：Yahoo Finance API 提供的 ALM 确认属于美股市场，而非 A 股市场。",
+  "technicalAnalysis": "不适用（未在 A 股市场找到该股票）。",
+  "fundamentalAnalysis": "不适用（未在 A 股市场找到该股票）。",
+  "sentiment": "Neutral",
+  "score": 0,
+  "recommendation": "Hold",
+  "keyRisks": [
+    "代码输入错误风险：'ALM' 并非有效的 A 股股票代码。",
+    "市场误认风险：将美股矿业公司误认为 A 股公司可能导致严重的交易决策错误。"
+  ],
+  "keyOpportunities": [
+    "若您关注钨矿行业（Almonty 主业），可关注 A 股龙头如：厦门钨业 (600549)、中钨高新 (000657)。"
+  ],
+  "tradingPlan": {
+    "entryPrice": "不推荐",
+    "targetPrice": "不推荐",
+    "stopLoss": "不推荐",
+    "strategy": "不推荐入场。由于标的代码在 A 股市场中无效，无法制定任何交易策略。",
+    "strategyRisks": "N/A"
+  }
+}

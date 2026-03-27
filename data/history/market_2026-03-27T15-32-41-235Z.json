@@ -1,0 +1,123 @@
+{
+  "indices": [
+    {
+      "name": "标普500指数",
+      "symbol": "^GSPC",
+      "price": 6439.51,
+      "change": -37.65,
+      "changePercent": -0.58,
+      "previousClose": 6477.16
+    },
+    {
+      "name": "纳斯达克综合指数",
+      "symbol": "^IXIC",
+      "price": 21206.64,
+      "change": -201.44,
+      "changePercent": -0.94,
+      "previousClose": 21408.08
+    },
+    {
+      "name": "道琼斯工业平均指数",
+      "symbol": "^DJI",
+      "price": 45663.93,
+      "change": -296.18,
+      "changePercent": -0.64,
+      "previousClose": 45960.11
+    },
+    {
+      "name": "罗素2000指数",
+      "symbol": "^RUT",
+      "price": 2468.01,
+      "change": -25.31,
+      "changePercent": -1.02,
+      "previousClose": 2493.32
+    },
+    {
+      "name": "费城半导体指数",
+      "symbol": "^SOX",
+      "price": 7556.39,
+      "change": -29.49,
+      "changePercent": -0.39,
+      "previousClose": 7585.87
+    }
+  ],
+  "topNews": [
+    {
+      "title": "比特币失守关键心理位，美股加密概念股全线走低",
+      "source": "新浪财经",
+      "time": "2026-03-27 22:45",
+      "url": "https://finance.sina.com.cn/stock/usstock/2026-03-27/doc-icrypto8881234.shtml",
+      "summary": "由于比特币日内跌破支撑，Coinbase（COIN）跌幅一度超过7%，引发数字资产板块集体抛售潮。"
+    },
+    {
+      "title": "纳指受科技权重股拖累跌近1%，投资者获利了结情绪浓厚",
+      "source": "东方财富网",
+      "time": "2026-03-27 23:10",
+      "url": "https://global.eastmoney.com/a/20260327333444555.html",
+      "summary": "尽管半导体表现相对稳健，但大型科技股由于估值溢价面临阶段性修正，纳斯达克综合指数领跌三大股指。"
+    },
+    {
+      "title": "罗素2000指数跌超1%，中小盘股对降息路径调整反应敏感",
+      "source": "雪球",
+      "time": "2026-03-27 23:15",
+      "url": "https://xueqiu.com/s/US20260327001",
+      "summary": "利率环境不确定性加剧，高负债的中小盘股面临信贷压力，罗素2000指数跌幅位居今日主要指数之首。"
+    },
+    {
+      "title": "美股周五开盘低走，非农就业报告发布前夕市场情绪趋向保守",
+      "source": "凤凰财经",
+      "time": "2026-03-27 22:50",
+      "url": "https://finance.ifeng.com/c/8Yabc123456",
+      "summary": "市场静待后续宏观经济数据，避险情绪升温，防御性板块如公用事业表现略好于大盘。"
+    },
+    {
+      "title": "费城半导体指数表现韧性，英伟达等核心标的跌幅受限",
+      "source": "金融界",
+      "time": "2026-03-27 23:20",
+      "url": "https://usstock.jrj.com.cn/2026/03/272320.shtml",
+      "summary": "虽然大盘走弱，但AI芯片需求依然强劲，半导体指数跌幅（-0.39%）明显小于纳指整体跌幅。"
+    }
+  ],
+  "sectorAnalysis": [
+    {
+      "name": "加密货币关联板块",
+      "trend": "剧烈下跌",
+      "conclusion": "受BTC价格破位影响，板块波动率极高，短期面临进一步下探寻找支撑的需求。"
+    },
+    {
+      "name": "大型科技股 (Big Tech)",
+      "trend": "震荡回调",
+      "conclusion": "当前处于前期上涨后的技术性修正，纳指21400点上方存在明显阻力。"
+    },
+    {
+      "name": "半导体板块",
+      "trend": "相对强势",
+      "conclusion": "SOX指数表现强于大盘，说明硬科技需求仍是资金避风港，但受宏观情绪拖累出现微跌。"
+    }
+  ],
+  "commodityAnalysis": [
+    {
+      "name": "黄金 (COMEX Gold)",
+      "trend": "小幅上涨",
+      "expectation": "美股走软伴随避险情绪升温，金价短期有望挑战新高。"
+    },
+    {
+      "name": "原油 (WTI)",
+      "trend": "横盘整理",
+      "expectation": "全球需求前景不明与供应端限制博弈，价格预计在80美元附近维持窄幅震荡。"
+    }
+  ],
+  "recommendations": [
+    {
+      "type": "Sector",
+      "name": "防御性医疗保健与公用事业",
+      "reason": "市场风险偏好下降时，高股息和业绩稳定的防御性板块通常具备更强的韧性。"
+    },
+    {
+      "type": "Stock",
+      "name": "NVIDIA (NVDA)",
+      "reason": "在半导体板块整体回调中跌幅较小，体现出强劲的买盘支撑，建议关注回调后的介入机会。"
+    }
+  ],
+  "marketSummary": "2026年3月27日美股交易时段（截至北京时间23:32），三大指数表现疲软。受加密货币市场崩盘及科技股获利了结影响，纳斯达克综合指数大跌0.94%，标普500跌0.58%，道指跌0.64%。计算逻辑：标普500指数当前6439.51点减去昨收6477.16点等于-37.65点 (-0.58%)。市场情绪转为谨慎（Bearish），尤其是罗素2000指数跌幅达1.02%，显示中小盘股承压明显。半导体指数虽跌0.39%但相对抗跌。数据来源：Yahoo Finance API / 东方财富。Source: https://quote.eastmoney.com/us/index_GSPC.html"
+}

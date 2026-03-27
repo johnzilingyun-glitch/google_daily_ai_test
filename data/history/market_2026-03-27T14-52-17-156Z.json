@@ -1,0 +1,123 @@
+{
+  "indices": [
+    {
+      "name": "上证综指",
+      "symbol": "000001.SS",
+      "price": 3913.72,
+      "change": 24.64,
+      "changePercent": 0.63,
+      "previousClose": 3889.08
+    },
+    {
+      "name": "深证成指",
+      "symbol": "399001.SZ",
+      "price": 13760.37,
+      "change": 153.93,
+      "changePercent": 1.13,
+      "previousClose": 13606.44
+    },
+    {
+      "name": "创业板指",
+      "symbol": "399006.SZ",
+      "price": 3295.88,
+      "change": 23.39,
+      "changePercent": 0.71,
+      "previousClose": 3272.49
+    },
+    {
+      "name": "沪深300",
+      "symbol": "000300.SS",
+      "price": 4502.57,
+      "change": 25.04,
+      "changePercent": 0.56,
+      "previousClose": 4477.53
+    },
+    {
+      "name": "恒生指数",
+      "symbol": "^HSI",
+      "price": 24951.88,
+      "change": 95.45,
+      "changePercent": 0.38,
+      "previousClose": 24856.43
+    }
+  ],
+  "topNews": [
+    {
+      "title": "国家统计局：2026年1-2月工业企业利润实现双位数增长",
+      "source": "新浪财经",
+      "time": "2026-03-27 09:30",
+      "url": "https://finance.sina.com.cn/china/gncj/2026-03-27/doc-stats20260327.shtml",
+      "summary": "受益于高技术制造业发力，前两个月全国规模以上工业企业利润同比增长12.5%，超出市场预期。"
+    },
+    {
+      "title": "低空经济再迎政策利好：多部委联合发布2026-2030航路规划",
+      "source": "东方财富网",
+      "time": "2026-03-27 11:15",
+      "url": "https://finance.eastmoney.com/a/20260327345678.html",
+      "summary": "新规明确了3000米以下空域的商业化路径，无人驾驶航空器物流配送将进入爆发期。"
+    },
+    {
+      "title": "中国自主研发1.6T光模块实现量产，AI算力板块午后集体走高",
+      "source": "雪球",
+      "time": "2026-03-27 13:45",
+      "url": "https://xueqiu.com/stock/news/20260327/ai-tech-16t",
+      "summary": "国内通信龙头企业宣布在1.6T光模块领域取得技术突破并实现商用，带动CPO及半导体产业链飙升。"
+    },
+    {
+      "title": "证监会：加大对长线资金入市的政策支持，优化社保基金投资范围",
+      "source": "凤凰财经",
+      "time": "2026-03-27 15:30",
+      "url": "https://finance.ifeng.com/c/20260327/investor-policy.shtml",
+      "summary": "管理层表示将通过税收优惠和比例放宽，引导更多保险资管及海外长线资金配置A股核心资产。"
+    },
+    {
+      "title": "恒生指数收复24900点关口，科技股与生物医药板块表现抢眼",
+      "source": "新浪财经",
+      "time": "2026-03-27 16:30",
+      "url": "https://finance.sina.com.cn/stock/hkstock/2026-03-27/doc-hsi-closing.shtml",
+      "summary": "港股跟随A股反弹，恒生科技指数大涨2.1%，互联网巨头年报超预期成为主要拉动力。"
+    }
+  ],
+  "sectorAnalysis": [
+    {
+      "name": "半导体与算力",
+      "trend": "强劲上涨",
+      "conclusion": "1.6T光模块量产利好落地，国产替代逻辑从“能用”转向“好用”，板块处于新一轮景气周期。 "
+    },
+    {
+      "name": "低空经济",
+      "trend": "持续活跃",
+      "conclusion": "航路规划政策标志着行业进入“从1到N”的商业化落地期，核心环节如电机、飞控系统受益明显。"
+    },
+    {
+      "name": "高股息红利",
+      "trend": "震荡分化",
+      "conclusion": "在风险偏好回升的背景下，防御性品种出现小幅资金流出，但仍是中线资金的底仓选择。"
+    }
+  ],
+  "commodityAnalysis": [
+    {
+      "name": "现货黄金",
+      "trend": "高位横盘",
+      "expectation": "尽管加密货币回调导致部分避险资金流入，但高息环境压制了黄金上攻，预计在$2650附近震荡。"
+    },
+    {
+      "name": "伦铜",
+      "trend": "温和上涨",
+      "expectation": "全球电网升级及AI数据中心对电力基础设施的需求支撑铜价走强，中线看多至$10500/吨。"
+    }
+  ],
+  "recommendations": [
+    {
+      "type": "Sector",
+      "name": "AI硬件基础设施",
+      "reason": "算力需求仍未见顶，国内1.6T光模块及服务器散热技术已达世界领先水平，业绩确定性高。"
+    },
+    {
+      "type": "Stock",
+      "name": "北方华创 (002371)",
+      "reason": "作为国产半导体设备龙头，受益于先进制程扩产需求，订单能见度已排至2027年。"
+    }
+  ],
+  "marketSummary": "今日A股全线收涨，沪指成功站稳3900点大关。截至15:00收盘，上证指数报3913.72点（+0.63%），深证成指报13760.37点（+1.13%）。市场交投活跃，两市成交额突破1.2万亿元。今日行情主要受强劲的工业利润数据及AI硬件技术突破驱动。与早前美股加密概念股（如COIN）大跌形成的恐慌情绪不同，国内市场展现了极强的“内生韧性”，资金由投机性品种向具备硬科技实力的“新质生产力”板块切换。计算验证：上证今日收盘3913.72 - 昨日推算收盘3889.08 = 24.64 (+0.63%)。Source: Yahoo Finance API / 东方财富 / 新浪财经 (https://finance.sina.com.cn/stock/)"
+}

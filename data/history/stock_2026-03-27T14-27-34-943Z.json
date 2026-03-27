@@ -1,0 +1,84 @@
+{
+  "stockInfo": {
+    "symbol": "COIN",
+    "name": "未找到匹配A股股票",
+    "price": 0,
+    "change": 0,
+    "changePercent": 0,
+    "market": "A-Share",
+    "currency": "CNY",
+    "lastUpdated": "2026-03-27 15:00:00 CST",
+    "previousClose": 0,
+    "dailyHigh": 0,
+    "dailyLow": 0
+  },
+  "fundamentals": {
+    "pe": "",
+    "pb": "",
+    "roe": "",
+    "eps": "",
+    "revenueGrowth": "",
+    "valuationPercentile": ""
+  },
+  "historicalData": {
+    "yearHigh": "",
+    "yearLow": "",
+    "majorEvents": []
+  },
+  "valuationAnalysis": {
+    "comparison": "",
+    "marginOfSafetySummary": ""
+  },
+  "moatAnalysis": {
+    "type": "",
+    "strength": "None",
+    "logic": ""
+  },
+  "narrativeConsistency": {
+    "score": 0,
+    "warning": "标的代码不匹配",
+    "details": "该符号在A股市场不存在相关上市实体。"
+  },
+  "netNetValue": 0,
+  "isDeepValue": false,
+  "verificationMetrics": [
+    {
+      "indicator": "代码核实",
+      "threshold": "6位数字代码",
+      "timeframe": "即时",
+      "logic": "确认标的是否在沪深北交易所上市"
+    }
+  ],
+  "capitalFlow": {
+    "northboundFlow": "",
+    "institutionalHoldings": "",
+    "ahPremium": "",
+    "marketSentiment": ""
+  },
+  "cycleAnalysis": {
+    "stage": "Bottom",
+    "logic": "无数据",
+    "volatilityRisk": ""
+  },
+  "news": [],
+  "summary": "错误：在A股市场（上交所、深交所、北交所）中未能检索到代码或拼音简写为'COIN'的股票。系统实时工具显示的'COIN'对应于美国纳斯达克交易所上市的Coinbase Global, Inc.，属于美股市场。由于本分析被限定于A股市场（STRICT MARKET ADHERENCE），且A股股票均采用6位数字代码（如60XXXX或00XXXX），因此无法对'COIN'进行A股基本面或技术面分析。建议投资者核实目标代码，若查询的是数字货币概念标的，可关注A股相关行业龙头如飞天诚信(300386)或四方精创(300468)，但这些标的代码与'COIN'无关。来源：无对应A股行情数据。",
+  "technicalAnalysis": "因标的在A股市场不存在，无法进行K线走势及技术指标分析。",
+  "fundamentalAnalysis": "标的非A股上市公司，无法获取财务报表、资产负债表或经营现金流数据。净营运资本(Net-Net)及安全边际无法计算。",
+  "sentiment": "Neutral",
+  "score": 0,
+  "recommendation": "Sell",
+  "keyRisks": [
+    "代码识别风险：误将美股标的视为A股标的",
+    "市场准入限制：A股投资者需通过QDII或美股账户才可交易Coinbase"
+  ],
+  "keyOpportunities": [
+    "若关注加密货币产业链，可研究A股数字货币及区块链板块相关个股"
+  ],
+  "tradingPlan": {
+    "entryPrice": "不推荐",
+    "targetPrice": "不推荐",
+    "stopLoss": "不推荐",
+    "strategy": "不推荐：标的非A股股票，无法执行A股交易策略。",
+    "strategyRisks": "无"
+  }
+}

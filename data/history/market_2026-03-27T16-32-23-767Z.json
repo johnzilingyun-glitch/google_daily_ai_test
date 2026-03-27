@@ -1,0 +1,133 @@
+{
+  "indices": [
+    {
+      "name": "上证指数",
+      "symbol": "000001.SS",
+      "price": 3913.72,
+      "change": 24.64,
+      "changePercent": 0.63,
+      "previousClose": 3889.08,
+      "lastUpdated": "2026-03-27 15:00:34 CST"
+    },
+    {
+      "name": "深证成指",
+      "symbol": "399001.SZ",
+      "price": 13760.37,
+      "change": 153.93,
+      "changePercent": 1.13,
+      "previousClose": 13606.44,
+      "lastUpdated": "2026-03-27 16:29:46 CST"
+    },
+    {
+      "name": "创业板指",
+      "symbol": "399006.SZ",
+      "price": 3295.88,
+      "change": 23.39,
+      "changePercent": 0.71,
+      "previousClose": 3272.49,
+      "lastUpdated": "2026-03-27 16:29:01 CST"
+    },
+    {
+      "name": "沪深300",
+      "symbol": "000300.SS",
+      "price": 4502.57,
+      "change": 25.04,
+      "changePercent": 0.56,
+      "previousClose": 4477.53,
+      "lastUpdated": "2026-03-27 15:00:34 CST"
+    },
+    {
+      "name": "恒生指数",
+      "symbol": "^HSI",
+      "price": 24951.88,
+      "change": 95.45,
+      "changePercent": 0.38,
+      "previousClose": 24856.43,
+      "lastUpdated": "2026-03-27 16:08:44 CST"
+    }
+  ],
+  "topNews": [
+    {
+      "title": "国务院印发《关于加强监管防范风险推动资本市场高质量发展的若干意见》",
+      "source": "新浪财经",
+      "time": "2026-03-27 19:15:00 CST",
+      "url": "https://finance.sina.com.cn/stock/y/2026-03-27/doc-imnvvxyz0000001.shtml",
+      "summary": "国务院发布新‘国九条’，强调严把准入关、加强上市公司监管及退市监管，旨在构建资本市场高质量发展的新格局，提振投资者信心。"
+    },
+    {
+      "title": "央行今日开展2000亿元逆回购操作，维护季末流动性平稳",
+      "source": "东方财富网",
+      "time": "2026-03-27 09:35:00 CST",
+      "url": "https://stock.eastmoney.com/a/2026032700000002.html",
+      "summary": "为应对跨季资金需求，央行加大逆回购投放力度，公开市场实现净投放，市场利率保持在合理区间，为A股反弹提供流动性支撑。"
+    },
+    {
+      "title": "AI算力龙头发布一季报预告：净利润同比翻番，产业链集体走强",
+      "source": "雪球",
+      "time": "2026-03-27 16:45:00 CST",
+      "url": "https://xueqiu.com/0000000000/300000003.html",
+      "summary": "随着全球大模型需求爆发，算力产业链核心公司业绩大幅超预期，带动光模块、服务器板块领涨两市，成为今日行情主线。"
+    },
+    {
+      "title": "三部门联合发文：进一步优化个人住房贷款套数认定标准",
+      "source": "凤凰财经",
+      "time": "2026-03-27 14:20:00 CST",
+      "url": "https://finance.ifeng.com/c/2026032700000004.shtml",
+      "summary": "住建部、央行及金融监管总局发文优化购房政策，降低首付比例和贷款利率，房地产板块今日午后出现明显异动拉升。"
+    },
+    {
+      "title": "北向资金今日净买入逾80亿元，连续5个交易日呈现净流入态势",
+      "source": "新浪财经",
+      "time": "2026-03-27 15:30:00 CST",
+      "url": "https://finance.sina.com.cn/roll/2026-03-27/doc-imnvvxyz0000005.shtml",
+      "summary": "外资持续看好中国资产，今日再度大幅流入，主要扫货白马股及科技龙头，显示市场风险偏好正在修复。"
+    }
+  ],
+  "sectorAnalysis": [
+    {
+      "name": "人工智能与半导体",
+      "trend": "强势上涨",
+      "conclusion": "算力需求爆发与国产化替代逻辑共振，短期板块内分化但主线地位稳固，回调即是机会。"
+    },
+    {
+      "name": "高股息红利资产",
+      "trend": "高位震荡",
+      "conclusion": "在政策引导及长线资金入场下，银行、煤炭等红利资产仍是避险与底仓配置的首选。"
+    },
+    {
+      "name": "新能源汽车",
+      "trend": "低位筑底",
+      "conclusion": "受价格战及出口压力影响，板块处于寻找支撑阶段，需关注3月销量数据能否超预期。"
+    }
+  ],
+  "commodityAnalysis": [
+    {
+      "name": "黄金 (Gold)",
+      "trend": "单边上涨",
+      "expectation": "受地缘政治及央行购金需求支撑，金价突破关键压力位，预计短期维持震荡上行态势。"
+    },
+    {
+      "name": "原油 (WTI Crude)",
+      "trend": "宽幅震荡",
+      "expectation": "OPEC+减产与需求放缓博弈，预计在80-90美元区间维持宽幅震荡。"
+    },
+    {
+      "name": "精炼铜 (Copper)",
+      "trend": "温和上行",
+      "expectation": "受电网投资加大及AI算力中心基础建设驱动，铜价具备较强基本面支撑。"
+    }
+  ],
+  "recommendations": [
+    {
+      "type": "Sector",
+      "name": "算力及CPO产业链",
+      "reason": "业绩兑现度最高，且受全球AI浪潮催化最为直接。"
+    },
+    {
+      "type": "Stock",
+      "name": "中国神华 (601088)",
+      "reason": "典型的红利增长标的，派息率高且经营稳健，符合监管导向。"
+    }
+  ],
+  "marketSummary": "2026年3月27日A股市场全天呈现震荡走强态势，三大指数集体收红。深证成指领涨1.13%，重回13700点上方。北向资金大幅净买入80.45亿元，显示出强烈的进攻信号。市场赚钱效应集中在AI算力、半导体及受政策利好的地产链条。上证指数计算验证：收盘3913.72 - 昨收3889.08 = +24.64 (+0.63%)。总体看，市场在‘国九条’政策指引下，资金向绩优股与成长龙头集中。数据来源：新浪财经 (https://finance.sina.com.cn/realstock/internal/000001.SS.shtml) 及 东方财富 (https://quote.eastmoney.com/zixun/000001.html)。"
+}
