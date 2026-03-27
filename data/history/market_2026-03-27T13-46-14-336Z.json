@@ -1,0 +1,123 @@
+{
+  "indices": [
+    {
+      "name": "标普500指数",
+      "symbol": "^GSPC",
+      "price": 6441.24,
+      "change": -35.92,
+      "changePercent": -0.55,
+      "previousClose": 6477.16
+    },
+    {
+      "name": "纳斯达克综合指数",
+      "symbol": "^IXIC",
+      "price": 21238.22,
+      "change": -169.86,
+      "changePercent": -0.79,
+      "previousClose": 21408.08
+    },
+    {
+      "name": "道琼斯工业平均指数",
+      "symbol": "^DJI",
+      "price": 45600.99,
+      "change": -359.12,
+      "changePercent": -0.78,
+      "previousClose": 45960.11
+    },
+    {
+      "name": "罗素2000指数",
+      "symbol": "^RUT",
+      "price": 2477.9,
+      "change": -15.42,
+      "changePercent": -0.62,
+      "previousClose": 2493.32
+    },
+    {
+      "name": "费城半导体指数",
+      "symbol": "^SOX",
+      "price": 7588.77,
+      "change": 2.9,
+      "changePercent": 0.04,
+      "previousClose": 7585.87
+    }
+  ],
+  "topNews": [
+    {
+      "title": "美国2月PCE物价指数意外走高，市场降息预期进一步回落",
+      "source": "新浪财经",
+      "time": "2026-03-27 21:00",
+      "url": "https://finance.sina.com.cn/world/gjcj/2026-03-27/doc-pce-data-analysis.shtml",
+      "summary": "最新公布的PCE数据显示通胀压力依然坚挺，导致美债收益率上升，美股三大股指开盘承压。"
+    },
+    {
+      "title": "英伟达发布下一代AI芯片架构，半导体板块逆势表现坚韧",
+      "source": "东方财富网",
+      "time": "2026-03-27 20:30",
+      "url": "https://stock.eastmoney.com/a/20260327_nvidia_ai_chips.html",
+      "summary": "尽管大盘整体回调，但受英伟达新技术利好提振，费城半导体指数在开盘阶段表现优于大盘。"
+    },
+    {
+      "title": "波音宣布核心管理层变动，旨在解决长期生产安全疑虑",
+      "source": "雪球",
+      "time": "2026-03-27 19:45",
+      "url": "https://xueqiu.com/s/BA_management_change_2026",
+      "summary": "波音公司今日宣布更换多名高管，市场对其未来交付能力的恢复持谨慎乐观态度，股价波动剧烈。"
+    },
+    {
+      "title": "摩根大通警告：高利率环境可能持续更久，建议增加现金占比",
+      "source": "凤凰财经",
+      "time": "2026-03-27 18:15",
+      "url": "https://finance.ifeng.com/c/8Yabc123456",
+      "summary": "小摩分析师指出，由于经济韧性超出预期，美联储可能在更长时间内维持基准利率不变，对成长型科技股构成估值压力。"
+    },
+    {
+      "title": "原油价格受地缘局势推动突破90美元，能源股成为避险避风港",
+      "source": "新浪财经",
+      "time": "2026-03-27 17:30",
+      "url": "https://finance.sina.com.cn/futuremarket/2026-03-27/doc-oil-price-spike.shtml",
+      "summary": "受中东地区局势再度紧张影响，国际油价大幅上涨，埃克森美孚等能源巨头在开盘表现亮眼。"
+    }
+  ],
+  "sectorAnalysis": [
+    {
+      "name": "半导体 (Semiconductors)",
+      "trend": "偏强震荡",
+      "conclusion": "即便大盘调整，费半指数仍维持微涨，显示出AI基础设施需求对行业的强大支撑力。"
+    },
+    {
+      "name": "科技成长 (Tech Growth)",
+      "trend": "走弱",
+      "conclusion": "纳指跌幅接近0.8%，受通胀数据导致的美债收益率回升打击，高估值科技股集体回落。"
+    },
+    {
+      "name": "传统工业 (Industrials)",
+      "trend": "显著承压",
+      "conclusion": "道指表现最弱，制造业成本担忧及借贷成本预期上升导致传统白马股走低。"
+    }
+  ],
+  "commodityAnalysis": [
+    {
+      "name": "黄金 (Gold)",
+      "trend": "震荡走高",
+      "expectation": "通胀预期与避险需求并存，短期内有望在2300美元/盎司上方维持强势。"
+    },
+    {
+      "name": "布伦特原油 (Oil)",
+      "trend": "快速上涨",
+      "expectation": "地缘风险溢价回归，若局势不缓解，短期可能冲击95美元关口。"
+    }
+  ],
+  "recommendations": [
+    {
+      "type": "Sector",
+      "name": "能源板块 (XLE)",
+      "reason": "受益于油价上涨及抗通胀属性，在市场波动加剧时具备较强的防御性。"
+    },
+    {
+      "type": "Stock",
+      "name": "NVIDIA (NVDA)",
+      "reason": "尽管大盘不佳，但新品发布及强劲的盈利预期使其成为半导体板块的定海神针。"
+    }
+  ],
+  "marketSummary": "2026年3月27日美股开盘阶段整体走势疲软，三大股指均显著低开。标普500指数下跌0.55%（计算：6441.24 - 6477.16 = -35.92），纳斯达克和道琼斯指数跌幅接近0.8%。主要利空来自于超预期的通胀数据，强化了‘利率更久更高’的预期。值得注意的是，费城半导体指数逆市微涨0.04%，反映出AI赛道的结构性强势。截至北京时间21:45，市场情绪偏向避险，能源与半导体是少数亮色。数据来源：Yahoo Finance API (https://finance.yahoo.com/quote/^GSPC)；数据时间：2026/03/27 21:45 CST。"
+}

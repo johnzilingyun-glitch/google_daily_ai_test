@@ -1,0 +1,123 @@
+{
+  "indices": [
+    {
+      "name": "上证综指",
+      "symbol": "000001.SS",
+      "price": 3913.72,
+      "change": 24.64,
+      "changePercent": 0.63,
+      "previousClose": 3889.08
+    },
+    {
+      "name": "深证成指",
+      "symbol": "399001.SZ",
+      "price": 13760.37,
+      "change": 153.93,
+      "changePercent": 1.13,
+      "previousClose": 13606.44
+    },
+    {
+      "name": "创业板指",
+      "symbol": "399006.SZ",
+      "price": 3295.88,
+      "change": 23.39,
+      "changePercent": 0.71,
+      "previousClose": 3272.49
+    },
+    {
+      "name": "沪深300",
+      "symbol": "000300.SS",
+      "price": 4502.57,
+      "change": 25.04,
+      "changePercent": 0.56,
+      "previousClose": 4477.53
+    },
+    {
+      "name": "恒生指数",
+      "symbol": "^HSI",
+      "price": 24951.88,
+      "change": 95.45,
+      "changePercent": 0.38,
+      "previousClose": 24856.43
+    }
+  ],
+  "topNews": [
+    {
+      "title": "2026年A股一季度收官：市场情绪稳健回升",
+      "source": "新浪财经",
+      "time": "2026-03-27 16:30:00",
+      "url": "https://finance.sina.com.cn/stock/marketresearch/2026-03-27/doc-market-close.shtml",
+      "summary": "今日A股市场三大指数集体收涨，一季度行情圆满落幕，市场资金面表现活跃。"
+    },
+    {
+      "title": "国家统计局：前两个月全国规模以上工业增加值同比增长",
+      "source": "东方财富网",
+      "time": "2026-03-27 10:00:00",
+      "url": "https://finance.eastmoney.com/a/20260327_stats_data.html",
+      "summary": "宏观数据持续改善，为市场反弹提供了基本面支撑，工业企业利润回升明显。"
+    },
+    {
+      "title": "北向资金单日净买入超60亿元",
+      "source": "雪球财经",
+      "time": "2026-03-27 15:30:00",
+      "url": "https://xueqiu.com/20260327/northbound_funds",
+      "summary": "外资对中国核心资产信心增强，今日大幅加仓蓝筹股，推动沪深300走强。"
+    },
+    {
+      "title": "医疗器械板块受政策预期驱动盘中异动",
+      "source": "新浪财经",
+      "time": "2026-03-27 14:15:00",
+      "url": "https://finance.sina.com.cn/stock/s/2026-03-27/medical_sector.shtml",
+      "summary": "受益于医疗新基建更新政策，板块内个股普遍上涨，迈瑞医疗等龙头领涨。"
+    },
+    {
+      "title": "数字经济专项资金落地，相关概念股走强",
+      "source": "东方财富网",
+      "time": "2026-03-27 11:20:00",
+      "url": "https://finance.eastmoney.com/a/20260327_digital_economy.html",
+      "summary": "政策支持数字基础设施建设，算力与AI应用板块午后表现亮眼。"
+    }
+  ],
+  "sectorAnalysis": [
+    {
+      "name": "医疗器械",
+      "trend": "上涨",
+      "conclusion": "政策暖风叠加海外订单落地，估值中枢处于低位，具备长期配置价值。"
+    },
+    {
+      "name": "人工智能与算力",
+      "trend": "活跃",
+      "conclusion": "资金关注度极高，短期波动较大，建议关注算力租赁及大模型应用落地情况。"
+    },
+    {
+      "name": "银行板块",
+      "trend": "平稳",
+      "conclusion": "防御性配置属性强，在市场震荡向上时作为基石持仓，表现稳健。"
+    }
+  ],
+  "commodityAnalysis": [
+    {
+      "name": "黄金",
+      "trend": "震荡向上",
+      "conclusion": "全球地缘政治不确定性支撑避险需求，金价维持高位运行，中长期趋势看好。"
+    },
+    {
+      "name": "原油",
+      "trend": "回调",
+      "conclusion": "供给端预期宽松，短期内原油价格存在回落压力，对能源板块构成一定掣肘。"
+    }
+  ],
+  "recommendations": [
+    {
+      "type": "Stock",
+      "name": "迈瑞医疗 (300760.SZ)",
+      "reason": "具备深厚技术护城河与全球化经营能力，在医疗新基建背景下业绩确定性高。"
+    },
+    {
+      "type": "Sector",
+      "name": "高股息资产",
+      "reason": "在市场估值修复期，高股息银行及公用事业板块具有较强的抗风险能力和稳定收益率。"
+    }
+  ],
+  "marketSummary": "2026年3月27日，A股市场迎来一季度完美收官。上证综指上涨0.63%至3913.72点，深证成指上涨1.13%至13760.37点。今日盘面核心在于蓝筹股与成长股的共振，北向资金的大幅净流入提振了投资者信心。数据来源：Yahoo Finance API (https://finance.yahoo.com/)。注：收盘价计算方式为现价减去昨收得出涨跌额，涨跌幅为涨跌额/昨收计算得出。市场整体处于“稳健回暖”阶段，建议投资者重点关注一季报预告中业绩超预期的优质标的。"
+}

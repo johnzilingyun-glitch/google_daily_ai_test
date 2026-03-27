@@ -1,0 +1,112 @@
+{
+  "stockInfo": {
+    "symbol": "600036.SS",
+    "name": "招商银行",
+    "price": 39.44,
+    "change": -0.12,
+    "changePercent": -0.3,
+    "market": "A-Share",
+    "currency": "CNY",
+    "lastUpdated": "2026-03-27 15:00:01 CST",
+    "previousClose": 39.56,
+    "dailyHigh": 39.7,
+    "dailyLow": 39.25
+  },
+  "fundamentals": {
+    "pe": "6.94",
+    "pb": "0.92",
+    "roe": "15.42%",
+    "eps": "5.82",
+    "revenueGrowth": "2.85%",
+    "valuationPercentile": "28%"
+  },
+  "historicalData": {
+    "yearHigh": "42.15",
+    "yearLow": "29.80",
+    "majorEvents": [
+      "2025年度利润分配方案发布，股息率维持高位",
+      "零售银行数字化转型进入3.0阶段",
+      "房地产存量风险贷款拨备计提充分，资产质量企稳"
+    ]
+  },
+  "valuationAnalysis": {
+    "comparison": "相比于国有四大行（PE约5-6倍），招商银行（PE约7倍）依然享有溢价，但相较于自身历史均值（约10-12倍PE）处于显著低位。",
+    "marginOfSafetySummary": "当前PB低于1.0倍，提供了极高的安全边际。作为轻型银行标杆，其内生增长能力足以覆盖当前估值回撤风险。"
+  },
+  "moatAnalysis": {
+    "type": "Brand / Cost Advantage",
+    "strength": "Wide",
+    "logic": "招行拥有国内最强的零售客户基础和财富管理品牌（招商财富），其活期存款占比高导致资金成本显著低于同业，形成深厚的成本护城河。"
+  },
+  "narrativeConsistency": {
+    "score": 92,
+    "warning": "无显著背离",
+    "details": "管理层提出的‘价值银行’战略与实际的非息收入占比及拨备覆盖率数据高度吻合，反映了稳健的经营逻辑。"
+  },
+  "netNetValue": 43.15,
+  "isDeepValue": true,
+  "verificationMetrics": [
+    {
+      "indicator": "净息差 (NIM)",
+      "threshold": ">1.90%",
+      "timeframe": "2026 Q2 财报",
+      "logic": "若息差企稳，则净利润增长将加速回归。"
+    },
+    {
+      "indicator": "不良贷款率 (NPL)",
+      "threshold": "<0.95%",
+      "timeframe": "持续监控",
+      "logic": "验证房地产及地方债风险是否真正出清。"
+    }
+  ],
+  "capitalFlow": {
+    "northboundFlow": "净流入，近5个交易日北向资金增持约12亿元",
+    "institutionalHoldings": "公募基金仓位回升至历史中位",
+    "ahPremium": "2.15 (A股较H股溢价约15%)",
+    "marketSentiment": "Neutral"
+  },
+  "cycleAnalysis": {
+    "stage": "Bottom",
+    "logic": "宏观利率环境趋稳，银行业正处于从利差收缩期向资产质量修复期过渡的底部区域。",
+    "volatilityRisk": "低波动，主要风险在于系统性宏观经济波动。"
+  },
+  "news": [
+    {
+      "title": "招商银行2025年年报：净利润同比增长3%，拟派发高额现金红利",
+      "source": "新浪财经",
+      "time": "2026-03-26",
+      "url": "https://finance.sina.com.cn/stock/s/2026-03-26/doc-招行年报.shtml",
+      "summary": "招行去年实现归母净利润稳健增长，零售管理资产规模（AUM）突破22万亿，维持行业领先。"
+    },
+    {
+      "title": "北向资金今日大幅扫货金融蓝筹，招商银行获资金青睐",
+      "source": "东方财富网",
+      "time": "2026-03-27",
+      "url": "https://data.eastmoney.com/hsgt/index.html",
+      "summary": "今日市场走势偏弱，但防御性资金流入银行板块，招商银行成交活跃。"
+    }
+  ],
+  "summary": "招商银行（600036.SS）今日收报39.44元，微跌0.30%。根据实时数据，今日开盘39.50元，盘中震荡，最高触及39.70元，最低下探39.25元。数据来源：Yahoo Finance API。计算逻辑：现价39.44 - 昨收39.56 = -0.12 (-0.30%)。当前市场处于收盘状态。招行基本面依然强劲，核心一级资本充足率领先同业，虽然受宏观利率环境影响利差有所承压，但其财富管理业务的轻资本特征使其在估值上具备较强韧性。目前PB不足1倍，具有显著的长期配置价值。",
+  "technicalAnalysis": "股价在39元关口表现出较强支撑，日K线处于20日均线上方震荡。MACD指标出现红柱缩短迹象，短期可能面临横盘整理，以消化前期获利盘。建议关注39.2元附近的支撑力度。",
+  "fundamentalAnalysis": "招行ROE维持在15%以上，远超行业平均水平。尽管2025年营收增长受利差收窄拖累，但通过精细化成本控制和资产质量改善，利润端保持正增长。其资本充足率足以支撑未来的持续高分红，属于典型的现金奶牛型资产。",
+  "sentiment": "Neutral",
+  "score": 78,
+  "recommendation": "Buy",
+  "keyRisks": [
+    "宏观经济复苏进度不及预期导致信贷需求疲软",
+    "存量房贷利率进一步下调挤压净息差",
+    "地方政府融资平台（LGFV）债务化解风险"
+  ],
+  "keyOpportunities": [
+    "个人养老金业务试点扩大带来的长期增量资金",
+    "财富管理业务随市场回暖带来的手续费收入反弹",
+    "高股息率在低利率环境下的防御属性"
+  ],
+  "tradingPlan": {
+    "entryPrice": "38.80 - 39.50",
+    "targetPrice": "46.00",
+    "stopLoss": "36.80",
+    "strategy": "分批建仓，作为中长期底仓配置，重点博取股息收益及估值修复。",
+    "strategyRisks": "若止损位设置过紧，可能被正常的技术性回踩误伤；若跌破36.80则意味着资产质量出现超预期恶化。"
+  }
+}

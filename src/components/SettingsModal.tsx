@@ -85,8 +85,8 @@ export function SettingsModal() {
               </button>
             </div>
 
-            {/* Content */}
-            <div className="p-6 space-y-8">
+            {/* Content - Scrollable area */}
+            <div className="max-h-[70vh] overflow-y-auto p-6 space-y-6 custom-scrollbar">
               {/* API Key Section */}
               <section className="space-y-4">
                 <div className="flex items-center gap-2 text-sm font-medium text-white/60">
@@ -101,9 +101,10 @@ export function SettingsModal() {
                     <input
                       type="password"
                       placeholder="AIzaSy... (输入您的 API Key)"
+                      id="api-key-input"
                       value={config.apiKey || ''}
                       onChange={(e) => setConfig({ ...config, apiKey: e.target.value })}
-                      className="w-full rounded-xl border border-white/10 bg-black/50 px-4 py-3 text-sm text-white placeholder-white/30 focus:border-blue-500/50 focus:outline-none focus:ring-1 focus:ring-blue-500/50 transition-all font-mono"
+                      className="w-full rounded-xl border border-white/10 bg-black/50 px-4 py-2.5 text-sm text-white placeholder-white/30 focus:border-blue-500/50 focus:outline-none focus:ring-1 focus:ring-blue-500/50 transition-all font-mono"
                     />
                     {(window as any).aistudio?.openSelectKey && (
                       <button
@@ -144,14 +145,14 @@ export function SettingsModal() {
                   </p>
                 )}
                 
-                <div className="grid gap-3 max-h-64 overflow-y-auto pr-2 custom-scrollbar">
+                <div className="grid gap-3">
                   {displayModels.map((model) => (
                     <button
                       key={model.id}
                       onClick={() => setConfig({ ...config, model: model.id })}
-                      className={`flex flex-col gap-1 rounded-2xl border p-4 text-left transition-all ${
+                      className={`flex flex-col gap-1 rounded-2xl border p-3.5 text-left transition-all ${
                         config.model === model.id
-                          ? 'border-blue-500/50 bg-blue-500/10'
+                           ? 'border-blue-500/50 bg-blue-500/10'
                           : 'border-white/5 bg-white/5 hover:border-white/10 hover:bg-white/[0.08]'
                       }`}
                     >
@@ -178,12 +179,13 @@ export function SettingsModal() {
                 onClick={onClose}
                 className="w-full rounded-xl bg-white px-4 py-3 text-sm font-semibold text-black transition-all hover:bg-white/90 active:scale-[0.98]"
               >
-                保存并关闭
+                保存配置并开始分析
               </button>
             </div>
           </motion.div>
         </div>
       )}
     </AnimatePresence>
+
   );
 }
